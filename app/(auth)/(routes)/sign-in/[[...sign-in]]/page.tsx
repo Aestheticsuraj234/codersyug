@@ -1,5 +1,21 @@
 import { SignIn } from "@clerk/nextjs";
  
 export default function Page() {
-  return <SignIn />;
+  return (
+    <div 
+    className="
+    flex
+    justify-center
+    items-center
+    h-screen
+    w-screen
+    bg-gradient-to-r from-rose-700 to-pink-600
+
+
+    
+    ">
+      <SignIn/>
+    </div>
+  )
+  
 }
