@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Open_Sans } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-
+import { Toaster } from "@/components/ui/toaster"
 
 const fonts = Open_Sans({ subsets: ['latin'] })
 
@@ -27,6 +27,7 @@ export default function RootLayout({
             enableSystem
           >
             {children}
+            <Toaster />
           </ThemeProvider>
           </body>
       </html>

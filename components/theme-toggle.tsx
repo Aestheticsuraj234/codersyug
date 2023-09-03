@@ -3,6 +3,8 @@
 import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useToast } from "@/components/ui/use-toast"
+
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +15,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function ThemeToggle() {
+  const { toast } = useToast()
+
   const { setTheme } = useTheme()
+
+  const handleThemeChange = (theme: string) => {
+    setTheme(theme)
+    toast({
+      title: "Theme changed!",
+      description: `Switched to ${theme} mode.`,
+    })
+  }
 
   return (
     <DropdownMenu>
@@ -25,13 +37,19 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => handleThemeChange(
+          "light"
+        )}>
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => handleThemeChange(
+          "dark"
+        )}>
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => handleThemeChange(
+          "system"
+        )}>
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

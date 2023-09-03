@@ -14,39 +14,35 @@ export function MainNav({
 
   const routes = [
     {
-      href: `/${params.storeId}`,
+      href: `/`,
       label: 'Home',
-      active: pathname === `/${params.storeId}`,
+      active: pathname === `/`,
     },
+   
     {
-      href: `/${params.storeId}/About`,
-      label: 'About',
-      active: pathname === `/${params.storeId}/About`,
-    },
-    {
-      href: `/${params.storeId}/Blogs`,
+      href: `/Blogs`,
       label: 'Blogs',
-      active: pathname === `/${params.storeId}/Blogs`,
+      active: pathname === `/Blogs`,
     },
     {
-      href: `/${params.storeId}/Resources`,
+      href: `/Resources`,
       label: 'Resources',
-      active: pathname === `/${params.storeId}/Resources`,
+      active: pathname === `/Resources`,
     },
     {
-      href: `/${params.storeId}/MockTests`,
+      href: `/MockTests`,
       label: 'Mock-Tests',
-      active: pathname === `/${params.storeId}/MockTests`,
+      active: pathname === `/MockTests`,
     },
     {
-      href: `/${params.storeId}/MentorshipPrograms`,
+      href: `/MentorshipPrograms`,
       label: 'Mentorship-Programs',
-      active: pathname === `/${params.storeId}/MentorshipPrograms`,
+      active: pathname === `/MentorshipPrograms`,
     },
     {
-      href: `/${params.storeId}/CodersYugAI`,
+      href: `/CodersYugAI`,
       label: ' CodersYug\'s AI',
-      active: pathname === `/${params.storeId}/CodersYugAI`,
+      active: pathname === `/CodersYugAI`,
     },
    
   ]
