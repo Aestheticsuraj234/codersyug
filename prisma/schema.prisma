@@ -1,12 +1,50 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+model Profile {
+  id       Int      @id @default(autoincrement())
+  userId   String   @unique
+  name     String
+  email    String   @unique
+  imageUrl String?
+  blogs    Blog[]   // This creates a one-to-many relationship with Blog
+  savedBlogs Blog[] @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
+  comments Comment[] // This creates a one-to-many relationship with Comment
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Blog {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  thumbnail   String?  // Made the thumbnail field optional
+  likes       Int      @default(0)
+  content     String
+  readTime    Int      // Estimated time in minutes to read the blog
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  category    String
+  subCategory String
+  authorId    Int
+  author      Profile  @relation(fields: [authorId], references: [id])
+  savedBy     Profile[] @relation("SavedBlogs")
+  comments    Comment[] // One-to-many relationship with comments
+}
+
+model Comment {
+  id          Int      @id @default(autoincrement())
+  text        String
+  commenterId Int
+  commenter   Profile  @relation(fields: [commenterId], references: [id])
+  blogId      Int
+  blog        Blog     @relation(fields: [blogId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -20,11 +20,9 @@ export const MobileToggle = () => {
     return (
         <Sheet>
             <SheetHeader className="
-            
+            md:hidden
             flex h-16 items-center px-4
             flex-row
-
-
             ">
                 <SheetTrigger asChild>
 
@@ -33,7 +31,7 @@ export const MobileToggle = () => {
                     </Button>
 
                 </SheetTrigger>
-                <div className='ml-auto flex items-center space-x-4' >
+                <div className=' md:hidden ml-auto flex items-center space-x-4' >
                     <SearchBar />
 
                     <ThemeToggle />

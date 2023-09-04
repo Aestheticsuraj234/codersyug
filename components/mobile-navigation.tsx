@@ -60,7 +60,7 @@ export function MobileNavigation({
         <>
 
             <nav
-                className={cn("md:hidden flex flex-col flex-1 items-start justify-start mx-6 my-4 ", className)}
+                className={cn("md:hidden flex flex-col flex-1 border fixed top-0  items-start justify-start mx-6 my-4 ", className)}
                 {...props}
             >
                 <div className='flex flex-row items-center space-x-2 '>
