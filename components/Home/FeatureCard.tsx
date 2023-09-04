@@ -6,19 +6,19 @@ const FeatureCard = () => {
         {
             "id": 1,
             "title": "Unrivaled Community",
-            "description": "Sigma-Node provides an unparalleled community of passionate software developers who are eager to connect, collaborate, and share their expertise. Engage with like-minded individuals, expand your network, and foster meaningful connections that can fuel your professional growth..",
+            "description": "CodersYug provides an unparalleled community of passionate software developers who are eager to connect, collaborate, and share their expertise. Engage with like-minded individuals, expand your network, and foster meaningful connections that can fuel your professional growth..",
             "image": "/assests/communitys.svg"
         },
         {
             "id": 2,
-            "title": "Diverse Content Formats",
-            "description": "With Sigma-Node, you gain access to a diverse range of content formats tailored to suit your preferences and learning style. Dive into thought-provoking posts, insightful blogs, bite-sized shorts, and engaging podcasts, ensuring you stay up-to-date with the latest tech trends and expand your knowledge in the most convenient way possible.",
+            "title": "Mentorship Programs",
+            "description": "The platform facilitates mentorship programs where experienced professionals and professors can mentor students, offering guidance on career development, project ideas, and skill enhancement",
             "image": "/assests/social_life.svg"
         },
         {
             "id": 3,
-            "title": "Cutting-Edge Tech Insights",
-            "description": "Stay at the forefront of the ever-evolving tech landscape with Sigma-Node's focus on delivering the most cutting-edge tech news and trends. Gain valuable insights into emerging technologies, industry best practices, and innovative solutions that can give you a competitive edge in your software development journey.",
+            "title": "Online Study Groups",
+            "description": " CodersYug facilitates the formation of virtual study groups, connecting students based on their courses and interests. It includes integrated video conferencing and collaboration tools.",
             "image": "/assests/socail_life.svg"
         }
     ]

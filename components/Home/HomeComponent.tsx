@@ -8,7 +8,7 @@ import Image from 'next/image'
 const HomeComponent = () => {
     return (
         <section className="">
-            <Link href="#" className="flex md:flex-row flex-col cursor-pointer justify-between items-center w-[100%] h-auto rounded-lg 
+            <Link href="#" className="flex mt-20 md:flex-row flex-col cursor-pointer justify-between items-center w-[100%] h-auto rounded-lg 
       border
         ">
                 <p className='font-semibold px-10 py-7 text-zinc-600 dark:text-zinc-100'>✨ <span className='font-bold underline pb-2 '>Unlock premium features</span> designed to enhance your writing with the power of AI — from ideation to publishing your best work.</p>

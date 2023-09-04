@@ -4,6 +4,7 @@ import { BiLogoReact, BiWorld } from "react-icons/bi"
 import { BsCodeSlash } from 'react-icons/bs'
 import { SiAppwrite } from "react-icons/si"
 import { GrArticle } from 'react-icons/gr'
+import { Bot ,BookCopy} from 'lucide-react'
 
 
 
@@ -12,20 +13,20 @@ const MoreFeature = () => {
         {
             "id": 1,
             "title": "Superfast Next.js Powered Platform",
-            "description": "Sigmanode  are powered by Next.js, and are served via Vercel's word class CDN.",
-            "icon": (<BiLogoReact size={35} className='text-cyan-600' />)
+            "description": "Codersyug  are powered by Next.js, and are served via Vercel's word class CDN.",
+            "icon": (<BiLogoReact  size={35} className='text-cyan-600' />)
         },
         {
             "id": 2,
-            "title": "Own your data",
-            "description": "You retain all the rights to your content. Export and download all your posts from your dashboard with a single click.",
-            "icon": (<AiOutlineDownload size={35} className='text-yellow-500' />)
+            "title": "Quality Resources",
+            "description": "CodersYug offers a comprehensive collection of high-quality learning resources for computer science students. Access tutorials, articles, and materials that are carefully curated to enhance your learning experience.",
+            "icon": (<BookCopy size={35} className='text-yellow-500' />)
         },
         {
             "id": 3,
-            "title": "Multiple Content Formats",
-            "description": "Sigma-Node provides an unparalleled community of passionate software developers who are eager to connect, collaborate, and share their expertise. Engage with like-minded individuals, expand your network, and foster meaningful connections that can fuel your professional growth.",
-            "icon": (<BsCodeSlash size={35} className='text-indigo-600' />)
+            "title": "Personalized AI's Learning Experience",
+            "description": "Enjoy a personalized learning journey with CodersYug's AI-driven features. Receive tailored recommendations for courses, articles, and resources based on your interests and skill level, optimizing your learning experience.",
+            "icon": (<Bot size={35} className='text-indigo-600' />)
         },
         {
             "id": 4,
@@ -36,7 +37,7 @@ const MoreFeature = () => {
         {
             "id": 5,
             "title": "Built-in Professional Analytics",
-            "description": "Enable a newsletter service with the click of a button, and let your readers easily subscribe to your developer Page.",
+            "description": "Gain valuable insights into your content and platform performance with CodersYug's integrated professional analytics tools. Monitor user engagement, track trends, and make data-driven decisions.",
             "icon": (<SiAppwrite size={35} className={"text-pink-500"} />)
         },
         {
@@ -47,8 +48,8 @@ const MoreFeature = () => {
         },
         {
             "id": 7,
-            "title": "Native GitHub Integration",
-            "description": "Publish and backup Content directly on a private or public GitHub repo - enabling you to always have control over your content.",
+            "title": "Open Source",
+            "description": "codersYug embraces the open-source ethos. Join the community, contribute to open-source projects, and collaborate with fellow developers to foster innovation and knowledge sharing.",
             "icon": (<AiFillGithub size={35} className='text-black' />)
         },
     ]
