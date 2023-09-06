@@ -10,7 +10,7 @@ import { initialProfile } from "@/lib/initial-profile";
 
 export default async function  Home() {
     const profile = initialProfile()
-    console.log(profile)
+  
 
     if (!profile) {
         return null
@@ -19,7 +19,6 @@ export default async function  Home() {
     return (
         <div className="mx-4 my-4 ">
             <HomeComponent />
-
             <MoreFeature />
             <CEOCard />
             <FeatureComponent />

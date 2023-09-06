@@ -3,39 +3,47 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  // Add this
+  relationMode = "prisma"
 }
 
 model Profile {
-  id       Int      @id @default(autoincrement())
-  userId   String   @unique
-  name     String
-  email    String   @unique
-  imageUrl String?
-  blogs    Blog[]   // This creates a one-to-many relationship with Blog
-  savedBlogs Blog[] @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
-  comments Comment[] // This creates a one-to-many relationship with Comment
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int       @id @default(autoincrement())
+  userId     String    @unique
+  name       String
+  email      String    @unique
+  imageUrl   String?
+  blogs      Blog[] // This creates a one-to-many relationship with Blog
+  savedBlogs Blog[]    @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
+  comments   Comment[] // This creates a one-to-many relationship with Comment
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  likesOn    Likes[] // This creates a one-to-many relationship with Likes
 }
 
 model Blog {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
-  description String
-  thumbnail   String?  // Made the thumbnail field optional
-  likes       Int      @default(0)
-  content     String
-  readTime    Int      // Estimated time in minutes to read the blog
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  category    String
-  subCategory String
+  slug        String    @unique
+  description String?
+  thumbnail   String? // Made the thumbnail field optional
+  likes       Int?      @default(0)
+  content     String?
+  readTime    Int // Estimated time in minutes to read the blog
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  category    String?
+  subCategory String?
   authorId    Int
-  author      Profile  @relation(fields: [authorId], references: [id])
+  author      Profile   @relation(fields: [authorId], references: [id])
   savedBy     Profile[] @relation("SavedBlogs")
   comments    Comment[] // One-to-many relationship with comments
+  // One-to-many relationship with likes
+  liked       Likes[]
+
+  @@index([authorId])
 }
 
 model Comment {
@@ -47,4 +55,21 @@ model Comment {
   blog        Blog     @relation(fields: [blogId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([commenterId])
+  @@index([blogId])
+}
+
+model Likes {
+  id        Int      @id @default(autoincrement())
+  liker     Profile  @relation(fields: [userId], references: [id])
+  userId    Int
+  blogId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Blog      Blog     @relation(fields: [blogId], references: [id])
+
+  @@unique([userId, blogId])
+  @@index([userId, blogId])
+  @@index([blogId])
 }

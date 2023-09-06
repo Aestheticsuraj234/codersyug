@@ -20,9 +20,9 @@ export function MainNav({
     },
    
     {
-      href: `/Blogs`,
+      href: `/blogs`,
       label: 'Blogs',
-      active: pathname === `/Blogs`,
+      active: pathname === `/blogs`,
     },
     {
       href: `/Resources`,

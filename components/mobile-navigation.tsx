@@ -26,7 +26,7 @@ export function MobileNavigation({
             href: `/Blogs`,
             label: 'Blogs',
             icon: <ScrollText />,
-            active: pathname === `/Blogs`,
+            active: pathname === `/blogs`,
         },
         {
             href: `/Resources`,
