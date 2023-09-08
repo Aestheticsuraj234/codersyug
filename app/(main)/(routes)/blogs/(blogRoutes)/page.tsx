@@ -7,7 +7,6 @@ const Blogs = () => {
     <div className='flex flex-row '>
       <BlogSideBar  />
       <BlogMainContainer/>
-
     </div>
   )
 }

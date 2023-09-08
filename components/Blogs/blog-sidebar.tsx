@@ -22,7 +22,7 @@ const SidebarLink = ({ Icon, route, label }: SidebarLinkProps) => {
 // Wanted to build a blog sidebar here
 const BlogSideBar = () => {
     return (
-        <section className='cursor-scrollbar leftsidebar'>
+        <section className='cursor-scrollbar leftsidebar z-50'>
             <div className='flex w-full flex-1 flex-col gap-6 px-6 '>
                 {sidebarLinks.map((link) => (
                     <SidebarLink
