@@ -1,9 +1,10 @@
 "use client";
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Image from "next/image";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,44 @@ import { toast } from "@/components/ui/use-toast";
 import { generateSlug } from "@/lib/generate-slug";
 import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
-import { Cross, X } from 'lucide-react';
+import { X } from 'lucide-react';
+import 'react-quill/dist/quill.snow.css';
+
+import dynamic from 'next/dynamic';
+import { Loader2Icon } from 'lucide-react';
+import { json } from 'stream/consumers';
+
+const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
+    ssr: false,
+    loading: () => <div className="flex justify-center items-center h-64"><Loader2Icon className="animate-spin" size={64} /></div>,
+});
+
+// Define a props interface for QuillEditor
+interface QuillEditorProps {
+    value: string;
+    onChange: (value: string) => void;
+    modules: Record<string, unknown>; // You can define a more specific type for modules if needed
+    formats: string[];
+    className?: string;
+}
+const QuillEditor = ({ value, onChange, modules, formats, className }: QuillEditorProps) => {
+    const handleChange = (html: string) => {
+        onChange(html); // Call the onChange callback with the HTML content
+    };
+
+    return (
+        <QuillNoSSRWrapper
+            value={value}
+            onChange={handleChange}
+            modules={modules}
+            formats={formats}
+            className={className}
+            theme="snow"
+        />
+    );
+};
+
+
 
 const FormSchema = z.object({
     title: z.string().min(10, {
@@ -37,6 +75,9 @@ const FormSchema = z.object({
     }),
     subCategory: z.string().min(3, {
         message: "Sub Category must be at least 3 characters.",
+    }),
+    content: z.string().min(10, {
+        message: "Content must be at least 10 characters.",
     })
 })
 
@@ -44,6 +85,30 @@ const SubmitArticle = () => {
     const [isMounted, setIsMounted] = useState(false);
     const { startUpload } = useUploadThing("media");
     const [files, setFiles] = useState<File[]>([]);
+    const [editorState, setEditorState] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const modules = {
+        toolbar: [
+            [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'align': [] }],
+            ['link', 'image', 'video'],
+            ['clean'],
+            [{ 'background': [] }, { 'color': [] }, { 'font': [] }, { 'code': [] }, { 'script': 'super' }, { 'script': 'sub' }],
+            ['blockquote', 'indent', 'list'],
+            [{ 'align': [] }, { 'direction': 'rtl' }],
+            ['code-block'],
+            [{ 'formula': 'formula' }],
+            [{ syntax: true }],
+        ],
+    };
+
+    const formats = [
+        'header', 'font', 'list', 'bold', 'italic', 'underline', 'strike',
+        'align', 'link', 'image', 'video', 'clean', 'background', 'color', 'code',
+        'script', 'blockquote', 'indent', 'direction', 'code-block', 'formula',
+    ];
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -52,31 +117,64 @@ const SubmitArticle = () => {
             description: "",
             thumbnail: "",
             category: "",
-            subCategory: ""
+            subCategory: "",
+            content: editorState, // Initialize content with an empty string
         }
     })
 
     async function onSubmit(values: any) {
-        const blob = values.thumbnail;
-        const hasImageChanged = isBase64Image(blob);
-        if (hasImageChanged) {
-            const imgRes = await startUpload(files);
+        try {
+            setIsSubmitted(true);
+            const blob = values.thumbnail;
+            const hasImageChanged = isBase64Image(blob);
+            if (hasImageChanged) {
+                const imgRes = await startUpload(files);
 
-            if (imgRes && imgRes[0].url) {
-                values.thumbnail = imgRes[0].url; // Update the thumbnail with the uploaded image URL
+                if (imgRes && imgRes[0].url) {
+                    values.thumbnail = imgRes[0].url; // Update the thumbnail with the uploaded image URL
+                }
             }
-        }
 
-        // Now you can submit the form values including the updated thumbnail URL
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-                </pre>
-            ),
-        });
+            const response = await axios.post('http://localhost:3000/api/blog', {
+                title: values.title,
+                slug: generateSlug(values.title),
+                description: values.description,
+                thumbnail: values.thumbnail,
+                category: values.category,
+                subCategory: values.subCategory,
+                content: values.content,
+            });
+
+            console.log(response);
+
+            if (response.status === 200) {
+                setIsSubmitted(false);
+                toast({
+                    title: "Article Submitted Successfully",
+                    description: "Your article has been submitted successfully.",
+                });
+                form.reset();
+            } else {
+                console.log('Request failed:', response.status, response.statusText);
+                toast({
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+                form.reset();
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            toast({
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+            });
+        } finally {
+            setIsSubmitted(false);
+            form.reset();
+        }
     }
+
+
 
     const handleImage = (
         e: ChangeEvent<HTMLInputElement>,
@@ -99,6 +197,16 @@ const SubmitArticle = () => {
 
             fileReader.readAsDataURL(file);
         }
+    };
+    const handleContent = (
+        value: any,
+        fieldChange: (value: string) => void) => {
+        setEditorState(value);
+        fieldChange(value);
+
+
+
+
     };
 
     if (!isMounted) setIsMounted(true);
@@ -166,16 +274,16 @@ const SubmitArticle = () => {
                                     <FormLabel className='relative'>
                                         {field.value ? (
                                             <>
-                                            <Image
-                                                src={field.value}
-                                                alt='profile_icon'
-                                                width={288}
-                                                height={152}
-                                                priority
-                                                className=' object-contain'
-                                            />
-                                            <X className='absolute top-10 right-0 w-12 h-12 text-red-500' onClick={() => field.onChange('')} />
-                                            
+                                                <Image
+                                                    src={field.value}
+                                                    alt='profile_icon'
+                                                    width={288}
+                                                    height={152}
+                                                    priority
+                                                    className=' object-contain'
+                                                />
+                                                <X className='absolute top-10 right-0 w-6 h-6 bg-red-500 text-white rounded-full' onClick={() => field.onChange('')} />
+
                                             </>
                                         ) : (
                                             <Image
@@ -240,8 +348,42 @@ const SubmitArticle = () => {
                             )}
                         />
 
-                        <Button type="submit" className="w-full mb-4    ">
-                            Submit
+                        {/* Rich text */}
+                        <FormField
+                            control={form.control}
+                            name="content"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Write Your Content</FormLabel>
+                                    <FormControl>
+                                        <QuillEditor
+                                            value={field.value} // Pass editorState as the value
+                                            onChange={
+                                                (value) => handleContent(value, field.onChange)
+
+                                            } // Use the handleContent function
+                                            modules={modules}
+                                            formats={formats}
+                                            className="bg-white dark:bg-black dark:text-white rounded-md  h-96 overflow-y-auto  scrollbar-thumb-zinc-900 dark:scrollbar-thumb-zinc-100 dark:scrollbar-track-zinc-900  scrollbar-track-gray-100 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Enter the content for your article (at least 10 characters).
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <Button type="submit" className="w-full mb-4 font-bold">
+                            {
+                                isSubmitted ? (
+                                    <Loader2Icon className="animate-spin" size={24} />
+                                ) : (
+                                    "Submit Article"
+                                )
+
+                            }
                         </Button>
                     </form>
                 </Form>

@@ -25,6 +25,7 @@
     "@types/react-dom": "18.2.7",
     "@uploadthing/react": "^5.5.0",
     "autoprefixer": "10.4.15",
+    "axios": "^1.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
@@ -39,14 +40,20 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.46.1",
     "react-icons": "^4.10.1",
+    "react-quill": "^2.0.0",
+    "slate": "^0.94.1",
+    "slate-react": "^0.98.3",
     "tailwind-merge": "^1.14.0",
+    "tailwind-scrollbar": "^3.0.5",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "uploadthing": "^5.5.3",
+    "uuid": "^9.0.0",
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.3",
     "prisma": "^5.2.0"
   }
 }

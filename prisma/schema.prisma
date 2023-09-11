@@ -43,6 +43,8 @@ model Blog {
   // One-to-many relationship with likes
   liked       Likes[]
 
+ 
+
   @@index([authorId])
 }
 
