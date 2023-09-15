@@ -147,20 +147,20 @@ const SubmitArticle = () => {
 
             console.log(response);
 
-            if (response.status === 200) {
+            if (response.status === 201) {
                 setIsSubmitted(false);
                 toast({
                     title: "Article Submitted Successfully",
                     description: "Your article has been submitted successfully.",
                 });
-                form.reset();
+                // form.reset();
             } else {
                 console.log('Request failed:', response.status, response.statusText);
                 toast({
                     title: "Uh oh! Something went wrong.",
                     description: "There was a problem with your request.",
                 });
-                form.reset();
+                // form.reset();
             }
         } catch (error) {
             console.error("Error:", error);
@@ -170,7 +170,7 @@ const SubmitArticle = () => {
             });
         } finally {
             setIsSubmitted(false);
-            form.reset();
+            // form.reset();
         }
     }
 

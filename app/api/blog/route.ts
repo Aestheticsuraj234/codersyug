@@ -80,7 +80,7 @@ export const POST = async (req: Request) => {
 }
 
 
-export const GET = async (req: Request) => {
+export const GET = async () => {
     try {
         // here we are fetching all the blogs from the prisma db
         const profile = await currentProfile();
@@ -96,7 +96,8 @@ export const GET = async (req: Request) => {
 
         const blogs = await db.blog.findMany({
             orderBy: {
-                createdAt: "asc"
+                createdAt: "asc",
+                
             },
             include: {
                 author: true
