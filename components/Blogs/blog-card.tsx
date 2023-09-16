@@ -63,14 +63,15 @@ const BlogCard = () => {
 
     return (
         <div className="grid grid-cols-3 gap-4 mt-10 mb-10">
-            {
+            {blogData.length === 0 ? (
+                <div className="text-center col-span-3">No blogs to show</div>
+            ) : (
                 blogData.map((item: {
                     likes: any;
                     id: React.Key | null | undefined; author: {
                         userId: any; imageUrl: string | undefined;
                     }; title: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; createdAt: any; readTime: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; thumbnail: string | StaticImport;
                 }) => (
-
                     isFetching ? <Skeleton className="rounded-lg   shadow-sm h-auto w-72 " /> :
                         <Card
                             key={item.id}
@@ -126,9 +127,8 @@ const BlogCard = () => {
                                 }
                             </CardFooter>
                         </Card>
-
                 ))
-            }
+            )}
         </div>
     );
 };

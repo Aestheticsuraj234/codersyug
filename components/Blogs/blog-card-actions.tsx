@@ -5,11 +5,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { BookmarkIcon, Heart, MessageCircle } from "lucide-react";
+import { BookmarkIcon, Heart, MessageCircle, Loader2 } from "lucide-react";
+import axios from "axios";
 import { currentProfile } from "@/lib/current-profile";
-import { experimental_useOptimistic as useOptimistic } from "react";
-import LikesTheBlog from "@/lib/server-actions/actions";
-
+import { toast } from "../ui/use-toast";
 
 interface IdsProps {
   blogId: null | undefined | string | number;
@@ -17,16 +16,12 @@ interface IdsProps {
 }
 
 const BlogCardActions = ({ blogId, likes }: IdsProps) => {
-  const [optimisticLikes, setOptimisticLikes] = useOptimistic(
-    likes,
-    (state: any, action) => state + action,
-  );
-  console.log("OPTIMISTIC_LIKES:= ",optimisticLikes);
-
+  const [like, setLikes] = useState(likes);
   const [comments, setComments] = useState(0);
+  const [isLiking, setIsLiking] = useState(false); // State to track if the user is liking the post
+  const [isLiked, setIsLiked] = useState(false); // State to track if the user has liked the post
   const [saved, setSaved] = useState(false);
   const [profile, setProfile] = useState<any | null>(null); // State to store the user's profile
-  const [isLiked, setIsLiked] = useState(false); // State to track if the user has liked the blog or not
 
   useEffect(() => {
     // Fetch the user's profile when the component mounts
@@ -40,59 +35,40 @@ const BlogCardActions = ({ blogId, likes }: IdsProps) => {
     };
 
     fetchProfile();
-
-
   }, []);
-
-
-
-
-
-
-
-  const blogActions = [
-    {
-      name: "Like",
-      icon: <Heart className="hover:text-rose-500" />,
-      count: optimisticLikes, // Add count property to track likes
-    },
-    {
-      name: "Comment",
-      icon: <MessageCircle className="hover:text-emerald-500" />,
-      count: comments, // Add count property to track comments
-    },
-    {
-      name: "Add to library",
-      icon: <BookmarkIcon className="hover:text-yellow-400" />,
-    },
-  ];
-
+  // Function to handle Likes and call the endpoint to increment the count in the database
   const handleLikeClick = async () => {
+    if (isLiking) return;
+    setIsLiking(true);
+
     try {
-      if (isLiked) {
-        // If already liked, decrement the count and set isLiked to false
-        if (optimisticLikes === 0) return; // Avoid negative counts
-        const action = -1;
-        setOptimisticLikes(action); // Update the optimisticLikes
-        setIsLiked(false);
-        await LikesTheBlog(blogId); // You may need to pass an action parameter
+      const res = await axios.post("http://localhost:3000/api/blog/like", {
+        blogId: blogId,
+      });
+      const data = res.data.likes;
+
+      // Client-side validation: Ensure the like count doesn't go below 0
+      if (data >= 0) {
+        setLikes(data);
+        setIsLiked(!isLiked);
+        toast({
+          title: "Success",
+          description: isLiked ? "Blog Unliked Successfully" : "Blog Liked Successfully",
+        });
       } else {
-        // If not liked, increment the count and set isLiked to true
-        const action = 1;
-        setOptimisticLikes(action); // Update the optimisticLikes
-        setIsLiked(true);
-        await LikesTheBlog(blogId); // You may need to pass an action parameter
+        // Handle the case where the server returned a negative like count
+        console.error("Server returned a negative like count");
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLiking(false);
     }
   };
-  
 
-  const amount = 1;
   const handleCommentClick = () => {
     // Call the comment endpoint here if needed
-    setComments(amount);
+    setComments(comments + 1);
   };
 
   const handleSaveClick = () => {
@@ -100,27 +76,59 @@ const BlogCardActions = ({ blogId, likes }: IdsProps) => {
     setSaved(!saved);
   };
 
+  const blogActions = [
+    {
+      name: "Like",
+      icon: (
+        <TooltipTrigger onClick={handleLikeClick}>
+          <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
+            {isLiking ? <Loader2 
+              className="animate-spin
+              text-gray-500
+              hover:text-rose-500
+           
+              "
+            /> : (
+              <Heart
+                className={isLiked ? "text-red-500" : "hover:text-rose-500"}
+              />
+            )}
+            <span className="text-sm">{like}</span>
+          </div>
+        </TooltipTrigger>
+      ),
+    },
+    {
+      name: "Comment",
+      icon: (
+        <TooltipTrigger onClick={handleCommentClick}>
+          <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
+            <MessageCircle className="hover:text-emerald-500" />
+            <span className="text-sm">{comments}</span>
+          </div>
+        </TooltipTrigger>
+      ),
+    },
+    {
+      name: "Add to library",
+      icon: (
+        <TooltipTrigger onClick={handleSaveClick}>
+          <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
+            <BookmarkIcon className="hover:text-yellow-400" />
+          </div>
+        </TooltipTrigger>
+      ),
+    },
+  ];
+
+
+
   return (
     <div className="flex flex-row justify-between items-center w-full mt-2">
       {blogActions.map((action, index) => (
         <TooltipProvider key={index}>
           <Tooltip>
-            <TooltipTrigger
-              onClick={
-                action.name === "Like"
-                  ? handleLikeClick
-                  : action.name === "Comment"
-                    ? handleCommentClick
-                    : handleSaveClick
-              }
-            >
-              <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
-                {action.icon}
-                {action.count !== undefined && (
-                  <span className="text-sm">{action.count}</span>
-                )}
-              </div>
-            </TooltipTrigger>
+            {action.icon}
             <TooltipContent>
               <p>{action.name}</p>
             </TooltipContent>
