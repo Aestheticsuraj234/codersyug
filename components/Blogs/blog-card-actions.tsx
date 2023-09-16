@@ -6,8 +6,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { BookmarkIcon, Heart, MessageCircle } from "lucide-react";
-import axios from "axios";
 import { currentProfile } from "@/lib/current-profile";
+import { experimental_useOptimistic as useOptimistic } from "react";
+import LikesTheBlog from "@/lib/server-actions/actions";
 
 
 interface IdsProps {
@@ -16,10 +17,16 @@ interface IdsProps {
 }
 
 const BlogCardActions = ({ blogId, likes }: IdsProps) => {
-  const [like, setLikes] = useState(likes);
+  const [optimisticLikes, setOptimisticLikes] = useOptimistic(
+    likes,
+    (state: any, action) => state + action,
+  );
+  console.log("OPTIMISTIC_LIKES:= ",optimisticLikes);
+
   const [comments, setComments] = useState(0);
   const [saved, setSaved] = useState(false);
   const [profile, setProfile] = useState<any | null>(null); // State to store the user's profile
+  const [isLiked, setIsLiked] = useState(false); // State to track if the user has liked the blog or not
 
   useEffect(() => {
     // Fetch the user's profile when the component mounts
@@ -47,7 +54,7 @@ const BlogCardActions = ({ blogId, likes }: IdsProps) => {
     {
       name: "Like",
       icon: <Heart className="hover:text-rose-500" />,
-      count: like, // Add count property to track likes
+      count: optimisticLikes, // Add count property to track likes
     },
     {
       name: "Comment",
@@ -60,24 +67,32 @@ const BlogCardActions = ({ blogId, likes }: IdsProps) => {
     },
   ];
 
-  // Function to handle Likes and call the endpoint to increment the count in the database
   const handleLikeClick = async () => {
     try {
-
-      const res = await axios.post("http://localhost:3000/api/blog/like", {
-        blogId: blogId,
-      });
-      const data = res.data.likes;
-      setLikes(data);
-
+      if (isLiked) {
+        // If already liked, decrement the count and set isLiked to false
+        if (optimisticLikes === 0) return; // Avoid negative counts
+        const action = -1;
+        setOptimisticLikes(action); // Update the optimisticLikes
+        setIsLiked(false);
+        await LikesTheBlog(blogId); // You may need to pass an action parameter
+      } else {
+        // If not liked, increment the count and set isLiked to true
+        const action = 1;
+        setOptimisticLikes(action); // Update the optimisticLikes
+        setIsLiked(true);
+        await LikesTheBlog(blogId); // You may need to pass an action parameter
+      }
     } catch (error) {
       console.log(error);
     }
   };
+  
 
+  const amount = 1;
   const handleCommentClick = () => {
     // Call the comment endpoint here if needed
-    setComments(comments + 1);
+    setComments(amount);
   };
 
   const handleSaveClick = () => {
