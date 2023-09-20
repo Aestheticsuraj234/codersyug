@@ -30,6 +30,7 @@ model Blog {
   description String?   @db.LongText
   thumbnail   String?   @db.LongText
   likes       Int?      @default(0)
+  Comments    Int?      @default(0)
   content     String?   @db.LongText
   readTime    Int? // Estimated time in minutes to read the blog
   createdAt   DateTime  @default(now())
@@ -57,6 +58,7 @@ model Comment {
   updatedAt   DateTime @updatedAt
 
   @@index([commenterId])
+  
   @@index([blogId])
 }
 

@@ -1,0 +1,68 @@
+"use client"
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams } from 'next/navigation';
+
+interface BlogContentInterFace {
+  author: {
+    id: number | string,
+    name: string,
+    email: string,
+    userId:string,
+    imageUrl: string,
+  }
+  authorId: number | string,
+  category: string,
+  content: HTMLAllCollection | string,
+  createdAt: string,
+  updatedAt: string,
+  description: string,
+  likes: number,
+  readTime: string,
+  slug: string,
+  title: string,
+  thumbnail: string,
+
+}
+
+const BlogMainContent = () => {
+  const [blogData, setBlogData] = useState<BlogContentInterFace | null>(null);
+  const { slug } = useParams();
+  console.log(slug);
+  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/blog/${slug}`);
+        const data = await res.data;
+        setBlogData(data);
+        console.log(data);
+      } catch (error) {
+        console.error('Error fetching blog data:', error);
+      }
+    };
+
+    fetchData();
+  }, [slug]); // Run the effect whenever slug changes
+
+  return (
+    <div>
+      <h1>Blog Main Content</h1>
+      {blogData ? (
+        <div>
+          <h2>{blogData.title}</h2>
+          <div
+           
+            dangerouslySetInnerHTML={{ __html: blogData?.content }}
+          />
+          {/* Render other blog data as needed */}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
+    </div>
+  );
+};
+
+export default BlogMainContent;

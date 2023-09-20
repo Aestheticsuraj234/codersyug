@@ -26,7 +26,7 @@ import 'react-quill/dist/quill.snow.css';
 
 import dynamic from 'next/dynamic';
 import { Loader2Icon } from 'lucide-react';
-import { json } from 'stream/consumers';
+
 
 const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
     ssr: false,

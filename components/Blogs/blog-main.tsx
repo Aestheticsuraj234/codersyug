@@ -1,7 +1,4 @@
 "use client"
-// TODO: Create BlogMainContainer component which is render on the params of the blog page like if the params is upvoted then it will render the upvoted blogs.
-
-
 import { useParams } from "next/navigation";
 import BlogCard from "./blog-card";
 

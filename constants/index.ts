@@ -1,9 +1,10 @@
 import {
+    MessageCircle,
+    Heart,
+    BookMarked,
     Flame,
     Newspaper,
-    Heart,
     Plus,
-    BookMarked,
     History,
     Settings,
 } from "lucide-react";
@@ -46,3 +47,26 @@ export const sidebarLinks = [
         label: "Customize Feed",
     },
 ];
+
+
+export const blogContentSidebar = [
+    {
+        id: 1,
+        Icon:Heart,
+        label: "Like",
+        likeCount: 0,
+    },
+    {
+        id: 2,
+        Icon: MessageCircle,
+        label: "Message",
+        saveCount: 0,
+    },
+    {
+        id: 3,
+        Icon: BookMarked,
+        label: "Save",
+        saveCount: 0,
+
+    }
+]

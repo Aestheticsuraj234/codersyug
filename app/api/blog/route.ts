@@ -100,7 +100,8 @@ export const GET = async () => {
                 
             },
             include: {
-                author: true
+                author: true,
+                liked: true,
             }
         })
         return NextResponse.json(blogs, {
