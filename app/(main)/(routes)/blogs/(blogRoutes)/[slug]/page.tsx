@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect,  useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,7 +12,7 @@ import { AppContext } from '@/context/GlobalContext';
 
 const BlogMainContent = () => {
   const { blog } = useContext(AppContext);
-  const { isLoading, setIsLoading, setBlogData, memoizedBlogData,blogData } = blog;
+  const { isLoading, setIsLoading, setBlogData, memoizedBlogData, blogData } = blog;
   const { slug } = useParams();
 
   useEffect(() => {
@@ -102,8 +102,8 @@ const BlogMainContent = () => {
         </div>
       </div>
 
-      <BlogBottomAction/>
-  
+      <BlogBottomAction />
+
     </div>
   );
 };

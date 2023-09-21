@@ -5,12 +5,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { BookmarkIcon, Heart, MessageCircle, Loader2 } from "lucide-react";
+import { BookmarkIcon, Heart, MessageCircle, Loader2, BookMarked } from "lucide-react";
 import axios from "axios";
 import { currentProfile } from "@/lib/current-profile";
 import { toast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { AppContext } from "@/context/GlobalContext";
+import { set } from "zod";
 interface IdsProps {
   blogId: null | undefined | string | number;
   likes: number;
@@ -19,11 +20,11 @@ interface IdsProps {
   slug: string;
 }
 
-const BlogCardActions = ({ blogId, likes, likedBy,comment,slug }: IdsProps) => {
+const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) => {
   const router = useRouter();
   const { blog } = useContext(AppContext);
   const { memoizedAllBlogData,
-      setAllBlogData, } = blog;
+    setAllBlogData, } = blog;
 
   const [like, setLikes] = useState(likes);
   const [comments, setComments] = useState(comment);
@@ -84,9 +85,37 @@ const BlogCardActions = ({ blogId, likes, likedBy,comment,slug }: IdsProps) => {
 
 
 
-  const handleSaveClick = () => {
-    setSaved(!saved);
+  const handleSaveClick = async () => {
+    try {
+      // If it's not saved, save it
+      const res = await axios.put("http://localhost:3000/api/blog", {
+        blogId: blogId,
+      });
+      console.log(res.data, "res");
+      if (res.status === 200) {
+        setSaved(true);
+        toast({
+          title: "Success",
+          description: "Blog Saved Successfully",
+        });
+      }
+      else if (res.status === 201) {
+        setSaved(false);
+        toast({
+          title: "Success",
+          description: "Blog Unsaved Successfully",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Blog Not Saved Successfully",
+      });
+    }
   };
+
+
   const handleCommentsClick = () => {
     router.push(`/blogs/${slug}`);
   }
@@ -123,7 +152,13 @@ const BlogCardActions = ({ blogId, likes, likedBy,comment,slug }: IdsProps) => {
       icon: (
         <TooltipTrigger onClick={handleSaveClick}>
           <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
-            <BookmarkIcon className="hover:text-yellow-400" />
+            {
+              saved ? (
+                <BookMarked className="text-green-500" />
+              ) : (
+                <BookmarkIcon className="hover:text-yellow-400" />
+              )
+            }
           </div>
         </TooltipTrigger>
       ),

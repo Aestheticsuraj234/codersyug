@@ -24,6 +24,7 @@ import CurrentUserComment from './CurrentUserComment';
 import axios from 'axios';
 import { toast } from '@/components/ui/use-toast';
 import { AppContext } from '@/context/GlobalContext';
+import { useRouter } from 'next/navigation';
 
 const FormSchema = z.object({
     comment: z.string().min(1, "Comment must be atleast 5 character long"),
@@ -32,10 +33,10 @@ const FormSchema = z.object({
 
 const BlogCommentSidebar = () => {
     const { user } = useUser();
-    // console.log(user);
+    const router = useRouter();
     const { blog } = useContext(AppContext);
-    const { memoizedBlogData } = blog;
-   
+    const { memoizedBlogData ,blogData} = blog;
+
 
     const [isSubmiting, setIsSubmiting] = useState(false);
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -45,24 +46,25 @@ const BlogCommentSidebar = () => {
         }
     })
 
-    const commentsLength = memoizedBlogData?.comments?.length;
+    const commentsLength = blogData?.comments?.length;
 
     async function onSubmit(values: any) {
         try {
             setIsSubmiting(true);
             const res = await axios.post('/api/blog/comment', {
                 comment: values.comment,
-                blogId: memoizedBlogData?.id
+                blogId: blogData?.id
             })
             console.log(res.data);
             setIsSubmiting(false);
             toast(
                 {
                     title: "Comment Added",
-                    description: "Your comment has been added successfully",
+                    description: "If Your Comment is Not Visible then reload the Page Kindly😎",
                 }
 
             )
+            router.refresh();
             form.reset();
         } catch (error) {
 
@@ -71,10 +73,12 @@ const BlogCommentSidebar = () => {
                 title: "Error",
                 description: "Something went wrong",
             })
+            router.refresh();
             form.reset();
             setIsSubmiting(false);
         }
         finally {
+            router.refresh();
             form.reset();
             setIsSubmiting(false);
         }
@@ -84,67 +88,53 @@ const BlogCommentSidebar = () => {
 
     return (
         <>
-          <h1 className='absolute top-4 text-sm text-zinc-700 dark:text-zinc-100 font-semibold'>Comments({commentsLength})</h1>
-        <ScrollArea className='
-        w-full
-        h-auto
-        flex
-        flex-col
-        justify-start
-        items-start
-        space-y-5
-        
-        
-        '>
-          
-            <div>
-                <div className="flex flex-row justify-start items-center gap-2 mb-8">
-                    <CurrentUserComment
-                        imageUrl={user?.imageUrl as string}
-                        name={user?.fullName as string}
-                    />
-                </div>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mb-4">
-                        <FormField
-                            control={form.control}
-                            name="comment"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Add Your Comment</FormLabel>
-                                    <FormControl>
-                                        <Textarea placeholder="Write Your Comment🚀" inputMode='text' {...field} />
-                                    </FormControl>
-
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+            <h1 className='absolute top-4 text-sm text-zinc-700 dark:text-zinc-100 font-semibold'>Comments({commentsLength})</h1>
+            <ScrollArea className='w-full h-auto flex flex-col justify-start items-start space-y-5'>
+                <div>
+                    <div className="flex flex-row justify-start items-center gap-2 mb-8">
+                        <CurrentUserComment
+                            imageUrl={user?.imageUrl as string}
+                            name={user?.fullName as string}
                         />
-                        <div className='flex flex-row justify-between items-center w-full'>
-                            <Link href={"/code-of-code"}>
-                                <p
-                                    className=' inline-flex gap-3 justify-center items-center hover:underline
-                text-zinc-700 dark:text-zinc-100 font-semibold text-xs
-                hover:text-zinc-600 dark:hover:text-zinc-200
-                cursor-pointer
+                    </div>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mb-4">
+                            <FormField
+                                control={form.control}
+                                name="comment"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Add Your Comment</FormLabel>
+                                        <FormControl>
+                                            <Textarea placeholder="Write Your Comment🚀" {...field} />
+                                        </FormControl>
+
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className='flex flex-row justify-between items-center w-full'>
+                                <Link href={"/code-of-code"}>
+                                    <p
+                                        className=' inline-flex gap-3 justify-center items-center hover:underline text-zinc-700 dark:text-zinc-100 font-semibold text-xs   hover:text-zinc-600 dark:hover:text-zinc-200     cursor-pointer
                 '>
-                                    <Link2Icon />
-                                    Code Of Conduct
-                                </p>
-                            </Link>
-                            <Button variant={"default"} size={"default"} type='submit'>
-                                {isSubmiting ? <Loader2 className='text-zinc-700 dark:text-zinc-100  animate-spin' /> : "Submit"}
-                            </Button>
-                        </div>
-                    </form>
+                                        <Link2Icon />
+                                        Code Of Conduct
+                                    </p>
+                                </Link>
+                                <Button variant={"default"} size={"default"} type='submit'>
+                                    {isSubmiting ? <Loader2 className='text-zinc-700 dark:text-zinc-100  animate-spin' /> : "Submit"}
+                                </Button>
+                            </div>
+                        </form>
 
-                </Form>
+                    </Form>
 
 
-            </div>
-            <Separator className='w-full mb-5' />
-            <UserCommentCards />
-        </ScrollArea>
+                </div>
+                <Separator className='w-full mb-5' />
+                <UserCommentCards />
+            </ScrollArea>
         </>
     );
 };

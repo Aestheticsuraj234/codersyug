@@ -97,7 +97,7 @@ export const GET = async () => {
         const blogs = await db.blog.findMany({
             orderBy: {
                 createdAt: "asc",
-                
+
             },
             include: {
                 author: true,
@@ -123,3 +123,111 @@ export const GET = async () => {
         )
     }
 }
+
+// Enpoint to user can save the blog
+
+// ...
+
+export const PUT = async (req: Request) => {
+    try {
+        // Get the currently logged-in user's profile
+        const profile = await currentProfile();
+
+        // Check if the user is authenticated
+        if (!profile) {
+            return new NextResponse(
+                JSON.stringify({ message: "Unauthorized" }),
+                {
+                    status: 401,
+                }
+            );
+        }
+
+        // Extract the blogId from the request body (assuming it's provided)
+        const { blogId } = await req.json();
+
+        // Find the blog by its ID
+        const blog = await db.blog.findUnique({
+            where: {
+                id: blogId,
+            },
+        });
+
+        if (!blog) {
+            return new NextResponse(
+                JSON.stringify({ message: "Blog not found" }),
+                {
+                    status: 404,
+                }
+            );
+        }
+
+        // Check if the user has already saved the blog
+        const isSaved = await db.profile.findFirst({
+            where: {
+                id: profile.id,
+                savedBlogs: {
+                    some: {
+                        id: blog.id,
+                    },
+                },
+            },
+        });
+
+        if (isSaved) {
+            // If the user has already saved the blog, remove it from the saved list
+            await db.profile.update({
+                where: {
+                    id: profile.id,
+                },
+                data: {
+                    savedBlogs: {
+                        disconnect: {
+                            id: blog.id,
+                        },
+                    },
+                },
+            });
+
+            return new NextResponse(
+                JSON.stringify({ message: "Blog removed from library" }),
+                {
+                    status: 201,
+                }
+            );
+        } else {
+            // If the user has not saved the blog, associate the user with the blog as a saved blog
+            await db.profile.update({
+                where: {
+                    id: profile.id,
+                },
+                data: {
+                    savedBlogs: {
+                        connect: {
+                            id: blog.id,
+                        },
+                    },
+                },
+            });
+
+            return new NextResponse(
+                JSON.stringify({ message: "Blog saved successfully" }),
+                {
+                    status: 200,
+                }
+            );
+        }
+    } catch (error) {
+        console.error(error);
+        return new NextResponse(
+            JSON.stringify({ message: "Error saving/removing the blog" }),
+            {
+                status: 500,
+            }
+        );
+    }
+};
+
+
+
+

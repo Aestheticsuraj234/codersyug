@@ -31,14 +31,14 @@ import { useUser } from "@clerk/nextjs"
 
 const UserCommentCard = () => {
   const { blog } = useContext(AppContext);
-  const { memoizedBlogData } = blog;
+  const { blogData } = blog;
   const { user } = useUser();
   const [isMounted, setIsMounted] = useState(false);
 
-  console.log(memoizedBlogData?.comments, "Comments_client");
+  console.log(blogData?.comments, "Comments_client");
 
 
-  const isAdmin = memoizedBlogData?.author?.userId === user?.id;
+  const isAdmin = blogData?.author?.userId === user?.id;
 
 
 
@@ -47,7 +47,7 @@ const UserCommentCard = () => {
     setIsMounted(true);
   }
   return (
-    memoizedBlogData?.comments.map((comment: any) => (
+    blogData?.comments.map((comment: any) => (
       <Card className='w-full h-auto flex flex-col justify-start items-start mb-10'>
         <div className='flex flex-row w-full justify-between items-center'>
           <div className='flex flex-row justify-center items-center'>
