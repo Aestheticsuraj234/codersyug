@@ -20,6 +20,11 @@ export const GET = async (req: Request, { params }: any) => {
       include:{
         author: true,
         liked: true,
+        comments:{
+          include:{
+            commenter: true,
+          }
+        }
       }
     });
 

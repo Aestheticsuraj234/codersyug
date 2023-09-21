@@ -1,14 +1,12 @@
 "use client"
-import React, { useEffect, useState } from 'react';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import React, { useState, useContext } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useUser } from "@clerk/nextjs"
 import * as z from "zod";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -18,11 +16,14 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Link2Icon } from 'lucide-react';
+import { Link2Icon, Loader2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import UserCommentCards from './user-comment-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
+import CurrentUserComment from './CurrentUserComment';
+import axios from 'axios';
+import { toast } from '@/components/ui/use-toast';
+import { AppContext } from '@/context/GlobalContext';
 
 const FormSchema = z.object({
     comment: z.string().min(1, "Comment must be atleast 5 character long"),
@@ -30,8 +31,13 @@ const FormSchema = z.object({
 
 
 const BlogCommentSidebar = () => {
+    const { user } = useUser();
+    // console.log(user);
+    const { blog } = useContext(AppContext);
+    const { memoizedBlogData } = blog;
+   
 
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmiting, setIsSubmiting] = useState(false);
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -39,74 +45,107 @@ const BlogCommentSidebar = () => {
         }
     })
 
+    const commentsLength = memoizedBlogData?.comments?.length;
+
     async function onSubmit(values: any) {
         try {
-            console.log(values);
-            setIsSubmitted(true);
+            setIsSubmiting(true);
+            const res = await axios.post('/api/blog/comment', {
+                comment: values.comment,
+                blogId: memoizedBlogData?.id
+            })
+            console.log(res.data);
+            setIsSubmiting(false);
+            toast(
+                {
+                    title: "Comment Added",
+                    description: "Your comment has been added successfully",
+                }
+
+            )
+            form.reset();
         } catch (error) {
+
             console.error("Error creating blog:", error);
+            toast({
+                title: "Error",
+                description: "Something went wrong",
+            })
+            form.reset();
+            setIsSubmiting(false);
+        }
+        finally {
+            form.reset();
+            setIsSubmiting(false);
         }
     }
 
 
 
     return (
-        <ScrollArea>
-        <div>
-            <div className="flex flex-row justify-start items-start gap-2 mb-8">
-                <Avatar>
-                    <AvatarImage
-                        src={`https://avatars.githubusercontent.com/u/7525670?v=${3}`}
+        <>
+          <h1 className='absolute top-4 text-sm text-zinc-700 dark:text-zinc-100 font-semibold'>Comments({commentsLength})</h1>
+        <ScrollArea className='
+        w-full
+        h-auto
+        flex
+        flex-col
+        justify-start
+        items-start
+        space-y-5
+        
+        
+        '>
+          
+            <div>
+                <div className="flex flex-row justify-start items-center gap-2 mb-8">
+                    <CurrentUserComment
+                        imageUrl={user?.imageUrl as string}
+                        name={user?.fullName as string}
                     />
-                    <AvatarFallback>cn</AvatarFallback>
-                </Avatar>
-                <p className="text-zinc-700 dark:text-zinc-100 font-bold text-base">
-                    Suraj Kumar Jha
-                </p>
-            </div>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mb-4">
-                    <FormField
-                        control={form.control}
-                        name="comment"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Title</FormLabel>
-                                <FormControl>
-                                    <Textarea placeholder="Write Your Comment" inputMode='text' {...field} />
-                                </FormControl>
-                                <FormDescription>
-                                    Enter a title for your article (at least 10 characters).
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <div className='flex flex-row justify-between items-center w-full'>
-                        <Link href={"/code-of-code"}>
-            <p 
-                className=' inline-flex gap-3 justify-center items-center hover:underline
+                </div>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mb-4">
+                        <FormField
+                            control={form.control}
+                            name="comment"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Add Your Comment</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="Write Your Comment🚀" inputMode='text' {...field} />
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <div className='flex flex-row justify-between items-center w-full'>
+                            <Link href={"/code-of-code"}>
+                                <p
+                                    className=' inline-flex gap-3 justify-center items-center hover:underline
                 text-zinc-700 dark:text-zinc-100 font-semibold text-xs
                 hover:text-zinc-600 dark:hover:text-zinc-200
                 cursor-pointer
                 '>
-                    <Link2Icon/>
-                                Code Of Conduct
-                            </p>
-                        </Link>
-                        <Button variant={"default"} size={"default"} type='submit'>
-                            Comment
-                        </Button>
-                    </div>
-                </form>
+                                    <Link2Icon />
+                                    Code Of Conduct
+                                </p>
+                            </Link>
+                            <Button variant={"default"} size={"default"} type='submit'>
+                                {isSubmiting ? <Loader2 className='text-zinc-700 dark:text-zinc-100  animate-spin' /> : "Submit"}
+                            </Button>
+                        </div>
+                    </form>
 
-            </Form>
+                </Form>
 
 
-        </div>
-       <Separator className='w-full mb-5'/>
-       <UserCommentCards/>
-       </ScrollArea>
+            </div>
+            <Separator className='w-full mb-5' />
+            <UserCommentCards />
+        </ScrollArea>
+        </>
     );
 };
 

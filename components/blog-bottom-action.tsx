@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     Heart,
     MessageCircle,
@@ -17,21 +17,19 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
-import { MobileNavigation } from './mobile-navigation';
+import { AppContext } from '@/context/GlobalContext';
 import BlogCommentSidebar from './Blogs/Comments/blog-comment-sidebar';
 
-interface BottomBlogInteface {
-    likes?: number;
-    blogId?: number | string;
 
-}
 
-const BlogBottomAction = ({ likes, blogId }: BottomBlogInteface) => {
-    const [like, setLikes] = useState(likes);
+const BlogBottomAction = () => {
+    const { blog } = useContext(AppContext);
+    const {memoizedBlogData ,like , setLikes} = blog;
+
     const [isLiking, setIsLiking] = useState(false); // State to track if the user is liking the post
     const [isLiked, setIsLiked] = useState(false); // State to track if the user has liked the post
-    const [previousLikes, setPreviousLikes] = useState(likes); // State to store the previous likes
-
+  
+    const commentsLength = memoizedBlogData?.comments?.length;
 
     const handleLikeClick = async () => {
         if (isLiking) return;
@@ -39,13 +37,13 @@ const BlogBottomAction = ({ likes, blogId }: BottomBlogInteface) => {
 
         try {
             const res = await axios.post('http://localhost:3000/api/blog/like', {
-                blogId: blogId,
+                blogId: memoizedBlogData?.id,
             });
             const data = res.data.likes;
 
             // Client-side validation: Ensure the like count doesn't go below 0
             if (data >= 0) {
-                setPreviousLikes(like); // Store the previous likes before updating
+                
                 setLikes(data);
                 setIsLiked(!isLiked);
 
@@ -60,11 +58,7 @@ const BlogBottomAction = ({ likes, blogId }: BottomBlogInteface) => {
         }
     };
 
-    // useEffect to update previousLikes when likes prop changes
-    useEffect(() => {
-        setPreviousLikes(likes);
-    }, [likes]);
-
+   
 
 
 
@@ -96,15 +90,13 @@ const BlogBottomAction = ({ likes, blogId }: BottomBlogInteface) => {
                 </div>
                 <Sheet>
 
-                    <SheetTrigger asChild className='flex flex-row  pr-3 gap-2 items-center justify-center'>
-                        <Button variant={'ghost'} size={'icon'} >
+                    <SheetTrigger asChild className='flex flex-row border-r pr-3 gap-2 items-center justify-center'>
+                        <Button variant={'ghost'} size={'default'} >
                             <MessageCircle size={24} className='text-zinc-700 dark:text-zinc-200' />
+                    <span className='font-semibold text-zinc-700 dark:text-zinc-200'>{commentsLength}</span>    
                         </Button>
                     </SheetTrigger>
-                    <span className='font-semibold text-zinc-700 dark:text-zinc-200'>2</span>
                     <SheetContent side="right" className="p-0 flex gap-0 pt-10 px-4 flex-col justify-start items-start ">
-                   
-                        {/* <MobileNavigation /> */}
                         <BlogCommentSidebar/>
                     </SheetContent>
                 </Sheet>

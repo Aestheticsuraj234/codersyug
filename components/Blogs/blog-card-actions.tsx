@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -9,21 +9,29 @@ import { BookmarkIcon, Heart, MessageCircle, Loader2 } from "lucide-react";
 import axios from "axios";
 import { currentProfile } from "@/lib/current-profile";
 import { toast } from "../ui/use-toast";
-
+import { useRouter } from "next/navigation";
+import { AppContext } from "@/context/GlobalContext";
 interface IdsProps {
   blogId: null | undefined | string | number;
   likes: number;
   likedBy: number[]; // Change the type of likedBy to be an array of numbers
+  comment: number;
+  slug: string;
 }
 
-const BlogCardActions = ({ blogId, likes, likedBy }: IdsProps) => {
+const BlogCardActions = ({ blogId, likes, likedBy,comment,slug }: IdsProps) => {
+  const router = useRouter();
+  const { blog } = useContext(AppContext);
+  const { memoizedAllBlogData,
+      setAllBlogData, } = blog;
+
   const [like, setLikes] = useState(likes);
-  const [comments, setComments] = useState(0);
+  const [comments, setComments] = useState(comment);
+  console.log(comments, "comments");
   const [isLiking, setIsLiking] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -74,13 +82,14 @@ const BlogCardActions = ({ blogId, likes, likedBy }: IdsProps) => {
     }
   };
 
-  const handleCommentClick = () => {
-    setComments(comments + 1);
-  };
+
 
   const handleSaveClick = () => {
     setSaved(!saved);
   };
+  const handleCommentsClick = () => {
+    router.push(`/blogs/${slug}`);
+  }
 
   const blogActions = [
     {
@@ -101,7 +110,7 @@ const BlogCardActions = ({ blogId, likes, likedBy }: IdsProps) => {
     {
       name: "Comment",
       icon: (
-        <TooltipTrigger onClick={handleCommentClick}>
+        <TooltipTrigger onClick={handleCommentsClick} >
           <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
             <MessageCircle className="hover:text-emerald-500" />
             <span className="text-sm">{comments}</span>

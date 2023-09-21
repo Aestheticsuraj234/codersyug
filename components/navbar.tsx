@@ -6,6 +6,7 @@ import { SearchBar } from './search-bar'
 import { Code2 , Github} from 'lucide-react'
 import { Button } from './ui/button'
 import { MobileToggle } from './mobile-toggle'
+import { Badge } from "@/components/ui/badge"
 
 const Navbar = () => {
     return (
@@ -15,7 +16,9 @@ const Navbar = () => {
             <div className='md:flex hidden h-16 items-center px-4'>
                 <div className='flex flex-row items-center space-x-2'>
                     <Code2 className='text-zinc-800 dark:text-zinc-100' />
-                    <h1 className='text-xl font-bold text-zinc-800 dark:text-zinc-100 ' >  CODERSYUG</h1>
+                    <h1 className='text-xl font-bold text-zinc-800 dark:text-zinc-100 ' >CODERSYUG</h1>
+                    <Badge variant="default">Beta</Badge>
+
                 </div>
                 <MainNav className='mx-6' />
                 <div className='ml-auto flex items-center space-x-4'>

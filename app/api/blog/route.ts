@@ -102,6 +102,11 @@ export const GET = async () => {
             include: {
                 author: true,
                 liked: true,
+                comments: {
+                    include: {
+                        commenter: true
+                    }
+                }
             }
         })
         return NextResponse.json(blogs, {

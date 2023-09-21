@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect,  useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -7,33 +7,12 @@ import HTMLReactParser from 'html-react-parser';
 import BlogBottomAction from '@/components/blog-bottom-action';
 import { Skeleton } from '@/components/ui/skeleton';
 
-
-interface BlogContentInterFace {
-  author: {
-    id: number | string,
-    name: string,
-    email: string,
-    userId: string,
-    imageUrl: string,
-  }
-  authorId: number | string,
-  category: string,
-  content: HTMLAllCollection | string,
-  createdAt: string,
-  updatedAt: string,
-  description: string,
-  likes: number,
-  readTime: string,
-  slug: string,
-  title: string,
-  thumbnail: string,
-  id: number | string,
-}
+import { formatDate } from '@/lib/utils';
+import { AppContext } from '@/context/GlobalContext';
 
 const BlogMainContent = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [blogData, setBlogData] = useState<BlogContentInterFace | null>(null);
-
+  const { blog } = useContext(AppContext);
+  const { isLoading, setIsLoading, setBlogData, memoizedBlogData,blogData } = blog;
   const { slug } = useParams();
 
   useEffect(() => {
@@ -52,18 +31,9 @@ const BlogMainContent = () => {
     };
 
     fetchData();
-  }, [slug]);
+  }, [slug, setIsLoading, setBlogData]);
 
-  const memoizedBlogData = useMemo(() => blogData, [blogData, isLoading]);
 
-  const formatDate = (dateString: string | number | Date) => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
 
   return (
     <div className="flex flex-row justify-center items-center">
@@ -102,17 +72,17 @@ const BlogMainContent = () => {
                 </>
               )}
             </Avatar>
-            <p className="text-zinc-600 dark:text-zinc-100 font-bold text-xl">
-              {isLoading ? <Skeleton style={{ width: '4rem', height: '1rem' }} /> : memoizedBlogData?.author?.name}
-            </p>
+            <div className="text-zinc-600 dark:text-zinc-100 font-bold text-xl">
+              {isLoading ? <Skeleton style={{ width: '4rem', height: '1rem' }} /> : <p> {memoizedBlogData?.author?.name} </p>}
+            </div>
             <span>•</span>
-            <p className="text-zinc-600 dark:text-zinc-100 font-semibold text-lg">
+            <div className="text-zinc-600 dark:text-zinc-100 font-semibold text-lg">
               {isLoading ? (
                 <Skeleton style={{ width: '3rem', height: '1rem' }} />
               ) : (
                 `${formatDate(memoizedBlogData?.createdAt as string)} • ${memoizedBlogData?.readTime} m read time`
               )}
-            </p>
+            </div>
           </div>
         </div>
 
@@ -132,8 +102,7 @@ const BlogMainContent = () => {
         </div>
       </div>
 
-      <BlogBottomAction likes={memoizedBlogData?.likes} blogId={memoizedBlogData?.id as number} 
-        />
+      <BlogBottomAction/>
   
     </div>
   );

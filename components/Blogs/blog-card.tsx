@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -16,8 +16,14 @@ import BlogCardActions from "./blog-card-actions";
 import { toast } from "../ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { AppContext } from "@/context/GlobalContext";
+import { formatDate } from "@/lib/utils";
 
 const BlogCard = () => {
+    const { blog } = useContext(AppContext);
+    const { memoizedAllBlogData,
+        setAllBlogData, } = blog;
+        console.log(memoizedAllBlogData,"memoizedAllBlogData");
     const [isFetching, setIsFetching] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const router = useRouter();
@@ -25,7 +31,7 @@ const BlogCard = () => {
         try {
             setIsFetching(true);
             const response = await axios.get("http://localhost:3000/api/blog");
-            setBlog(response.data);
+            setAllBlogData(response.data);
             console.log(response.data);
             toast({
                 title: "Success",
@@ -46,18 +52,9 @@ const BlogCard = () => {
         fetchData(); // Fetch data on component mount
     }, []);
 
-    const [blog, setBlog] = useState<any>([]);
 
-    // Use useMemo to cache the blog data and prevent unnecessary fetching
-    const blogData = useMemo(() => {
 
-        return blog;
-    }, [blog]);
 
-    const formatDate = (dateString: string | number | Date) => {
-        const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
-        return new Date(dateString).toLocaleDateString(undefined, options);
-    };
 
     if (!isMounted) {
         setIsMounted(true);
@@ -65,7 +62,8 @@ const BlogCard = () => {
 
     return (
         <div className="grid grid-cols-3 gap-4 mt-10 mb-10">
-            {blogData.map((item: {
+            {memoizedAllBlogData?.map((item: {
+                comments: any;
                 liked: any;
                 slug: any;
                 likes: any;
@@ -121,11 +119,15 @@ const BlogCard = () => {
                         {isFetching ? (
                             <Skeleton className="flex flex-row justify-between items-center w-full mt-2" />
                         ) : (
-                            <BlogCardActions blogId={item?.id} likes={item?.likes} likedBy={
-                                item?.liked?.map(
-                                    (item: { userId: any; }) => item.userId
-                                )
-                            } />
+                            <BlogCardActions
+                                blogId={item?.id}
+                                likes={item?.likes}
+                                likedBy={
+                                    item?.liked?.map((like:any) => like?.userId) || []
+                                }
+                                comment={item?.comments?.length || 0} 
+                                slug={item?.slug}
+                            />
                         )}
                     </CardFooter>
                 </Card>

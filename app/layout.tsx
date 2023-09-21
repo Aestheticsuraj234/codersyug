@@ -4,6 +4,7 @@ import { Open_Sans } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from "@/components/ui/toaster"
+import { AppProvider } from '@/context/GlobalContext'
 
 const fonts = Open_Sans({ subsets: ['latin'] })
 
@@ -18,19 +19,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={fonts.className}>
-        <ThemeProvider 
-            attribute="class" 
-            defaultTheme="system" 
-            enableSystem
-          >
-            {children}
-            <Toaster />
-          </ThemeProvider>
+    <AppProvider>
+      <ClerkProvider>
+        <html lang="en">
+          <body className={fonts.className}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
           </body>
-      </html>
-    </ClerkProvider>
+        </html>
+      </ClerkProvider>
+    </AppProvider>
   )
 }
