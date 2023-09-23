@@ -1,13 +1,9 @@
 "use client"
-import React, { useState, useContext, useEffect, experimental_useOptimistic as useOptimistic, use } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
     Heart,
     MessageCircle,
-    Bookmark,
-    Share2,
-    MoreVertical,
     Loader2,
-    BookMarked,
     BookmarkIcon,
     BookmarkPlus
 } from 'lucide-react';

@@ -11,7 +11,7 @@ interface SidebarLinkProps {
 
 const SidebarLink = ({ Icon, route, label }: SidebarLinkProps) => {
     return (
-        <Link href={route} className='leftsidebar__link  flex-col items-center justify-center space-y-6 hover:bg-zinc-100 px-4 py-2  rounded-md'>
+        <Link href={route} className='leftsidebar__link  flex-col items-center justify-center space-y-6 dark:hover:text-zinc-800 hover:bg-zinc-100 px-4 py-2  rounded-md'>
             <div className="flex items-center">
                 <Icon size={24} /> {/* Adjust the size as needed */}
                 <span className="ml-2">{label}</span>

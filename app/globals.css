@@ -82,7 +82,7 @@ body::selection{
 
 
 .leftsidebar {
-  @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r  dark:bg-black  bg-white pb-5 pt-28 max-md:hidden;
+  @apply sticky left-0 top-0 z-20 flex h-screen w-80  flex-col justify-between overflow-auto border-r  dark:bg-black  bg-white pb-5 pt-28 max-md:hidden;
 }
 .leftsidebar_blog{
   @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r  dark:bg-black  bg-zinc-100 pb-5 pt-28 max-md:hidden;

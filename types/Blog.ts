@@ -1,4 +1,5 @@
 export  interface BlogContentInterFace {
+    liked: any
     author: {
       id: number | string,
       name: string,
@@ -19,6 +20,7 @@ export  interface BlogContentInterFace {
     thumbnail: string,
     id: number | string,
     comments: {
+      length: number
       id: number | string,
       blogId: number | string,
       text: string,

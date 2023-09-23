@@ -1,3 +1,4 @@
+"use client";
 import React, { useContext, useEffect, useState } from "react";
 import {
   Tooltip,
@@ -5,17 +6,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { BookmarkIcon, Heart, MessageCircle, Loader2, BookMarked } from "lucide-react";
+import { BookmarkIcon, Heart, MessageCircle, Loader2, BookMarked, BookmarkPlus } from "lucide-react";
 import axios from "axios";
 import { currentProfile } from "@/lib/current-profile";
 import { toast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { AppContext } from "@/context/GlobalContext";
-import { set } from "zod";
+
 interface IdsProps {
   blogId: null | undefined | string | number;
   likes: number;
-  likedBy: number[]; // Change the type of likedBy to be an array of numbers
+  likedBy: number[];
   comment: number;
   slug: string;
 }
@@ -23,16 +24,16 @@ interface IdsProps {
 const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) => {
   const router = useRouter();
   const { blog } = useContext(AppContext);
-  const { memoizedAllBlogData,
-    setAllBlogData, } = blog;
+  const { memoizedBlogData } = blog; // Ensure that you're using the correct variable
 
   const [like, setLikes] = useState(likes);
   const [comments, setComments] = useState(comment);
-  console.log(comments, "comments");
   const [isLiking, setIsLiking] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -46,7 +47,10 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
     fetchProfile();
   }, []);
 
-  // Determine if the current user's userId is in the likedBy array
+  useEffect(() => {
+    getSaved(blogId);
+  }, [blogId]);
+
   useEffect(() => {
     if (likedBy.includes(profile?.userId)) {
       setIsLiked(true);
@@ -83,28 +87,41 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
     }
   };
 
-
+  const getSaved = async (blogId: any) => {
+    try {
+      const res = await axios.get(`http://localhost:3000/api/blog/saved/${blogId}`);
+      if (res.status === 200) {
+        setSaved(res.data.isSaved);
+      } else {
+        console.error("Failed to fetch saved status");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSaveClick = async () => {
     try {
-      // If it's not saved, save it
+      setIsSaving(true);
+
       const res = await axios.put("http://localhost:3000/api/blog", {
         blogId: blogId,
       });
-      console.log(res.data, "res");
+
       if (res.status === 200) {
         setSaved(true);
         toast({
           title: "Success",
           description: "Blog Saved Successfully",
         });
-      }
-      else if (res.status === 201) {
+        setIsSaving(false);
+      } else if (res.status === 201) {
         setSaved(false);
         toast({
           title: "Success",
           description: "Blog Unsaved Successfully",
         });
+        setIsSaving(false);
       }
     } catch (error) {
       console.error(error);
@@ -112,9 +129,9 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
         title: "Error",
         description: "Blog Not Saved Successfully",
       });
+      setIsSaving(false);
     }
   };
-
 
   const handleCommentsClick = () => {
     router.push(`/blogs/${slug}`);
@@ -152,13 +169,20 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
       icon: (
         <TooltipTrigger onClick={handleSaveClick}>
           <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
-            {
+            {isSaving ? (
+              <Loader2 size={30} className="text-green-500 animate-spin" />
+            ) : (
               saved ? (
-                <BookMarked className="text-green-500" />
+                <BookmarkPlus
+                  size={30}
+
+                  className="text-green-500 " />
               ) : (
-                <BookmarkIcon className="hover:text-yellow-400" />
+                <BookmarkIcon
+                  size={30}
+                  className="hover:text-yellow-400" />
               )
-            }
+            )}
           </div>
         </TooltipTrigger>
       ),

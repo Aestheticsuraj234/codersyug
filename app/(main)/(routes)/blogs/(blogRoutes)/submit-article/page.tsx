@@ -212,7 +212,7 @@ const SubmitArticle = () => {
     if (!isMounted) setIsMounted(true);
 
     return (
-        <div className='mt-20 flex flex-col items-start justify-start mx-10 w-full'>
+        <div className='mt-20 flex flex-col items-center justify-center mx-10 '>
             <h1 className='text-3xl font-extrabold bg-gradient-to-r from-gray-700 text-center mb-2 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 bg-clip-text text-transparent'>Publish Your Own Blog</h1>
             <div className='flex flex-col  space-y-4 w-full mt-10'>
                 <Form {...form}>
