@@ -4,7 +4,7 @@ import { BiLogoReact, BiWorld } from "react-icons/bi"
 import { BsCodeSlash } from 'react-icons/bs'
 import { SiAppwrite } from "react-icons/si"
 import { GrArticle } from 'react-icons/gr'
-import { Bot ,BookCopy} from 'lucide-react'
+import { Bot ,BookCopy, Workflow} from 'lucide-react'
 
 
 
@@ -44,13 +44,13 @@ const MoreFeature = () => {
             "id": 6,
             "title": "Content Series",
             "description": "Series is a great way to organize your content. It helps you easily group a series of Content related to a single topic.",
-            "icon": (<GrArticle size={35} className='text-green-500' />)
+            "icon": (<Workflow  size={35} className='text-green-500' />)
         },
         {
             "id": 7,
             "title": "Open Source",
             "description": "codersYug embraces the open-source ethos. Join the community, contribute to open-source projects, and collaborate with fellow developers to foster innovation and knowledge sharing.",
-            "icon": (<AiFillGithub size={35} className='text-black' />)
+            "icon": (<AiFillGithub size={35} className='text-black dark:text-white' />)
         },
     ]
     return (

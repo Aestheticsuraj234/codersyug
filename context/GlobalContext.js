@@ -41,7 +41,7 @@ export const AppProvider = ({ children }) => {
   const memoizedAllBlogData = useMemo(() => AllBlogData, [AllBlogData]);
   const memoizedBlogData = useMemo(() => blogData, [blogData, isLoading]);
   const [like, setLikes] = useState(memoizedBlogData ? memoizedBlogData.likes : null);
-
+ 
   /**
    * An object containing blog-related context values.
    * @type {BlogSubContextValue}

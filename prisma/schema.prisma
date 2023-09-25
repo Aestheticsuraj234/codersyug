@@ -10,41 +10,57 @@ datasource db {
 }
 
 model Profile {
-  id         Int       @id @default(autoincrement())
-  userId     String    @unique
+  id         Int           @id @default(autoincrement())
+  userId     String        @unique
   name       String
-  email      String    @unique
+  email      String        @unique
   imageUrl   String?
   blogs      Blog[] // This creates a one-to-many relationship with Blog
-  savedBlogs Blog[]    @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
+  savedBlogs Blog[]        @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
   comments   Comment[] // This creates a one-to-many relationship with Comment
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
   likesOn    Likes[] // This creates a one-to-many relationship with Likes
+  visited    VisitedBlog[] // This creates a one-to-many relationship with VisitedBlog
 }
 
 model Blog {
-  id          Int       @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   title       String
-  slug        String    @unique
-  description String?   @db.LongText
-  thumbnail   String?   @db.LongText
-  likes       Int?      @default(0)
-  Comments    Int?      @default(0)
-  content     String?   @db.LongText
+  slug        String        @unique
+  description String?       @db.LongText
+  thumbnail   String?       @db.LongText
+  likes       Int?          @default(0)
+  Comments    Int?          @default(0)
+  content     String?       @db.LongText
   readTime    Int? // Estimated time in minutes to read the blog
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   category    String?
   subCategory String?
   authorId    Int
-  author      Profile   @relation(fields: [authorId], references: [id])
-  savedBy     Profile[] @relation("SavedBlogs")
+  author      Profile       @relation(fields: [authorId], references: [id])
+  savedBy     Profile[]     @relation("SavedBlogs")
   comments    Comment[] // One-to-many relationship with comments
   // One-to-many relationship with likes
   liked       Likes[]
+  VisitedBy   VisitedBlog[] // One-to-many relationship with VisitedBlog
 
   @@index([authorId])
+}
+
+model VisitedBlog {
+  id        Int      @id @default(autoincrement())
+  visitorId Int
+  visitor   Profile  @relation(fields: [visitorId], references: [id])
+  blogId    Int
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([visitorId, blogId])
+  @@index([visitorId, blogId])
+  @@index([blogId])
 }
 
 model Comment {
@@ -58,7 +74,6 @@ model Comment {
   updatedAt   DateTime @updatedAt
 
   @@index([commenterId])
-  
   @@index([blogId])
 }
 

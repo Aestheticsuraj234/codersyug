@@ -96,7 +96,7 @@ export const GET = async () => {
 
         const blogs = await db.blog.findMany({
             orderBy: {
-                createdAt: "asc",
+                createdAt: "desc",
 
             },
             include: {
@@ -109,6 +109,7 @@ export const GET = async () => {
                 }
             }
         })
+        console.log(blogs);
         return NextResponse.json(blogs, {
             status: 200,
         })
