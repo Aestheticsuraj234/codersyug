@@ -1,12 +1,8 @@
-"use client"
-import { useParams } from "next/navigation";
-import BlogCard from "./blog-card";
 
+import BlogCard from "./blog-card";
 
 const BlogMainContainer = () => {
 
-    const params = useParams();
-    console.log(params);
 
 
     return (
@@ -23,7 +19,7 @@ const BlogMainContainer = () => {
             ">
                 {/* Blog Card */}
                 <BlogCard />
-         
+
             </div>
         </div>
     )

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { generateSlug } from "@/lib/generate-slug";
+import { slugify } from '@/lib/utils';
 import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
 import { X } from 'lucide-react';
@@ -137,7 +137,7 @@ const SubmitArticle = () => {
 
             const response = await axios.post('http://localhost:3000/api/blog', {
                 title: values.title,
-                slug: generateSlug(values.title),
+                slug: slugify(values.title),
                 description: values.description,
                 thumbnail: values.thumbnail,
                 category: values.category,
@@ -153,14 +153,14 @@ const SubmitArticle = () => {
                     title: "Article Submitted Successfully",
                     description: "Your article has been submitted successfully.",
                 });
-                // form.reset();
+                form.reset();
             } else {
                 console.log('Request failed:', response.status, response.statusText);
                 toast({
                     title: "Uh oh! Something went wrong.",
                     description: "There was a problem with your request.",
                 });
-                // form.reset();
+                form.reset();
             }
         } catch (error) {
             console.error("Error:", error);
@@ -170,7 +170,7 @@ const SubmitArticle = () => {
             });
         } finally {
             setIsSubmitted(false);
-            // form.reset();
+            form.reset();
         }
     }
 
@@ -239,7 +239,7 @@ const SubmitArticle = () => {
                         <FormItem>
                             <FormLabel>Slug</FormLabel>
                             <FormControl>
-                                <Input value={generateSlug(form.getValues().title || '')} readOnly />
+                                <Input value={slugify(form.getValues().title || '')} readOnly />
                             </FormControl>
                             <FormDescription>
                                 The slug will be auto-generated based on the title.

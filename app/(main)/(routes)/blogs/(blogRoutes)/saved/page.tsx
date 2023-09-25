@@ -18,7 +18,7 @@ import BlogCardActions from "@/components/Blogs/blog-card-actions";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
-import Empty from '@/components/empty';
+
 
 const SavedBlogs = () => {
   const [savedBlogs, setSavedBlogs] = useState<any>([])

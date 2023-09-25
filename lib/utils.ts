@@ -21,3 +21,25 @@ export const formatDate = (dateString: string | number | Date) => {
   };
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
+
+export const generateSlug = (title: string) => {
+
+  const trimmedTitle = title.trim().toLowerCase();
+  const slug = trimmedTitle.replace(/\s+/g, '-');
+
+  return slug;
+
+}
+
+
+export const slugify = (...args: (string | number)[]): string => {
+  const value = args.join(' ')
+
+  return value
+      .normalize('NFD') // split an accented letter in the base letter and the acent
+      .replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 ]/g, '') // remove all chars not letters, numbers and spaces (to be replaced)
+      .replace(/\s+/g, '-') // separator
+}
