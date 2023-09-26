@@ -25,7 +25,7 @@ export function MainNav({
       active: pathname === `/blogs`,
     },
     {
-      href: `/Resources`,
+      href: `/resources`,
       label: 'Resources',
       active: pathname === `/Resources`,
     },

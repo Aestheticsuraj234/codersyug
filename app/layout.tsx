@@ -5,6 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from "@/components/ui/toaster"
 import { AppProvider } from '@/context/GlobalContext'
+import { cn } from '@/lib/utils'
 import QueryProvider from '@/components/providers/query-provider'
 const fonts = Open_Sans({ subsets: ['latin'] })
 
@@ -23,6 +24,7 @@ export default function RootLayout({
       <ClerkProvider>
       <QueryProvider>
         <html lang="en">
+          
           <body className={fonts.className}>
 
             <ThemeProvider

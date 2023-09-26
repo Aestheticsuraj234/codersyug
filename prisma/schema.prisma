@@ -1,11 +1,13 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
+
 model Profile {
   id         Int           @id @default(autoincrement())
   userId     String        @unique
@@ -19,6 +21,7 @@ model Profile {
   updatedAt  DateTime      @updatedAt
   likesOn    Likes[] // This creates a one-to-many relationship with Likes
   visited    VisitedBlog[] // This creates a one-to-many relationship with VisitedBlog
+  resources  Resources[] // This creates a one-to-many relationship with Resources
 }
 
 model Blog {
@@ -86,4 +89,22 @@ model Likes {
   @@unique([userId, blogId])
   @@index([userId, blogId])
   @@index([blogId])
+}
+
+model Resources {
+  id           Int      @id @default(autoincrement())
+  Title        String
+  Slug         String   @unique
+  Description  String?  @db.LongText
+  Thumbnail    String?  @db.LongText
+  DownloadLink String?  @db.LongText
+  Views        Int?     @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  category     String?
+  subCategory  String?
+  authorId     Int
+  author       Profile  @relation(fields: [authorId], references: [id])
+
+  @@index([authorId])
 }
