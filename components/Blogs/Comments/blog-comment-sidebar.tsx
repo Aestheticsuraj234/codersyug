@@ -116,7 +116,7 @@ const BlogCommentSidebar = () => {
                             <div className='flex flex-row justify-between items-center w-full'>
                                 <Link href={"/code-of-code"}>
                                     <p
-                                        className=' inline-flex gap-3 justify-center items-center hover:underline text-zinc-700 dark:text-zinc-100 font-semibold text-xs   hover:text-zinc-600 dark:hover:text-zinc-200     cursor-pointer
+                                        className='inline-flex gap-3 justify-center items-center hover:underline text-zinc-700 dark:text-zinc-100 font-semibold text-xs   hover:text-zinc-600 dark:hover:text-zinc-200     cursor-pointer
                 '>
                                         <Link2Icon />
                                         Code Of Conduct

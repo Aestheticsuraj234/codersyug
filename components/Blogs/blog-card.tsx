@@ -23,7 +23,7 @@ const BlogCard = () => {
     const { blog } = useContext(AppContext);
     const { memoizedAllBlogData,
         setAllBlogData, } = blog;
-        console.log(memoizedAllBlogData,"memoizedAllBlogData");
+    console.log(memoizedAllBlogData, "memoizedAllBlogData");
     const [isFetching, setIsFetching] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const router = useRouter();
@@ -52,16 +52,12 @@ const BlogCard = () => {
         fetchData(); // Fetch data on component mount
     }, []);
 
-
-
-
-
     if (!isMounted) {
         setIsMounted(true);
     }
 
     return (
-        <div className="grid grid-cols-3 gap-4 mt-10 mb-10">
+        <div className="grid xl:grid-cols-3  md:grid-cols-2 grid-cols-1 md:gap-4 gap-y-3 mt-10 mb-10">
             {memoizedAllBlogData?.map((item: {
                 comments: any;
                 liked: any;
@@ -73,7 +69,7 @@ const BlogCard = () => {
             }) => (
                 <Card
                     key={item.id}
-                    className="h-auto w-72 border shadow-md rounded-lg flex flex-col justify-between items-start"
+                    className="h-auto md:w-72  w-auto border shadow-md rounded-lg flex flex-col justify-between items-start"
                 >
                     <CardHeader>
                         <Avatar>
@@ -123,9 +119,9 @@ const BlogCard = () => {
                                 blogId={item?.id}
                                 likes={item?.likes}
                                 likedBy={
-                                    item?.liked?.map((like:any) => like?.userId) || []
+                                    item?.liked?.map((like: any) => like?.userId) || []
                                 }
-                                comment={item?.comments?.length || 0} 
+                                comment={item?.comments?.length || 0}
                                 slug={item?.slug}
                             />
                         )}

@@ -14,7 +14,7 @@ export const POST = async (req: Request) => {
             subCategory,
             content,
         } = await req.json();
-        console.log(title, description, thumbnail, category, subCategory, content);
+      
         const profile = await currentProfile();
         if (!profile) {
             return new NextResponse(
@@ -68,7 +68,7 @@ export const POST = async (req: Request) => {
         });
 
     } catch (error) {
-        console.log(error);
+       
         return new NextResponse(
             JSON.stringify({ message: "error" }),
             {
@@ -109,13 +109,13 @@ export const GET = async () => {
                 }
             }
         })
-        console.log(blogs);
+
         return NextResponse.json(blogs, {
             status: 200,
         })
 
     } catch (error) {
-        console.log(error);
+        
         return new NextResponse(
             JSON.stringify({ message: "error" }),
             {

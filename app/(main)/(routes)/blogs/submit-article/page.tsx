@@ -26,6 +26,7 @@ import 'react-quill/dist/quill.snow.css';
 
 import dynamic from 'next/dynamic';
 import { Loader2Icon } from 'lucide-react';
+import BlogBottomBar from '@/components/mobile-blog-bottombar';
 
 
 const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
@@ -216,7 +217,7 @@ const SubmitArticle = () => {
             <h1 className='text-3xl font-extrabold bg-gradient-to-r from-gray-700 text-center mb-2 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 bg-clip-text text-transparent'>Publish Your Own Blog</h1>
             <div className='flex flex-col  space-y-4 w-full mt-10'>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 mb-10">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="md:w-2/3 w-full  space-y-6 mb-10">
                         {/* Title */}
                         <FormField
                             control={form.control}
@@ -270,7 +271,7 @@ const SubmitArticle = () => {
                             control={form.control}
                             name='thumbnail'
                             render={({ field }) => (
-                                <FormItem className='flex items-start justify-start gap-4  flex-col'>
+                                <FormItem className='flex items-center justify-center gap-4  flex-col'>
                                     <FormLabel className='relative'>
                                         {field.value ? (
                                             <>
@@ -387,6 +388,9 @@ const SubmitArticle = () => {
                         </Button>
                     </form>
                 </Form>
+            </div>
+            <div className="md:hidden items-center justify-center flex text-center mx-4 ">
+            <BlogBottomBar />
             </div>
         </div>
     )

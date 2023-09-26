@@ -9,7 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import { formatDate } from '@/lib/utils';
 import { AppContext } from '@/context/GlobalContext';
-
+import Image from 'next/image';
+import DOMPurify from 'dompurify'
 const BlogMainContent = () => {
   const { blog } = useContext(AppContext);
   const { isLoading, setIsLoading, setBlogData, memoizedBlogData, blogData } = blog;
@@ -23,7 +24,7 @@ const BlogMainContent = () => {
         const data = await res.data;
         setBlogData(data);
         setIsLoading(false);
-        console.log(data);
+       
       } catch (error) {
         console.error('Error fetching blog data:', error);
         setIsLoading(false);
@@ -34,10 +35,12 @@ const BlogMainContent = () => {
   }, [slug, setIsLoading, setBlogData]);
 
 
-
+  const sanitizedData = () => ({
+    __html: DOMPurify.sanitize(memoizedBlogData?.content)
+  })
   return (
     <div className="flex flex-row justify-center items-center">
-      <div className="mt-20 mx-4 flex-1 w-full justify-center items-center">
+      <div className="mt-20 mx-4 flex-1 md:w-full  w-auto justify-center items-center">
         <h1 className="font-bold text-start text-xl text-zinc-800 dark:text-zinc-100 mb-10">
           {isLoading ? (
             <Skeleton style={{ width: '80%', height: '1rem' }} />
@@ -46,20 +49,22 @@ const BlogMainContent = () => {
           )}
         </h1>
 
-        <div className="flex-1 h-[20rem] w-full">
+        <div className="relative w-[100%] max-w-3xl  aspect-[70/45] mt-[2rem] m-auto ">
           {isLoading ? (
             <Skeleton style={{ width: '100%', height: '20rem' }} />
           ) : (
-            <img
-              src={memoizedBlogData?.thumbnail as string}
+            <Image
+              src={memoizedBlogData?.thumbnail}
               alt="Thumbnail of the blog"
               className="w-full h-full object-contain rounded-xl"
+              fill
+              sizes=' (max-width: 768px) 100vw ,700px'
             />
           )}
         </div>
 
-        <div className="flex flex-row justify-between items-center w-full h-23 mt-10">
-          <div className="flex flex-row justify-center items-center gap-2">
+        <div className="flex md:flex-row flex-col justify-between items-center w-full h-23 mt-10">
+          <div className="flex md:flex-row flex-col justify-center items-center gap-2">
             <Avatar>
               {isLoading ? (
                 <Skeleton style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%' }} />
@@ -87,7 +92,7 @@ const BlogMainContent = () => {
         </div>
 
         <div className="flex flex-row justify-start items-start mt-10">
-          <div className="flex flex-col justify-start items-start px-10 py-10 mx-4 w-full h-full rounded-xl bg-zinc-100 dark:bg-gray-800 mb-10">
+          <div className=" md:px-10  px-2 md:py-10 py-2 mx-4 w-full h-full rounded-xl  mb-10">
             {isLoading ? (
               <>
                 <Skeleton style={{ width: '100%', height: '1rem' }} />
@@ -96,7 +101,9 @@ const BlogMainContent = () => {
                 {/* Add more skeleton lines for paragraphs */}
               </>
             ) : (
-              memoizedBlogData?.content && HTMLReactParser(memoizedBlogData?.content as string)
+              <div
+              dangerouslySetInnerHTML={sanitizedData()}
+              />
             )}
           </div>
         </div>

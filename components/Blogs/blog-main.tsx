@@ -1,5 +1,6 @@
 
 import BlogCard from "./blog-card";
+import BlogBottomBar from "@/components/mobile-blog-bottombar";
 
 const BlogMainContainer = () => {
 
@@ -19,6 +20,7 @@ const BlogMainContainer = () => {
             ">
                 {/* Blog Card */}
                 <BlogCard />
+              
 
             </div>
         </div>

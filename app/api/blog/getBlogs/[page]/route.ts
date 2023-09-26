@@ -40,7 +40,7 @@ export const GET = async (req: Request, {
         });
 
     } catch (error) {
-        console.error(error);
+      
         return new NextResponse(
             JSON.stringify({ message: "Error fetching blogs" }),
             {

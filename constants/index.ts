@@ -20,11 +20,7 @@ export const sidebarLinks = [
         route: "/blogs/most-liked",
         label: "Most Liked",
     },
-    {
-        Icon: Newspaper,
-        route: "/blogs/best-discussions",
-        label: "Best Discussions",
-    },
+ 
     {
         Icon: Plus,
         route: "/blogs/submit-article",

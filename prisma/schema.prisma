@@ -1,14 +1,11 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  // Add this
+  provider = "mysql"
+  url = env("DATABASE_URL")
   relationMode = "prisma"
 }
-
 model Profile {
   id         Int           @id @default(autoincrement())
   userId     String        @unique

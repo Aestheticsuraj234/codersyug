@@ -49,11 +49,11 @@ const MostLikedBlogs = () => {
                 </h1>
                 <div className=" flex flex-row  justify-around items-center
         ">
-                    <div className="grid grid-cols-3 gap-4 mt-10 mb-10">
+                    <div className="grid xl:grid-cols-3  md:grid-cols-2 grid-cols-1 md:gap-4 gap-y-3 mt-10 mb-10">
                         {mostLikedBlogs?.map((item: BlogContentInterFace) => (
                             <Card
                                 key={item.id}
-                                className="h-auto w-72 border shadow-md rounded-lg flex flex-col justify-between items-start"
+                                className="h-auto md:w-72  w-auto border shadow-md rounded-lg flex flex-col justify-between items-start"
                             >
                                 <CardHeader>
                                     <Avatar>
