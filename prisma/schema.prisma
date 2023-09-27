@@ -92,19 +92,27 @@ model Likes {
 }
 
 model Resources {
-  id           Int      @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
+  type         ResourceType? @default(EBOOK)
   Title        String
-  Slug         String   @unique
-  Description  String?  @db.LongText
-  Thumbnail    String?  @db.LongText
-  DownloadLink String?  @db.LongText
-  Views        Int?     @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  Slug         String       @unique
+  Description  String?      @db.LongText
+  Thumbnail    String?      @db.LongText
+  DownloadLink String?      @db.LongText
+  Views        Int?         @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   category     String?
   subCategory  String?
   authorId     Int
-  author       Profile  @relation(fields: [authorId], references: [id])
+  author       Profile      @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
+}
+
+enum ResourceType {
+  EBOOK
+  NOTES
+  VIDEO
+  CHEATSHEETS
 }

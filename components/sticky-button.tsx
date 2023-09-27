@@ -7,39 +7,45 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { Button } from "./ui/button";
 import { Code, FileCode2, Pen, ScrollText, Youtube, } from "lucide-react";
 import Link from "next/link";
 
-const MenuItems = [
-    {
-        id: 1,
-        name: "E-book",
-        icon: <FileCode2 className="dark:text-zinc-100 text-zinc-800 " />,
-        routeLink: "/resources/ebook"
-    },
-    {
-        id: 2,
-        name: "Notes",
-        icon: <ScrollText className="dark:text-zinc-100 text-zinc-800 " />,
-        routeLink: "/resources/notes"
-    },
-    {
-        id: 3,
-        name: "Cheatsheets",
-        icon: <Code className="dark:text-zinc-100 text-zinc-800 " />,
-        routeLink: "/resources/cheatsheets"
-    },
-    {
-        id: 4,
-        name: "Videos",
-        icon: <Youtube className="dark:text-zinc-100 text-zinc-800 " />,
-        routeLink: "/resources/videos"
-    },
-]
+
 
 const StickyButton = () => {
+   
+
+    const MenuItems = [
+        {
+            id: 1,
+            name: "E-book",
+            icon: <FileCode2 className="dark:text-zinc-100 text-zinc-800 " />,
+            routerLink: "/resources/create/ebook",
+
+        },
+        {
+            id: 2,
+            name: "Notes",
+            icon: <ScrollText className="dark:text-zinc-100 text-zinc-800 " />,
+            routerLink: "/resources/create/Notes",
+
+        },
+        {
+            id: 3,
+            name: "Cheatsheets",
+            icon: <Code className="dark:text-zinc-100 text-zinc-800 " />,
+            routerLink: "/resources/create/CheatSheet",
+
+        },
+        {
+            id: 4,
+            name: "Videos",
+            icon: <Youtube className="dark:text-zinc-100 text-zinc-800 " />,
+            routerLink: "/resources/create/Videos",
+
+        },
+    ]
     return (
         <div className="fixed bottom-12 right-5 z-50 ">
             <DropdownMenu>
@@ -59,14 +65,15 @@ const StickyButton = () => {
                     <DropdownMenuSeparator />
                     {
                         MenuItems.map((item) => (
-                            <Link href={item.routeLink} key={item.id}>
-                                <DropdownMenuItem  >
+                            <Link href={item.routerLink}>
+                                <DropdownMenuItem key={item.id}  >
                                     <div className="flex items-center gap-2">
                                         {item.icon}
                                         <span>{item.name}</span>
                                     </div>
                                 </DropdownMenuItem>
                             </Link>
+
                         ))
                     }
 

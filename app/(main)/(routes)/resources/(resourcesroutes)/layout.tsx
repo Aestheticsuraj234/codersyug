@@ -1,3 +1,5 @@
+import { ModalProvider } from "@/components/providers/modal-provider";
+
 
 
 
@@ -7,10 +9,11 @@ const ResourcesLayout = ({ children }: {
 
     return (
         <>
-        <div className='min-h-screen dark:bg-black-100 font-poppins '>
+
             {children}
-        </div>
-            </>
+            <ModalProvider />
+
+        </>
     )
 }
 

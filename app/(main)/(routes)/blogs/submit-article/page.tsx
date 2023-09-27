@@ -204,10 +204,6 @@ const SubmitArticle = () => {
         fieldChange: (value: string) => void) => {
         setEditorState(value);
         fieldChange(value);
-
-
-
-
     };
 
     if (!isMounted) setIsMounted(true);

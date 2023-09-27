@@ -1,7 +1,7 @@
 "use client"
 import React, { createContext, useState, ReactNode, Dispatch, SetStateAction, useMemo } from 'react';
 import { BlogContentInterface } from '@/types';
-
+import { ResourceType } from '@prisma/client';
 /**
  * The type for the context values.
  * @typedef {Object} BlogSubContextValue
@@ -18,8 +18,20 @@ import { BlogContentInterface } from '@/types';
  */
 
 /**
+ * @typedef {Object} ModalSubContextValue
+ * @property {ResourceType} modals - Type of modal to show.
+ * @property {Dispatch<SetStateAction<ResourceType>>} setModal - Function to update modal type.
+ * @property {boolean} isOpen - Indicates if modal is open.
+ * @property {Dispatch<SetStateAction<boolean>>} setIsOpen - Function to update isOpen state.
+ * @property {function} openModal - Function to open a modal.
+ * @property {function} closeModal - Function to close a modal.
+ * 
+ */
+/**
  * @typedef {Object} AppContextValue - Main context for the app.
  * @property {BlogSubContextValue} blog - Blog subcontext.
+ * @property {ModalSubContextValue} modal - Modal subcontext.
+ 
  */
 
 /**
@@ -41,7 +53,7 @@ export const AppProvider = ({ children }) => {
   const memoizedAllBlogData = useMemo(() => AllBlogData, [AllBlogData]);
   const memoizedBlogData = useMemo(() => blogData, [blogData, isLoading]);
   const [like, setLikes] = useState(memoizedBlogData ? memoizedBlogData.likes : null);
- 
+
   /**
    * An object containing blog-related context values.
    * @type {BlogSubContextValue}
@@ -59,9 +71,45 @@ export const AppProvider = ({ children }) => {
     memoizedAllBlogData
   };
 
+
+  /**
+   * 
+   * it's designed to work with the useModal hook to open and close the modal. Here's a breakdown of the code:
+   * @type {ModalSubContextValue}
+   */
+
+
+
+
+  const [modals, setModals] = useState(ResourceType);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = (type) => {
+    setModals(type);
+    setIsOpen(true);
+    console.log("openModal", type);
+  };
+
+  const closeModal = () => {
+    setModals(null);
+    setIsOpen(false);
+  };
+
+
+
+
+  const modalContext = {
+    modals,
+    isOpen,
+    openModal,
+    closeModal,
+  };
+
+
   // Create the context value object
   const contextValue = {
     blog: blogContext,
+    modal: modalContext,
   };
 
   return (

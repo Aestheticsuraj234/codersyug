@@ -60,6 +60,7 @@ export const POST = async (req: Request) => {
                         id: profile?.id
                     }
                 }
+                
             }
         })
 
