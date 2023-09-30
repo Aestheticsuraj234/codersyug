@@ -14,14 +14,14 @@ model Profile {
   name       String
   email      String        @unique
   imageUrl   String?
-  blogs      Blog[] // This creates a one-to-many relationship with Blog
-  savedBlogs Blog[]        @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
-  comments   Comment[] // This creates a one-to-many relationship with Comment
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
-  likesOn    Likes[] // This creates a one-to-many relationship with Likes
-  visited    VisitedBlog[] // This creates a one-to-many relationship with VisitedBlog
-  resources  Resources[] // This creates a one-to-many relationship with Resources
+  blogs      Blog[]
+  savedBlogs Blog[]        @relation("SavedBlogs")
+  comments   Comment[]
+  likesOn    Likes[]
+  visited    VisitedBlog[]
+  resources  Resources[]
 }
 
 model Blog {
@@ -33,7 +33,7 @@ model Blog {
   likes       Int?          @default(0)
   Comments    Int?          @default(0)
   content     String?       @db.LongText
-  readTime    Int? // Estimated time in minutes to read the blog
+  readTime    Int?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   category    String?
@@ -41,10 +41,9 @@ model Blog {
   authorId    Int
   author      Profile       @relation(fields: [authorId], references: [id])
   savedBy     Profile[]     @relation("SavedBlogs")
-  comments    Comment[] // One-to-many relationship with comments
-  // One-to-many relationship with likes
+  comments    Comment[]
   liked       Likes[]
-  VisitedBy   VisitedBlog[] // One-to-many relationship with VisitedBlog
+  VisitedBy   VisitedBlog[]
 
   @@index([authorId])
 }
@@ -52,11 +51,11 @@ model Blog {
 model VisitedBlog {
   id        Int      @id @default(autoincrement())
   visitorId Int
-  visitor   Profile  @relation(fields: [visitorId], references: [id])
   blogId    Int
-  blog      Blog     @relation(fields: [blogId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  visitor   Profile  @relation(fields: [visitorId], references: [id])
+  blog      Blog     @relation(fields: [blogId], references: [id])
 
   @@unique([visitorId, blogId])
   @@index([visitorId, blogId])
@@ -67,11 +66,11 @@ model Comment {
   id          Int      @id @default(autoincrement())
   text        String
   commenterId Int
-  commenter   Profile  @relation(fields: [commenterId], references: [id])
   blogId      Int
-  blog        Blog     @relation(fields: [blogId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  commenter   Profile  @relation(fields: [commenterId], references: [id])
+  blog        Blog     @relation(fields: [blogId], references: [id])
 
   @@index([commenterId])
   @@index([blogId])
@@ -79,11 +78,11 @@ model Comment {
 
 model Likes {
   id        Int      @id @default(autoincrement())
-  liker     Profile  @relation(fields: [userId], references: [id])
   userId    Int
   blogId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  liker     Profile  @relation(fields: [userId], references: [id])
   Blog      Blog     @relation(fields: [blogId], references: [id])
 
   @@unique([userId, blogId])
@@ -108,6 +107,15 @@ model Resources {
   author       Profile       @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
+}
+
+model SavedBlogs {
+  A Int
+  B Int
+
+  @@unique([A, B], map: "_SavedBlogs_AB_unique")
+  @@index([B], map: "_SavedBlogs_B_index")
+  @@map("_SavedBlogs")
 }
 
 enum ResourceType {
@@ -146,7 +154,6 @@ enum Categories {
   CPlusPlus
   C
   WebDevelopment
-
   ProgrammingTips
   Git
   GitHub
