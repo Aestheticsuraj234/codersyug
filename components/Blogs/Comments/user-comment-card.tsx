@@ -48,7 +48,7 @@ const UserCommentCard = () => {
   }
   return (
     blogData?.comments.map((comment: any) => (
-      <Card className='w-full h-auto flex flex-col justify-start items-start mb-10'>
+      <Card key={comment.id} className='w-full h-auto flex flex-col justify-start items-start mb-10'>
         <div className='flex flex-row w-full justify-between items-center'>
           <div className='flex flex-row justify-center items-center'>
             <CardHeader>

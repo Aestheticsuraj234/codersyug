@@ -1,8 +1,8 @@
 "use client";
-import React, { use, useEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { formUrlQuery } from '@/lib/utils';
 
 const SearchForm = () => {

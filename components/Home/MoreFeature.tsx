@@ -58,10 +58,10 @@ const MoreFeature = () => {
     ]
 
     return (
-        <section className=' glassmorphism flex w-[100%]  flex-col p-4 mt-12 rounded-lg max-w-full '>
-            <h4 className='items-center justify-center uppercase flex text-center font-bold text-md  text-zinc-600 '>MAKE CODERS LIFE EASY!</h4>
-            <h1 className='items-center justify-center flex text-center mt-9 font-extrabold md:text-4xl text-3xl  bg-clip-text text-transparent bg-gradient-to-r from-gray-700 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400'>Features that make "CODERSYUG" </h1>
-            <h1 className='items-center justify-center flex text-center font-bold md:text-4xl text-3xl  bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 bg-clip-text text-transparent'>10x better</h1>
+        <section className="glassmorphism flex w-[100%]  flex-col p-4 mt-12 rounded-lg max-w-full ">
+            <h4 className="items-center justify-center uppercase flex text-center font-bold text-md  text-zinc-600 ">MAKE CODERS LIFE EASY!</h4>
+            <h1 className="items-center justify-center flex text-center mt-9 font-extrabold md:text-4xl text-3xl  bg-clip-text text-transparent bg-gradient-to-r from-gray-700 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400">Features that make CODERSYUG </h1>
+            <h1 className="items-center justify-center flex text-center font-bold md:text-4xl text-3xl  bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 bg-clip-text text-transparent">10x better</h1>
 
 
             <div className="grid md:grid-cols-2 gird-cols-1 gap-4 mt-12">

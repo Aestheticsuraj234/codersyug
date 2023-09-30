@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, useMemo, useContext } from "react";
+import React, { useEffect, useState,  useContext } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -49,7 +49,7 @@ const BlogCard = () => {
 
     useEffect(() => {
         fetchData(); // Fetch data on component mount
-    }, []);
+    });
 
     if (!isMounted) {
         setIsMounted(true);

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 
 import { cn } from "@/lib/utils";
-import Alert from "./alert-dialog";
+import Alert from "./alert";
 import { useParams, usePathname } from "next/navigation";
 
 export function MainNav({

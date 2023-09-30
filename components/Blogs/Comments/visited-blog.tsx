@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { X, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface VisitedCardProps {
     imageUrl: string;
@@ -26,7 +27,7 @@ const VisitedCard: React.FC<VisitedCardProps> = ({
 
             <div className="flex flex-row justify-center items-center gap-4">
                 <div className="relative rounded-lg">
-                    <img
+                    <Image
                         src={imageUrl}
                         alt={`Thumbnail for ${title}`}
                         className=" hidden md:flex md:object-cover w-24 h-16 rounded-md"

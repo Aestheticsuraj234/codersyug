@@ -2,7 +2,7 @@ import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export const GET = async (res: Response) => {
+export const GET = async () => {
   try {
     // Fetch the currently logged-in user's profile
     const profile = await currentProfile();
