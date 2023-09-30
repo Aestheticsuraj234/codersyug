@@ -1,8 +1,8 @@
 import ResourceCard from '@/components/Resources/resource-card';
 import ResourceHeader from '@/components/Resources/resource-header';
-import Filters from '@/components/filters';
-import SearchForm from '@/components/search-form';
-import StickyButton from '@/components/sticky-button';
+import Filters from '@/components/Resources/filters';
+import SearchForm from '@/components/Resources/search-form';
+import StickyButton from '@/components/Resources/sticky-button';
 import { getResources } from '@/server-action/action';
 
 import { Categories, ResourceType } from '@prisma/client';
@@ -18,7 +18,7 @@ const Page = async ({ searchParams }: Props) => {
   const category = mapCategoryNameToEnum(searchParams?.category || 'All'); // Provide an empty string as a default
   const query = searchParams?.query || "";
 
-  
+
 
   // Fetch resources based on the selected category and query
   const resources = await getResources({
@@ -26,7 +26,7 @@ const Page = async ({ searchParams }: Props) => {
     query,
     category,
     page: 1, // You can set the page and perPage values as needed
-    perPage: 20,
+    perPage: 10,
   });
 
   return (
@@ -40,38 +40,32 @@ const Page = async ({ searchParams }: Props) => {
         </section>
         <Filters />
         <StickyButton />
-
-      
-            <section className='flex-center mt-6 w-full flex-col sm:mt-20'>
-            <ResourceHeader 
+        <section className='flex-center mt-6 w-full flex-col sm:mt-20'>
+          <ResourceHeader
             query={searchParams?.query || ""}
             category={category}
-            
-            />
-  
-            <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
-              {resources && resources.length > 0 ? (
-                resources.map((resource: any) => (
-                  <ResourceCard
-                    key={resource.id}
-                    type={resource.type}
-                    title={resource.Title}
-                    id={resource.id}
-                    image={resource.Thumbnail}
-                    downloadNumber={resource.Views}
-                    slug={resource.Slug}
-                    downloadLink={resource.DownloadLink}
-                  />
-                ))
-              ) : (
-                <p className="body-regular text-white-400">
-                  No resources found
-                </p>
-              )}
-            </div>
-          </section>
-      
-      
+          />
+          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
+            {resources && resources.length > 0 ? (
+              resources.map((resource: any) => (
+                <ResourceCard
+                  key={resource.id}
+                  type={resource.type}
+                  title={resource.Title}
+                  id={resource.id}
+                  image={resource.Thumbnail}
+                  downloadNumber={resource.Views}
+                  slug={resource.Slug}
+                  downloadLink={resource.DownloadLink}
+                />
+              ))
+            ) : (
+              <p className="body-regular text-white-400">
+                No resources found
+              </p>
+            )}
+          </div>
+        </section>
       </main>
     </>
   );

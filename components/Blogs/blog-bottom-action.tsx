@@ -7,18 +7,21 @@ import {
     BookmarkIcon,
     BookmarkPlus
 } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import axios from 'axios';
 import {
     Sheet,
     SheetContent,
+    SheetDescription,
     SheetHeader,
+    SheetTitle,
     SheetTrigger,
-} from "@/components/ui/sheet";
-import { cn } from '@/lib/utils';
+  } from "@/components/ui/sheet"
+  import {cn} from "@/lib/utils"
+
+import BlogCommentSidebar from './Comments/blog-comment-sidebar';
+import { toast } from '@/components/ui/use-toast';
 import { AppContext } from '@/context/GlobalContext';
-import BlogCommentSidebar from './Blogs/Comments/blog-comment-sidebar';
-import { toast } from './ui/use-toast';
 
 
 
