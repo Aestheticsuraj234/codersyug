@@ -3,9 +3,6 @@ import BlogCard from "./blog-card";
 import BlogBottomBar from "@/components/mobile-blog-bottombar";
 
 const BlogMainContainer = () => {
-
-
-
     return (
         <div className="mt-20 mx-4  flex-1 w-full justify-center items-center">
             <h1 className="
@@ -20,8 +17,6 @@ const BlogMainContainer = () => {
             ">
                 {/* Blog Card */}
                 <BlogCard />
-              
-
             </div>
         </div>
     )

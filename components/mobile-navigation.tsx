@@ -6,20 +6,23 @@ import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils"
 import Image from "next/image";
 import { AtSign, Backpack, BrainCircuit, Code2, Home, ScrollText, ShieldCheck } from "lucide-react";
+import { Badge } from "@/components/ui/badge"
+
 
 export function MobileNavigation({
     className,
     ...props
 }: React.HTMLAttributes<HTMLElement>) {
     const pathname = usePathname();
-   
+
 
     const routes = [
         {
             href: `/`,
             label: 'Home',
-            icon: <Home  />,
+            icon: <Home />,
             active: pathname === `/`,
+            isInDevelopment: false,
         },
 
         {
@@ -27,31 +30,36 @@ export function MobileNavigation({
             label: 'Blogs',
             icon: <ScrollText />,
             active: pathname === `/blogs`,
+            isInDevelopment: false,
         },
         {
-            href: `/Resources`,
-            label: 'Resources',
-            icon: <Backpack  />,
-            active: pathname === `/Resources`,
+            href: `/resources`,
+            label: 'resources',
+            icon: <Backpack />,
+            active: pathname === `/resources`,
+            isInDevelopment: false,
         },
         {
-            href: `/MockTests`,
+            href: `/#`,
             label: 'Mock-Tests',
             icon: <ShieldCheck />,
 
-            active: pathname === `/MockTests`,
+            active: pathname === `/mock-tests`,
+            isInDevelopment: true,
         },
         {
-            href: `/MentorshipPrograms`,
+            href: `/#`,
             label: 'Mentorship',
-            icon: <AtSign  />,
-            active: pathname === `/MentorshipPrograms`,
+            icon: <AtSign />,
+            active: pathname === `/mentorship-programs`,
+            isInDevelopment: true,
         },
         {
-            href: `/CodersYugAI`,
+            href: `/#`,
             label: ' CodersYug\'s AI',
-            icon: <BrainCircuit  />,
-            active: pathname === `/CodersYugAI`,
+            icon: <BrainCircuit />,
+            active: pathname === `/codersYugAI`,
+            isInDevelopment: true,
         },
 
     ]
@@ -73,12 +81,18 @@ export function MobileNavigation({
                             key={route.href}
                             href={route.href}
                             className={cn(
-                                'text-lg flex items-center  justify-start gap-5 font-bold transition-colors hover:text-primary',
-                                route.active ? 'text-black dark:text-white' : 'text-muted-foreground'
+                                'text-base flex items-center  justify-start gap-5 font-semibold transition-colors hover:text-primary',
+                                route.active ? 'text-black dark:text-white text-bold' : 'text-muted-foreground'
                             )}
                         >
                             {route.icon}
                             {route.label}
+                            {
+                                route.isInDevelopment && (
+                                    <Badge variant="default">Soon!</Badge>
+
+                                )
+                            }
                         </Link>
                     ))}
                 </div>
