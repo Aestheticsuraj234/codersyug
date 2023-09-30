@@ -92,20 +92,20 @@ model Likes {
 }
 
 model Resources {
-  id           Int          @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   type         ResourceType? @default(EBOOK)
   Title        String
-  Slug         String       @unique
-  Description  String?      @db.LongText
-  Thumbnail    String?      @db.LongText
-  DownloadLink String?      @db.LongText
-  Views        Int?         @default(0)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  category     String?
+  Slug         String        @unique
+  Description  String?       @db.LongText
+  Thumbnail    String?       @db.LongText
+  DownloadLink String?       @db.LongText
+  Views        Int?          @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  category     Categories?
   subCategory  String?
   authorId     Int
-  author       Profile      @relation(fields: [authorId], references: [id])
+  author       Profile       @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
 }
@@ -115,4 +115,40 @@ enum ResourceType {
   NOTES
   VIDEO
   CHEATSHEETS
+}
+
+enum Categories {
+  Frontend
+  Backend
+  DevOps
+  Mobile
+  Design
+  React
+  Vue
+  DSA
+  Android
+  iOS
+  Flutter
+  Kotlin
+  CodingTips
+  JavaScript
+  TypeScript
+  Database
+  MachineLearning
+  Python
+  ArtificialIntelligence
+  Node
+  Go
+  Rust
+  Swift
+  Java
+  CSharp
+  CPlusPlus
+  C
+
+  WebDevelopment
+
+  ProgrammingTips
+  Git
+  GitHub
 }

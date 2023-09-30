@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,11 +10,13 @@ import {
 import { Button } from "./ui/button";
 import { Code, FileCode2, Pen, ScrollText, Youtube, } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge"
+
 
 
 
 const StickyButton = () => {
-   
+
 
     const MenuItems = [
         {
@@ -22,6 +24,8 @@ const StickyButton = () => {
             name: "E-book",
             icon: <FileCode2 className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/ebook",
+            isInDevelopment: false
+            
 
         },
         {
@@ -29,13 +33,16 @@ const StickyButton = () => {
             name: "Notes",
             icon: <ScrollText className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/Notes",
-
+            isInDevelopment: true
+            
         },
         {
             id: 3,
             name: "Cheatsheets",
             icon: <Code className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/CheatSheet",
+            isInDevelopment: true
+           
 
         },
         {
@@ -43,6 +50,8 @@ const StickyButton = () => {
             name: "Videos",
             icon: <Youtube className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/Videos",
+            isInDevelopment: true
+        
 
         },
     ]
@@ -65,11 +74,12 @@ const StickyButton = () => {
                     <DropdownMenuSeparator />
                     {
                         MenuItems.map((item) => (
-                            <Link href={item.routerLink}>
-                                <DropdownMenuItem key={item.id}  >
+                            <Link href={item.routerLink} key={item.id}>
+                                <DropdownMenuItem   >
                                     <div className="flex items-center gap-2">
                                         {item.icon}
                                         <span>{item.name}</span>
+                                        {item.isInDevelopment && <Badge variant="default">Coming Soon</Badge>}
                                     </div>
                                 </DropdownMenuItem>
                             </Link>

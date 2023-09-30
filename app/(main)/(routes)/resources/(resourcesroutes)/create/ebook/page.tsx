@@ -11,17 +11,30 @@ import {
     FormMessage,
     FormDescription
 } from "@/components/ui/form";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, UploadCloud, X } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
-import { AppContext } from "@/context/GlobalContext";
+
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+
 import { isBase64Image, slugify } from "@/lib/utils";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import { Categories } from "@prisma/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 
 const formSchema = z.object({
     Title: z.string().min(10, {
@@ -37,16 +50,20 @@ const formSchema = z.object({
     DownloadLink: z.string().url({
         message: "DownloadLink must be a valid URL.",
     }),
-    category: z.string().min(2, {
-        message: "Category must be at least 10 characters.",
-    }),
+    category: z.string().min(1, {
+        message: "Category must be selected.",
+    })
 });
 
+
+// wanted to convert Categories object to array 
+
+const categoriesArray = Object.values(Categories);
+
 const CreateEbook = () => {
-    const router = useRouter();
-    const { modal } = useContext(AppContext);
+
     const { startUpload } = useUploadThing("media");
-    const { isOpen, modals, closeModal } = modal;
+
     const [files, setFiles] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -143,6 +160,8 @@ const CreateEbook = () => {
         }
     };
 
+
+
     return (
         <div className="mt-20 flex flex-col items-center justify-center mx-10 mb-10">
             <h1 className="text-3xl font-extrabold bg-gradient-to-r from-gray-700 text-center mb-2 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">
@@ -180,6 +199,7 @@ const CreateEbook = () => {
                                 </FormControl>
 
                                 <Button
+
                                     onClick={() => {
                                         form.setValue("Slug", slugify(form.getValues().Title || ""));
                                     }}
@@ -280,12 +300,38 @@ const CreateEbook = () => {
                                 <FormItem>
                                     <FormLabel>Category</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Next-13" {...field} className="!ring-0 !ring-offset-0 " />
+                                        <Select onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <SelectTrigger className="w-[180px]">
+                                                <SelectValue placeholder="Select a Category" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <ScrollArea className="no-scrollbar h-44 w-auto">
+                                                    <SelectGroup>
+                                                        <SelectLabel>Categories</SelectLabel>
+                                                        {categoriesArray.map((category) => {
+                                                            return (
+                                                                <SelectItem
+                                                                    key={category}
+                                                                    {...field}
+                                                                    value={category.toString()}
+                                                                >
+                                                                    {category}
+                                                                </SelectItem>
+                                                            )
+                                                        })}
+                                                    </SelectGroup>
+                                                </ScrollArea>
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage>{form.formState.errors.category?.message}</FormMessage>
                                 </FormItem>
                             )}
                         />
+
+
 
                         {/* Other form fields go here */}
                         <Button type="submit" >{

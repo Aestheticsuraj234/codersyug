@@ -1,19 +1,34 @@
-"use client"
-import Filters from '@/components/filters'
-import SearchForm from '@/components/search-form'
-import React, { useEffect, useState } from 'react'
+import ResourceCard from '@/components/Resources/resource-card';
+import ResourceHeader from '@/components/Resources/resource-header';
+import Filters from '@/components/filters';
+import SearchForm from '@/components/search-form';
 import StickyButton from '@/components/sticky-button';
+import { getResources } from '@/server-action/action';
 
-const Page = () => {
+import { Categories, ResourceType } from '@prisma/client';
 
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
-  if (!isMounted) {
-    return null;
-  }
+
+interface Props {
+  searchParams: { [key: string]: string | undefined };
+}
+
+const Page = async ({ searchParams }: Props) => {
+  // Map the category name to the Categories enum using a function
+  const category = mapCategoryNameToEnum(searchParams?.category || 'All'); // Provide an empty string as a default
+  const query = searchParams?.query || "";
+
+  
+
+  // Fetch resources based on the selected category and query
+  const resources = await getResources({
+    type: ResourceType.EBOOK, // Specify the resource type
+    query,
+    category,
+    page: 1, // You can set the page and perPage values as needed
+    perPage: 20,
+  });
+
   return (
     <>
       <main className='flex-center paddings mx-auto w-full max-w-screen-2xl flex-col '>
@@ -22,16 +37,49 @@ const Page = () => {
             <h1 className='sm:heading1 heading2 mb-6 text-center text-white '>CodersYug Resources</h1>
           </div>
           <SearchForm />
-
         </section>
         <Filters />
         <StickyButton />
 
-
+      
+            <section className='flex-center mt-6 w-full flex-col sm:mt-20'>
+            <ResourceHeader 
+            query={searchParams?.query || ""}
+            category={category}
+            
+            />
+  
+            <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
+              {resources && resources.length > 0 ? (
+                resources.map((resource: any) => (
+                  <ResourceCard
+                    key={resource.id}
+                    type={resource.type}
+                    title={resource.Title}
+                    id={resource.id}
+                    image={resource.Thumbnail}
+                    downloadNumber={resource.Views}
+                    slug={resource.Slug}
+                    downloadLink={resource.DownloadLink}
+                  />
+                ))
+              ) : (
+                <p className="body-regular text-white-400">
+                  No resources found
+                </p>
+              )}
+            </div>
+          </section>
+      
+      
       </main>
     </>
-  )
+  );
+};
+
+export default Page;
+
+function mapCategoryNameToEnum(categoryName: string): Categories | "All" {
+  const categoryEnum = Categories[categoryName as keyof typeof Categories];
+  return categoryEnum !== undefined ? categoryEnum : "All"; // Provide a default category name here
 }
-
-export default Page
-
