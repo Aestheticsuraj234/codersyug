@@ -20,7 +20,7 @@ import { formatDate } from "@/lib/utils";
 import { AppContext } from "@/context/GlobalContext";
 import { BlogContentInterFace } from '@/types'
 import { useRouter } from "next/navigation";
-import Empty from "@/components/empty";
+import Empty from "@/components/Global/empty";
 
 const MostLikedBlogs = () => {
     const { blog } = useContext(AppContext);

@@ -1,18 +1,16 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { BookmarkIcon, Heart, MessageCircle, Loader2, BookMarked, BookmarkPlus } from "lucide-react";
+import { BookmarkIcon, Heart, MessageCircle, Loader2, BookmarkPlus } from "lucide-react";
 import axios from "axios";
 import { currentProfile } from "@/lib/current-profile";
 import { toast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
-import { AppContext } from "@/context/GlobalContext";
-
 interface IdsProps {
   blogId: null | undefined | string | number;
   likes: number;
@@ -23,9 +21,6 @@ interface IdsProps {
 
 const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) => {
   const router = useRouter();
-  const { blog } = useContext(AppContext);
-  const { memoizedBlogData } = blog; // Ensure that you're using the correct variable
-
   const [like, setLikes] = useState(likes);
   const [comments, setComments] = useState(comment);
   const [isLiking, setIsLiking] = useState(false);

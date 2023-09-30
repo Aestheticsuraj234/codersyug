@@ -8,8 +8,6 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
-import Navbar from '@/components/navbar'
-import { MainNav } from "./main-nav";
 import { SearchBar } from "./search-bar";
 import { ThemeToggle } from "./theme-toggle";
 import { MobileNavigation } from "./mobile-navigation";
@@ -32,7 +30,7 @@ export const MobileToggle = () => {
 
                 </SheetTrigger>
                 <div className=' md:hidden ml-auto flex items-center space-x-4' >
-                    <SearchBar />
+                    {/* <SearchBar /> */}
 
                     <ThemeToggle />
                     <UserButton afterSignOutUrl="/" />

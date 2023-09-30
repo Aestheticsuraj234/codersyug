@@ -5,39 +5,11 @@ import { toast } from "@/components/ui/use-toast";
 import VisitedCard from "@/components/Blogs/Comments/visited-blog";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { formatDate } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
+import { ReadingHistoryItem } from "@/types/Blog";
 
 // Define a more descriptive type for each reading history item
-interface ReadingHistoryItem {
-  blog: {
-    author: {
-      id: number;
-      userId: string;
-      name: string;
-      email: string;
-      imageUrl: string;
-    }
-    id: number;
-    title: string;
-    slug: string;
-    description: string;
-    thumbnail: string;
-    readTime: string;
-  };
-  blogId: number;
-  createdAt: string;
-  id: number;
-  updatedAt: string;
-  visitor: {
-    id: number;
-    userId: string;
-    name: string;
-    email: string;
-    imageUrl: string;
-  };
-  visitorId: number;
-}
+
 
 const ReadingHistory = () => {
   const [visitedData, setVisitedData] = useState<ReadingHistoryItem[]>([]);

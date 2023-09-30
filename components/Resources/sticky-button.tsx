@@ -7,7 +7,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { Code, FileCode2, Pen, ScrollText, Youtube, } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge"
@@ -25,7 +25,7 @@ const StickyButton = () => {
             icon: <FileCode2 className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/ebook",
             isInDevelopment: false
-            
+
 
         },
         {
@@ -34,7 +34,7 @@ const StickyButton = () => {
             icon: <ScrollText className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/Notes",
             isInDevelopment: true
-            
+
         },
         {
             id: 3,
@@ -42,7 +42,7 @@ const StickyButton = () => {
             icon: <Code className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/CheatSheet",
             isInDevelopment: true
-           
+
 
         },
         {
@@ -51,7 +51,7 @@ const StickyButton = () => {
             icon: <Youtube className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/Videos",
             isInDevelopment: true
-        
+
 
         },
     ]
@@ -74,7 +74,7 @@ const StickyButton = () => {
                     <DropdownMenuSeparator />
                     {
                         MenuItems.map((item) => (
-                            <Link href={item.routerLink} key={item.id}>
+                            <Link href={item.isInDevelopment ? "#" : item.routerLink} key={item.id}>
                                 <DropdownMenuItem   >
                                     <div className="flex items-center gap-2">
                                         {item.icon}

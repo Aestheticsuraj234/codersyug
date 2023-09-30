@@ -1,4 +1,5 @@
-import { sidebarLinks } from '@/constants'
+
+import { sidebarLinks } from '@/constants';
 import Link from 'next/link'
 import React from 'react'
 

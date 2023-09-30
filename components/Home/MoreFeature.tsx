@@ -1,14 +1,17 @@
 import React from 'react'
-import { AiFillGithub, AiFillMail, AiFillThunderbolt, AiOutlineDownload } from "react-icons/ai"
-import { BiLogoReact, BiWorld } from "react-icons/bi"
-import { BsCodeSlash } from 'react-icons/bs'
+
+import { AiFillGithub, AiFillMail } from "react-icons/ai"
+
+import { BiLogoReact } from "react-icons/bi"
+
 import { SiAppwrite } from "react-icons/si"
-import { GrArticle } from 'react-icons/gr'
+
 import { Bot ,BookCopy, Workflow} from 'lucide-react'
 
 
 
 const MoreFeature = () => {
+
     const FeatureItems = [
         {
             "id": 1,
@@ -53,6 +56,7 @@ const MoreFeature = () => {
             "icon": (<AiFillGithub size={35} className='text-black dark:text-white' />)
         },
     ]
+
     return (
         <section className=' glassmorphism flex w-[100%]  flex-col p-4 mt-12 rounded-lg max-w-full '>
             <h4 className='items-center justify-center uppercase flex text-center font-bold text-md  text-zinc-600 '>MAKE CODERS LIFE EASY!</h4>

@@ -1,5 +1,5 @@
 
-import BlogCard from "./blog-card";
+import BlogCard from "@/components/Blogs/blog-card"
 
 
 const BlogMainContainer = () => {

@@ -1,13 +1,15 @@
+
 import {
 
     Heart,
     BookMarked,
     Flame,
-    Newspaper,
     Plus,
     History,
    
 } from "lucide-react";
+
+
 
 export const sidebarLinks = [
     {
@@ -40,3 +42,8 @@ export const sidebarLinks = [
 ];
 
 
+
+
+
+
+  

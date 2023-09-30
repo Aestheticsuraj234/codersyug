@@ -1,6 +1,5 @@
 import BlogSideBar from "@/components/Blogs/blog-sidebar";
-import BlogBottomBar from "@/components/mobile-blog-bottombar";
-
+import BlogBottomBar from "@/components/Blogs/mobile-blog-bottombar";
 
 
 const BlogLayout = ({ children }: {

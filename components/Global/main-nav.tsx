@@ -1,18 +1,17 @@
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+
 
 import { cn } from "@/lib/utils";
-import { Badge } from "./ui/badge";
 import Alert from "./alert-dialog";
+import { useParams, usePathname } from "next/navigation";
 
 export function MainNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname();
-  const params = useParams();
-
-  const routes = [
+  
+  const MainNavroutes = [
     {
       href: `/`,
       label: 'Home',
@@ -50,13 +49,13 @@ export function MainNav({
       isInDevelopment: true,
     },
   ];
-
+  
   return (
     <nav
       className={cn("flex items-center space-x-4 lg:space-x-6 z-50", className)}
       {...props}
     >
-      {routes.map((route) => (
+      {MainNavroutes.map((route) => (
         // Conditionally render the Link component
         !route.isInDevelopment ? (
           <Link key={route.href} href={route.href} passHref>

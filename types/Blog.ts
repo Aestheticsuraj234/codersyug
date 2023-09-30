@@ -35,3 +35,34 @@ export  interface BlogContentInterFace {
       }
     }
   }
+
+
+  export interface ReadingHistoryItem {
+    blog: {
+      author: {
+        id: number;
+        userId: string;
+        name: string;
+        email: string;
+        imageUrl: string;
+      }
+      id: number;
+      title: string;
+      slug: string;
+      description: string;
+      thumbnail: string;
+      readTime: string;
+    };
+    blogId: number;
+    createdAt: string;
+    id: number;
+    updatedAt: string;
+    visitor: {
+      id: number;
+      userId: string;
+      name: string;
+      email: string;
+      imageUrl: string;
+    };
+    visitorId: number;
+  }

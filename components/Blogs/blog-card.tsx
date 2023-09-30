@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React, { useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import Image from "next/image";
@@ -15,15 +15,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import BlogCardActions from "./blog-card-actions";
 import { toast } from "../ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
+
 import { AppContext } from "@/context/GlobalContext";
 import { formatDate } from "@/lib/utils";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 const BlogCard = () => {
     const { blog } = useContext(AppContext);
-    const { memoizedAllBlogData,
-        setAllBlogData, } = blog;
-    console.log(memoizedAllBlogData, "memoizedAllBlogData");
+    const { memoizedAllBlogData, setAllBlogData, } = blog;
     const [isFetching, setIsFetching] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const router = useRouter();
@@ -32,7 +31,7 @@ const BlogCard = () => {
             setIsFetching(true);
             const response = await axios.get("http://localhost:3000/api/blog");
             setAllBlogData(response.data);
-            console.log(response.data);
+         
             toast({
                 title: "Success",
                 description: "Blog Fetched Successfully",

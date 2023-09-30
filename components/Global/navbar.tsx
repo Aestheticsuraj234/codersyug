@@ -5,7 +5,7 @@ import { MainNav } from './main-nav'
 import { ThemeToggle } from './theme-toggle'
 import { SearchBar } from './search-bar'
 import { Code2 , Github} from 'lucide-react'
-import { Button } from './ui/button'
+import { Button } from "@/components/ui/button"
 import { MobileToggle } from './mobile-toggle'
 import { Badge } from "@/components/ui/badge"
 import Link from 'next/link'

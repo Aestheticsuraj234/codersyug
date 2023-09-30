@@ -1,19 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import { Code, MoveRight } from "lucide-react"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+
 import Image from 'next/image'
-import Alert from '../alert-dialog'
+import Alert from '@/components/Global/alert-dialog'
 
 
 const HomeComponent = () => {

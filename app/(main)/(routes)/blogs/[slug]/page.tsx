@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import HTMLReactParser from 'html-react-parser';
-import BlogBottomAction from '@/components/blog-bottom-action';
+import BlogBottomAction from '@/components/Blogs/blog-bottom-action';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { formatDate } from '@/lib/utils';

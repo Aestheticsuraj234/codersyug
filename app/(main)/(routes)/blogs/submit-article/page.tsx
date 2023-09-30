@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -26,7 +26,7 @@ import 'react-quill/dist/quill.snow.css';
 
 import dynamic from 'next/dynamic';
 import { Loader2Icon } from 'lucide-react';
-import BlogBottomBar from '@/components/mobile-blog-bottombar';
+import BlogBottomBar from '@/components/Blogs/mobile-blog-bottombar';
 
 
 const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
