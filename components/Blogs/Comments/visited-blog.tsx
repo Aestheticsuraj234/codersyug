@@ -30,11 +30,13 @@ const VisitedCard: React.FC<VisitedCardProps> = ({
                     <Image
                         src={imageUrl}
                         alt={`Thumbnail for ${title}`}
-                        className=" hidden md:flex md:object-cover w-24 h-16 rounded-md"
+                        className="hidden md:flex md:object-cover w-24 h-16 rounded-md"
+                        width={288} // Set the width property
+                        height={152} // Set the height property
                         loading="lazy"
                     />
                 </div>
-                <Avatar className="hidden  md:flex md:absolute top-6 left-2">
+                <Avatar className="hidden md:flex md:absolute top-6 left-2">
                     <AvatarImage src={avatarImageUrl} />
                     <AvatarFallback>{authorName.slice(0, 2)}</AvatarFallback>
                 </Avatar>

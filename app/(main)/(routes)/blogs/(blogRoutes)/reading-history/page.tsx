@@ -8,7 +8,6 @@ import { formatDate } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { ReadingHistoryItem } from "@/types/Blog";
 
-// Define a more descriptive type for each reading history item
 
 
 const ReadingHistory = () => {
@@ -21,7 +20,7 @@ const ReadingHistory = () => {
 
     const getVisitedData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/blog/getReadingHistory");
+        const res = await axios.get("/api/blog/getReadingHistory");
         setVisitedData(res.data);
         setIsFetching(false);
 
@@ -48,14 +47,7 @@ const ReadingHistory = () => {
 
   return (
     <div className="mt-20 mx-4 mb-10 flex-1 w-full justify-center items-center">
-      <h1 className="
-        font-bold 
-        text-start
-        text-xl 
-        bg-clip-text text-transparent bg-gradient-to-r from-gray-700 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400
-        ">
-        Reading History
-      </h1>
+    
       {
         isFetching ? (
           <div className="flex items-center justify-center">

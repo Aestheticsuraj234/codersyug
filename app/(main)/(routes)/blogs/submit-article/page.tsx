@@ -136,7 +136,7 @@ const SubmitArticle = () => {
                 }
             }
 
-            const response = await axios.post('http://localhost:3000/api/blog', {
+            const response = await axios.post('/api/blog', {
                 title: values.title,
                 slug: slugify(values.title),
                 description: values.description,

@@ -48,7 +48,7 @@ const BlogBottomAction = () => {
         setIsLiking(true);
 
         try {
-            const res = await axios.post('http://localhost:3000/api/blog/like', {
+            const res = await axios.post('/api/blog/like', {
                 blogId: memoizedBlogData?.id,
             });
             const data = res.data.likes;
@@ -75,7 +75,7 @@ const BlogBottomAction = () => {
         try {
             // If it's not saved, save it
             setIsSaving(true);
-            const res = await axios.put("http://localhost:3000/api/blog", {
+            const res = await axios.put("/api/blog", {
                 blogId: memoizedBlogData?.id,
             });
             console.log(res.data, "res");
@@ -106,7 +106,7 @@ const BlogBottomAction = () => {
     };
     const getSaved = async (blogId: number) => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/blog/saved/${blogId}`);
+            const res = await axios.get(`api/blog/saved/${blogId}`);
             if (res.status === 200) {
                 setSaved(res.data.isSaved);
             } else {

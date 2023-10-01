@@ -28,7 +28,7 @@ const MostLikedBlogs = () => {
     const router = useRouter();
     const [isFetching, setIsFetching] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
-    const mostLikedBlogs = memoizedAllBlogData?.filter((blog: BlogContentInterFace) => blog.likes > 1)
+    const mostLikedBlogs = memoizedAllBlogData?.filter((blog: BlogContentInterFace) => blog.likes > 10)
     console.log(mostLikedBlogs);
     if (!isMounted) {
         setIsMounted(true);

@@ -20,7 +20,7 @@ const BlogMainContent = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get(`http://localhost:3000/api/blog/${slug}`);
+        const res = await axios.get(`/api/blog/${slug}`);
         const data = await res.data;
         setBlogData(data);
         setIsLoading(false);
