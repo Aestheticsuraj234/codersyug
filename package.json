@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build":  "next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
@@ -68,6 +68,6 @@
   "devDependencies": {
     "@types/dompurify": "^3.0.3",
     "@types/uuid": "^9.0.3",
-    "prisma": "^5.2.0"
+    "prisma": "^5.3.1"
   }
 }
