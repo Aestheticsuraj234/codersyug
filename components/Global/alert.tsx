@@ -26,10 +26,7 @@ const Alert = ({
             {description}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
-          <Button type="submit">Confirm</Button>
-        </DialogFooter>
+       
       </DialogContent>
     </Dialog>
 

@@ -11,10 +11,7 @@ import { currentProfile } from "@/lib/current-profile"
 
 const HomeComponent = async () => {
 
-    const profile = await initialProfile()
-    console.log(profile)
-    const current = await currentProfile()
-    console.log(current)
+  
 
 
     return (
