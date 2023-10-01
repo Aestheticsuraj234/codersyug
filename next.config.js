@@ -13,6 +13,14 @@ const nextConfig = {
           },
           {
             protocol: "https",
+            hostname: "img.clerk.dev",
+          },
+          {
+            protocol: "https",
+            hostname: "cloud.appwrite.io",
+          },
+          {
+            protocol: "https",
             hostname: "images.clerk.dev",
           },
           {

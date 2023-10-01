@@ -7,7 +7,7 @@ const CEOCard = () => {
     return (
         <div className="w-full bg-white   flex md:flex-row flex-col border rounded-lg shadow dark:bg-[#0f172a] mt-16 mb-16">
             <div className="flex flex-col items-center justify-center md:w-80 w-full">
-                <Image alt='' src="/assests/Memoji.svg" height={100} width={100} className="object-contain rounded-full" />
+                <Image alt='' src="https://cloud.appwrite.io/v1/storage/buckets/64e6ef5650a3bc944e6f/files/6519c6914b79c432b366/view?project=64d3707fc8db92bf44ff&mode=admin" height={100} width={100} className="object-contain rounded-full" />
                 <h1 className="text-xl font-bold  text-zinc-600 dark:text-zinc-100">Suraj Jha</h1>
             </div>
             <div>
