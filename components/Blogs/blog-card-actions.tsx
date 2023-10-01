@@ -59,7 +59,7 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
     setIsLiking(true);
 
     try {
-      const res = await axios.post("http://localhost:3000/api/blog/like", {
+      const res = await axios.post("/api/blog/like", {
         blogId: blogId,
       });
       const data = res.data.likes;
@@ -84,7 +84,7 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
 
   const getSaved = async (blogId: any) => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/blog/saved/${blogId}`);
+      const res = await axios.get(`/api/blog/saved/${blogId}`);
       if (res.status === 200) {
         setSaved(res.data.isSaved);
       } else {
@@ -99,7 +99,7 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
     try {
       setIsSaving(true);
 
-      const res = await axios.put("http://localhost:3000/api/blog", {
+      const res = await axios.put("/api/blog", {
         blogId: blogId,
       });
 
