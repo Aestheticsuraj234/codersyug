@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState,  useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,7 @@ const BlogCard = () => {
             setIsFetching(true);
             const response = await axios.get("http://localhost:3000/api/blog");
             setAllBlogData(response.data);
-         
+
             toast({
                 title: "Success",
                 description: "Blog Fetched Successfully",
@@ -46,10 +46,11 @@ const BlogCard = () => {
             setIsFetching(false);
         }
     };
-
+    // @eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         fetchData(); // Fetch data on component mount
-    });
+
+    }, []);
 
     if (!isMounted) {
         setIsMounted(true);
@@ -57,76 +58,83 @@ const BlogCard = () => {
 
     return (
         <div className="grid xl:grid-cols-3  md:grid-cols-2 grid-cols-1 md:gap-4 gap-y-3 mt-10 mb-10">
-            {memoizedAllBlogData?.map((item: {
-                comments: any;
-                liked: any;
-                slug: any;
-                likes: any;
-                id: React.Key | null | undefined; author: {
-                    userId: any; imageUrl: string | undefined;
-                }; title: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; createdAt: any; readTime: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; thumbnail: string | StaticImport;
-            }) => (
-                <Card
-                    key={item.id}
-                    className="h-auto md:w-72  w-auto border shadow-md rounded-lg flex flex-col justify-between items-start"
-                >
-                    <CardHeader>
-                        <Avatar>
-                            {isFetching ? (
-                                <Skeleton className="aspect-square h-full w-full rounded-full" />
-                            ) : (
-                                <>
-                                    <AvatarImage src={item?.author?.imageUrl} />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </>
-                            )}
-                        </Avatar>
-                        <CardTitle onClick={() => router.push(`/blogs/${item.slug}`)} className="hover:underline cursor-pointer">
-                            {isFetching ? (
-                                <Skeleton className="w-auto h-auto leading-none tracking-normal" />
-                            ) : (
-                                item?.title
-                            )}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <CardDescription>
-                            {isFetching ? (
-                                <Skeleton className="w-auto h-auto text-xs" />
-                            ) : (
-                                formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"
-                            )}
-                        </CardDescription>
-                        {isFetching ? (
-                            <Skeleton className="w-[250px] h-[152px] object-cover rounded-lg mt-1" />
-                        ) : (
-                            <Image
-                                src={item?.thumbnail}
-                                alt="Thumbnail of the blog"
-                                width={288}
-                                height={152}
-                                className="object-cover rounded-lg mt-1"
-                                objectFit="cover"
-                            />
-                        )}
-                    </CardContent>
-                    <CardFooter className="flex flex-row w-full mx-2">
-                        {isFetching ? (
-                            <Skeleton className="flex flex-row justify-between items-center w-full mt-2" />
-                        ) : (
-                            <BlogCardActions
-                                blogId={item?.id}
-                                likes={item?.likes}
-                                likedBy={
-                                    item?.liked?.map((like: any) => like?.userId) || []
-                                }
-                                comment={item?.comments?.length || 0}
-                                slug={item?.slug}
-                            />
-                        )}
-                    </CardFooter>
-                </Card>
-            ))}
+            {
+               memoizedAllBlogData && memoizedAllBlogData?.length < 0 ? <div className="flex flex-col justify-center items-center">
+                    <p className="text-2xl font-bold">No Blog Found</p>
+                    <p className="text-lg font-medium">Please Add Some Blog</p>
+                </div>
+                    :   memoizedAllBlogData?.map((item: {
+                        comments: any;
+                        liked: any;
+                        slug: any;
+                        likes: any;
+                        id: React.Key | null | undefined; author: {
+                            userId: any; imageUrl: string | undefined;
+                        }; title: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; createdAt: any; readTime: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; thumbnail: string | StaticImport;
+                    }) => (
+                        <Card
+                            key={item.id}
+                            className="h-auto md:w-72  w-auto border shadow-md rounded-lg flex flex-col justify-between items-start"
+                        >
+                            <CardHeader>
+                                <Avatar>
+                                    {isFetching ? (
+                                        <Skeleton className="aspect-square h-full w-full rounded-full" />
+                                    ) : (
+                                        <>
+                                            <AvatarImage src={item?.author?.imageUrl} />
+                                            <AvatarFallback>CN</AvatarFallback>
+                                        </>
+                                    )}
+                                </Avatar>
+                                <CardTitle onClick={() => router.push(`/blogs/${item.slug}`)} className="hover:underline cursor-pointer">
+                                    {isFetching ? (
+                                        <Skeleton className="w-auto h-auto leading-none tracking-normal" />
+                                    ) : (
+                                        item?.title
+                                    )}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <CardDescription>
+                                    {isFetching ? (
+                                        <Skeleton className="w-auto h-auto text-xs" />
+                                    ) : (
+                                        formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"
+                                    )}
+                                </CardDescription>
+                                {isFetching ? (
+                                    <Skeleton className="w-[250px] h-[152px] object-cover rounded-lg mt-1" />
+                                ) : (
+                                    <Image
+                                        src={item?.thumbnail}
+                                        alt="Thumbnail of the blog"
+                                        width={288}
+                                        height={152}
+                                        className="object-cover rounded-lg mt-1"
+                                        objectFit="cover"
+                                    />
+                                )}
+                            </CardContent>
+                            <CardFooter className="flex flex-row w-full mx-2">
+                                {isFetching ? (
+                                    <Skeleton className="flex flex-row justify-between items-center w-full mt-2" />
+                                ) : (
+                                    <BlogCardActions
+                                        blogId={item?.id}
+                                        likes={item?.likes}
+                                        likedBy={
+                                            item?.liked?.map((like: any) => like?.userId) || []
+                                        }
+                                        comment={item?.comments?.length || 0}
+                                        slug={item?.slug}
+                                    />
+                                )}
+                            </CardFooter>
+                        </Card>
+                    ))}
+            
+          
         </div>
     );
 };

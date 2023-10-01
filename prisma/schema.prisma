@@ -1,12 +1,14 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
-  provider     = "postgresql"
+  provider     = "mysql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
 
 model Profile {
   id         Int           @id @default(autoincrement())
@@ -14,26 +16,26 @@ model Profile {
   name       String
   email      String        @unique
   imageUrl   String?
+  blogs      Blog[] // This creates a one-to-many relationship with Blog
+  savedBlogs Blog[]        @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
+  comments   Comment[] // This creates a one-to-many relationship with Comment
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
-  blogs      Blog[]
-  savedBlogs Blog[]        @relation("SavedBlogs")
-  comments   Comment[]
-  likesOn    Likes[]
-  visited    VisitedBlog[]
-  resources  Resources[]
+  likesOn    Likes[] // This creates a one-to-many relationship with Likes
+  visited    VisitedBlog[] // This creates a one-to-many relationship with VisitedBlog
+  resources  Resources[] // This creates a one-to-many relationship with Resources
 }
 
 model Blog {
   id          Int           @id @default(autoincrement())
   title       String
   slug        String        @unique
-  description String?       @db.Text
-  thumbnail   String?       @db.Text
+  description String?       @db.LongText
+  thumbnail   String?       @db.LongText
   likes       Int?          @default(0)
   Comments    Int?          @default(0)
-  content     String?       @db.Text
-  readTime    Int?
+  content     String?       @db.LongText
+  readTime    Int? // Estimated time in minutes to read the blog
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   category    String?
@@ -41,9 +43,10 @@ model Blog {
   authorId    Int
   author      Profile       @relation(fields: [authorId], references: [id])
   savedBy     Profile[]     @relation("SavedBlogs")
-  comments    Comment[]
+  comments    Comment[] // One-to-many relationship with comments
+  // One-to-many relationship with likes
   liked       Likes[]
-  VisitedBy   VisitedBlog[]
+  VisitedBy   VisitedBlog[] // One-to-many relationship with VisitedBlog
 
   @@index([authorId])
 }
@@ -51,11 +54,11 @@ model Blog {
 model VisitedBlog {
   id        Int      @id @default(autoincrement())
   visitorId Int
+  visitor   Profile  @relation(fields: [visitorId], references: [id])
   blogId    Int
+  blog      Blog     @relation(fields: [blogId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  visitor   Profile  @relation(fields: [visitorId], references: [id])
-  blog      Blog     @relation(fields: [blogId], references: [id])
 
   @@unique([visitorId, blogId])
   @@index([visitorId, blogId])
@@ -66,11 +69,11 @@ model Comment {
   id          Int      @id @default(autoincrement())
   text        String
   commenterId Int
+  commenter   Profile  @relation(fields: [commenterId], references: [id])
   blogId      Int
+  blog        Blog     @relation(fields: [blogId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  commenter   Profile  @relation(fields: [commenterId], references: [id])
-  blog        Blog     @relation(fields: [blogId], references: [id])
 
   @@index([commenterId])
   @@index([blogId])
@@ -78,11 +81,11 @@ model Comment {
 
 model Likes {
   id        Int      @id @default(autoincrement())
+  liker     Profile  @relation(fields: [userId], references: [id])
   userId    Int
   blogId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  liker     Profile  @relation(fields: [userId], references: [id])
   Blog      Blog     @relation(fields: [blogId], references: [id])
 
   @@unique([userId, blogId])
@@ -95,9 +98,9 @@ model Resources {
   type         ResourceType? @default(EBOOK)
   Title        String
   Slug         String        @unique
-  Description  String?       @db.Text
-  Thumbnail    String?       @db.Text
-  DownloadLink String?       @db.Text
+  Description  String?       @db.LongText
+  Thumbnail    String?       @db.LongText
+  DownloadLink String?       @db.LongText
   Views        Int?          @default(0)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -107,15 +110,6 @@ model Resources {
   author       Profile       @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
-}
-
-model SavedBlogs {
-  A Int
-  B Int
-
-  @@unique([A, B], map: "_SavedBlogs_AB_unique")
-  @@index([B], map: "_SavedBlogs_B_index")
-  @@map("_SavedBlogs")
 }
 
 enum ResourceType {
@@ -153,7 +147,9 @@ enum Categories {
   CSharp
   CPlusPlus
   C
+
   WebDevelopment
+
   ProgrammingTips
   Git
   GitHub
