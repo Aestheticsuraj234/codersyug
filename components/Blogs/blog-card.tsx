@@ -29,7 +29,7 @@ const BlogCard = () => {
     const fetchData = async () => {
         try {
             setIsFetching(true);
-            const response = await axios.get("http://localhost:3000/api/blog");
+            const response = await axios.get("/api/blog");
             setAllBlogData(response.data);
 
             toast({
