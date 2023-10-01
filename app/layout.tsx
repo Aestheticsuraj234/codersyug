@@ -12,42 +12,20 @@ import { ModalProvider } from '@/components/providers/modal-provider'
 
 const fonts = Open_Sans({ subsets: ['latin'] })
 
-export const metadata:Metadata = {
-  title: 'CodersYug - All in one platform for Coders🚀',
-  description:
-    " CodersYug is a platform for all the coders out there to get the best resources for coding and also to get the best products for their coding journey. We also provide the best blogs and tutorials for the coders to learn and grow",
-  openGraph: {
-    title: "CodersYug - All in one platform for Coders🚀",
-    description:
-      "CodersYug is a platform for all the coders out there to get the best resources for coding and also to get the best products for their coding journey. We also provide the best blogs and tutorials for the coders to learn and grow",
-    type: "article",
-    url: "/social-preview.png",
-    images: [
-      {
-        url: "/api/og?title=CodersYug CodersYug - All in one platform for Coders🚀",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "CodersYug - All in one platform for Coders🚀",
-    description:
-    " CodersYug is a platform for all the coders out there to get the best resources for coding and also to get the best products for their coding journey. We also provide the best blogs and tutorials for the coders to learn and grow",
-    images: [
-      "/api/og?title=CodersYug All in one platform for Coders🚀",
-    ],
-  },
-  icons:{
-    icon:"/favicon.ico",
-  },
-  other:{
-    "theme-color":`#3f3d56 || #ffffff`,
-    "msapplication-TileColor":`#3f3d56 || #ffffff`,
-    "msapplication-config":"/favicon/browserconfig.xml",
-    "apple-mobile-web-app-title":"CodersYug",
-    "application-name":"CodersYug",
+export const metadata: Metadata = {
+  title: 'JS Mastery',
+  description: 'JS Mastery Resources',
+  other: {
+    'theme-color': '#3f3d56 || #f3f4f6',
+    "color-scheme": "dark | light",
+    "twitter:image": '/home-thumbnail.jpg',
+    "twitter:card": "summary_large_image",
+    "og:url": "codersyug.vercel.app",
+    "og:image": '/home-thumbnail.jpg',
+    "og:type": "website",
   }
 }
+
 
 export default function RootLayout({
   children,
