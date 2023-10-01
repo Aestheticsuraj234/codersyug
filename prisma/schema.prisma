@@ -41,7 +41,7 @@ model Blog {
   category    String?
   subCategory String?
   authorId    Int
-  author      Profile       @relation(fields: [authorId], references: [id])
+  author      Profile       @relation(fields: [authorId], references: [id] ,onDelete: Cascade)
   savedBy     Profile[]     @relation("SavedBlogs")
   comments    Comment[] // One-to-many relationship with comments
   // One-to-many relationship with likes
@@ -54,9 +54,9 @@ model Blog {
 model VisitedBlog {
   id        Int      @id @default(autoincrement())
   visitorId Int
-  visitor   Profile  @relation(fields: [visitorId], references: [id])
+  visitor   Profile  @relation(fields: [visitorId], references: [id],onDelete: Cascade)
   blogId    Int
-  blog      Blog     @relation(fields: [blogId], references: [id])
+  blog      Blog     @relation(fields: [blogId], references: [id] , onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -69,9 +69,9 @@ model Comment {
   id          Int      @id @default(autoincrement())
   text        String
   commenterId Int
-  commenter   Profile  @relation(fields: [commenterId], references: [id])
+  commenter   Profile  @relation(fields: [commenterId], references: [id],onDelete: Cascade)
   blogId      Int
-  blog        Blog     @relation(fields: [blogId], references: [id])
+  blog        Blog     @relation(fields: [blogId], references: [id],onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -81,12 +81,12 @@ model Comment {
 
 model Likes {
   id        Int      @id @default(autoincrement())
-  liker     Profile  @relation(fields: [userId], references: [id])
+  liker     Profile  @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId    Int
   blogId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Blog      Blog     @relation(fields: [blogId], references: [id])
+  Blog      Blog     @relation(fields: [blogId], references: [id],onDelete: Cascade)
 
   @@unique([userId, blogId])
   @@index([userId, blogId])
@@ -107,7 +107,7 @@ model Resources {
   category     Categories?
   subCategory  String?
   authorId     Int
-  author       Profile       @relation(fields: [authorId], references: [id])
+  author       Profile       @relation(fields: [authorId], references: [id],onDelete:Cascade)
 
   @@index([authorId])
 }

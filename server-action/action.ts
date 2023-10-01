@@ -1,3 +1,4 @@
+"use server"
 import { Prisma, Categories as PrismaCategories, ResourceType } from '@prisma/client';
 import { db } from '@/lib/db';
 
@@ -32,7 +33,7 @@ export async function getResources(params: BuildPrismaQueryParams) {
   if (category && category !== 'All') {
     conditions.push({
       category: category as PrismaCategories, // Use the Prisma enum value directly
-    //   mode: 'insensitive',
+      //   mode: 'insensitive',
     });
   }
 
@@ -53,10 +54,33 @@ export async function getResources(params: BuildPrismaQueryParams) {
       category: true,
       Thumbnail: true,
       type: true,
+      author:true
     },
     skip: offset,
     take: perPage,
+    
   });
 
   return resources;
+}
+
+
+export async function incrementViewOnDownload(slug: any) {
+  await db.resources.update({
+    where: {
+      Slug: slug,
+    },
+    data: {
+      Views: {
+        increment: 1,
+      },
+    },
+  });
+}
+
+export const deleteResource = async (id: number) => {
+  const resource = await db.resources.delete({
+    where: { id },
+  });
+  return resource;
 }

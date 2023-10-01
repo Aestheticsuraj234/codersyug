@@ -57,6 +57,7 @@ const Page = async ({ searchParams }: Props) => {
                   downloadNumber={resource.Views}
                   slug={resource.Slug}
                   downloadLink={resource.DownloadLink}
+                  author={resource.author}
                 />
               ))
             ) : (

@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/card';
 import {
   FlagTriangleRight,
+  Loader2,
   MoreVerticalIcon,
   Pencil,
   Trash2
@@ -27,13 +28,17 @@ import {
 import { AppContext } from '@/context/GlobalContext';
 import { formatDate } from '@/lib/utils';
 import { useUser } from "@clerk/nextjs"
-
+import { deleteBlogComment } from '@/server-action/blog-actions';
+import { Badge } from '@/components/ui/badge';
+import { useRouter } from 'next/navigation';
 
 const UserCommentCard = () => {
   const { blog } = useContext(AppContext);
   const { blogData } = blog;
+  const router = useRouter();
   const { user } = useUser();
   const [isMounted, setIsMounted] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   console.log(blogData?.comments, "Comments_client");
 
@@ -41,7 +46,20 @@ const UserCommentCard = () => {
   const isAdmin = blogData?.author?.userId === user?.id;
 
 
-
+  const handleDeleteComment = (id: number) => async () => {
+    try {
+      setIsDeleting(true)
+      const deletedComment = await deleteBlogComment(id);
+      console.log("Comment deleted successfully:", deletedComment);
+      setIsDeleting(false);
+      router.refresh()
+      // Optionally, you can trigger any additional actions after successful deletion here.
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      setIsDeleting(false);
+      // Handle errors here if needed.
+    }
+  }
 
   if (!isMounted) {
     setIsMounted(true);
@@ -85,17 +103,20 @@ const UserCommentCard = () => {
                   <>
                     <Button variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
                       <Pencil className='w-5 h-5 hover:text-green-400 text-zinc-500' />
-                      Edit
+                      Edit <Badge variant='default' className='ml-2'>Soon!</Badge>
                     </Button>
-                    <Button variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
-                      <Trash2 className='w-5 h-5 hover:text-red-700 text-zinc-500' />
-                      Delete
+                    <Button onClick={handleDeleteComment(comment.id)} variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
+                      {isDeleting ? <Loader2
+                        className="animate-spin w-5 h-5 hover:text-red-700 text-zinc-500"
+
+                      /> : (<> <Trash2 className='w-5 h-5 hover:text-red-700 text-zinc-500' />
+                        Delete</>)}
                     </Button>
                   </>
                 ) : (
                   <Button variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
                     <FlagTriangleRight className='h-5 w-5 hover:text-red-500 text-zinc-500' />
-                    Report
+                    Report <Badge variant='default' className='ml-2'>Soon!</Badge>
                   </Button>
                 )}
             </PopoverContent>

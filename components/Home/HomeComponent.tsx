@@ -6,8 +6,7 @@ import { Code, MoveRight } from "lucide-react"
 import Image from "next/image"
 import Alert from "@/components/Global/alert"
 
-import { initialProfile } from "@/lib/initial-profile";
-import { currentProfile } from "@/lib/current-profile"
+
 
 const HomeComponent = async () => {
 
