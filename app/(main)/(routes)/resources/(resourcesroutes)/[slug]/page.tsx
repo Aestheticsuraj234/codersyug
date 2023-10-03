@@ -3,12 +3,12 @@ import { incrementViewOnDownload } from '@/server-action/action';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
-import { Code, MoveRight } from "lucide-react"
+import {  MoveRight } from "lucide-react"
 
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
 import axios from 'axios';
-import Loading from '../../../blogs/(blogRoutes)/loading';
+import Loading from '@/app/(main)/(routes)/resources/(resourcesroutes)/loading';
 
 
 const ResoucesDownloadPage = () => {
@@ -78,7 +78,7 @@ const ResoucesDownloadPage = () => {
 
 
             <div className="flex flex-1 justify-center lg:mb-12 lg:justify-end lg:pr-12">
-                <Image src={resources?.Thumbnail} alt="ebook image" loading="lazy" width="270" height="370" decoding="async" data-nimg="1" className="rounded-lg object-contain lg:rotate-12" />
+                <Image src={resources?.Thumbnail } alt="ebook image" loading="lazy" width="270" height="370" draggable={false}  className="rounded-lg object-contain lg:rotate-12" />
             </div>
 
         </section>
