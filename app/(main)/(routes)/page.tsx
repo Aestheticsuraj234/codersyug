@@ -16,7 +16,7 @@ export default async function Home() {
         return (
             <div className="mx-4 my-4 ">
                 <HomeComponent />
-                <h1>Hello world</h1>
+          
                 <CodeSnippetQuotes />
                 <MoreFeature />
                 <CEOCard />
