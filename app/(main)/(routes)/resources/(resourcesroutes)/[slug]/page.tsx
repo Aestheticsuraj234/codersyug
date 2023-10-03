@@ -8,11 +8,13 @@ import { Code, MoveRight } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
 import axios from 'axios';
+import Loading from '../../../blogs/(blogRoutes)/loading';
 
 
 const ResoucesDownloadPage = () => {
     const { toast } = useToast()
     const [resources, setResources] = useState<any>();
+    const [isFetching, setIsFetching] = useState(false);
     const { slug } = useParams();
 
     useEffect(() => {
@@ -21,18 +23,23 @@ const ResoucesDownloadPage = () => {
 
     const getResourcesContent = async () => {
         try {
+            setIsFetching(true);
             const res = await axios.get(`/api/resources/${slug}`);
             setResources(res.data);
             toast({
                 title: "Successfully: Catch up",
                 description: "Successfully catch up with the server",
             })
+            setIsFetching(false);
+
+
 
         } catch (error) {
             toast({
                 title: "Error: Catch up",
                 description: "Error catch up with the server",
             })
+            setIsFetching(false);
 
         }
 
@@ -43,11 +50,12 @@ const ResoucesDownloadPage = () => {
         await incrementViewOnDownload(slug)
     }
 
+    if(isFetching) return <div>
+        <Loading />
+    </div>
 
     return (
         <section className="nav-padding hero-height   flex w-[100%] flex-col items-center justify-center gap-5 lg:flex-row px-12">
-
-
             <div className='flex flex-1 flex-col items-start justify-center'>
                 <p className="text-gradient_blue body-regular mb-2.5 text-center uppercase">CODERSYGUG - FOR THE DEVELOPERS BY THE DEVELOPER</p>
                 <h1 className="sm:heading2 heading3">{resources?.Title}</h1>
