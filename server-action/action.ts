@@ -84,3 +84,21 @@ export const deleteResource = async (id: number) => {
   });
   return resource;
 }
+
+export const getResourcesBySlug = async (slug: string) => {
+  const resource = await db.resources.findUnique({
+    where: { Slug: slug },
+    select: {
+      id: true,
+      Title: true,
+      Description: true,
+      Slug: true,
+      DownloadLink: true,
+      Views: true,
+      category: true,
+      Thumbnail: true,
+      type: true,
+    },
+  });
+  return resource;
+}
