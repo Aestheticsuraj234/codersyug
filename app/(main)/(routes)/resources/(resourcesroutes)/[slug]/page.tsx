@@ -8,7 +8,7 @@ import {  MoveRight } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
 import axios from 'axios';
-import Loading from '@/app/(main)/(routes)/resources/(resourcesroutes)/loading';
+
 
 
 const ResoucesDownloadPage = () => {
@@ -50,9 +50,7 @@ const ResoucesDownloadPage = () => {
         await incrementViewOnDownload(slug)
     }
 
-    if(isFetching) return <div>
-        <Loading />
-    </div>
+  
 
     return (
         <section className="nav-padding hero-height   flex w-[100%] flex-col items-center justify-center gap-5 lg:flex-row px-12">
