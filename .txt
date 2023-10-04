@@ -1,157 +1,31 @@
-  <Dialog open={isModelOpen} onOpenChange={handleClose}>
-            <ScrollArea >
-                <DialogContent className=" p-4 overflow-hidden">
-                    <DialogHeader className="pt-8 px-6">
-                        <DialogTitle className="text-2xl text-center font-bold">
-                            Create E-Book
-                        </DialogTitle>
-                    </DialogHeader>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <FormField
-                                control={form.control}
-                                name="Title"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Title</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="shadcn" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            This is the title of the ebook
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
 
-                            {/* Slug Field (Auto-generated) */}
-                            <FormItem>
-                                <FormLabel>Slug</FormLabel>
-                                <FormControl>
-                                    <Input value={slugify(form.getValues().Title || '')} readOnly />
-                                </FormControl>
-                                <FormDescription>
-                                    The slug will be auto-generated based on the title.
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                            <FormField
-                                control={form.control}
-                                name="Title"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Title</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="shadcn" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            This is the title of the ebook
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            {/* Thumbnail Field */}
-                            <FormField
-                                control={form.control}
-                                name='Thumbnail'
-                                render={({ field }) => (
-                                    <FormItem className='flex items-center justify-center gap-4  flex-col'>
-                                        <FormLabel className='relative'>
-                                            {field.value ? (
-                                                <>
-                                                    <Image
-                                                        src={field.value}
-                                                        alt='profile_icon'
-                                                        width={288}
-                                                        height={152}
-                                                        priority
-                                                        className=' object-contain'
-                                                    />
-                                                    <X className='absolute top-10 right-0 w-6 h-6 bg-red-500 text-white rounded-full' onClick={() => field.onChange('')} />
+**Platform Name:** CodersYug
 
-                                                </>
-                                            ) : (
-                                                <Image
-                                                    src='/assests/blogging.svg'
-                                                    alt='profile_icon'
-                                                    width={288}
-                                                    height={152}
-                                                    className='object-contain'
-                                                />
-                                            )}
-                                        </FormLabel>
-                                        <FormControl className='flex-1 text-base-semibold text-gray-200'>
-                                            <Input
-                                                type='file'
-                                                accept='image/*'
-                                                placeholder='Add profile photo'
-                                                className='account-form_image-input'
-                                                onChange={(e) => handleImage(e, field.onChange)}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Upload Your Thumbnail from here.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="Description"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Description</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="FRONTEND DEVELOPEMNT" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            This is the Description of the ebook
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="DownloadLink"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>DownloadLink</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="https://untite.com" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            This is the DownloadLink of the ebook
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="category"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Category</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Next-js" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            This is the Category of the ebook
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <Button type="submit">Submit</Button>
-                        </form>
-                    </Form>
-                </DialogContent>
+**Description:**
+codersyug is an all-in-one platform designed to empower computer science students throughout their academic journey and beyond. It offers a wide range of services and resources to enhance their learning experience and career prospects.
 
-            </ScrollArea>
+**Key Features:**
+
+1. **Blog and Knowledge Sharing:** codersyug hosts a community-driven blog where students, professors, and industry professionals can contribute articles, tutorials, and insights on computer science topics. Users can engage in discussions and share knowledge.
+
+2. **Mentorship Programs:** The platform facilitates mentorship programs where experienced professionals and professors can mentor students, offering guidance on career development, project ideas, and skill enhancement.
+
+3. **e-Book Store:** codersyug offers a marketplace for e-books, textbooks, and study materials related to computer science subjects. Students can purchase or rent e-books at competitive prices.
+
+4. **Handwritten Notes Exchange:** A unique feature allows students to upload and exchange handwritten class notes, diagrams, and study guides, making it easier for peers to collaborate and learn from each other.
+
+5. **Mock Tests and Practice Exams:** Users can access a vast repository of mock tests, practice exams, and quizzes tailored to specific computer science courses and certification exams. Detailed performance analytics help students track their progress.
+
+6. **AI-Powered Coding Teacher:** codersyug's AI coding teacher provides personalized coding tutorials, instant code feedback, and programming exercises. It adapts to the user's skill level and offers real-time assistance in various programming languages.
+
+7. **Online Study Groups:** codersyug facilitates the formation of virtual study groups, connecting students based on their courses and interests. It includes integrated video conferencing and collaboration tools.
+
+12. **AI-Powered Skill Assessment:** A tool that assesses a user's coding and technical skills, providing a detailed skills profile and suggesting areas for improvement.
+
+13. **Personalized Learning Paths:** Based on skill assessments and career goals, codersyug generates personalized learning paths with recommended courses, books, and resources.
 
 
-        </Dialog>q
+15. **Gamification:** Users earn badges, points, and rewards for their engagement and achievements on the platform, adding a gamified aspect to learning and networking.
+
+codersyug aims to be the go-to destination for computer science students, offering a supportive community, valuable resources, and tools for skill development and career advancement.
+
