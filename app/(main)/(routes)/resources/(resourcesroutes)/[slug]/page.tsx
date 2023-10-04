@@ -8,6 +8,7 @@ import {  MoveRight } from "lucide-react"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
 import axios from 'axios';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 
 
 
@@ -19,7 +20,7 @@ const ResoucesDownloadPage = () => {
 
     useEffect(() => {
         getResourcesContent();
-    }, [slug]);
+    }, []);
 
     const getResourcesContent = async () => {
         try {
@@ -53,7 +54,7 @@ const ResoucesDownloadPage = () => {
   
 
     return (
-        <section className="nav-padding hero-height   flex w-[100%] flex-col items-center justify-center gap-5 lg:flex-row px-12">
+        <section className="nav-padding hero-height  y-paddings  flex w-[100%] flex-col items-center justify-center gap-5 lg:flex-row px-12">
             <div className='flex flex-1 flex-col items-start justify-center'>
                 <p className="text-gradient_blue body-regular mb-2.5 text-center uppercase">CODERSYGUG - FOR THE DEVELOPERS BY THE DEVELOPER</p>
                 <h1 className="sm:heading2 heading3">{resources?.Title}</h1>
@@ -75,8 +76,8 @@ const ResoucesDownloadPage = () => {
 
 
 
-            <div className="flex flex-1 justify-center lg:mb-12 lg:justify-end lg:pr-12">
-                <Image src={resources?.Thumbnail } alt="ebook image" loading="lazy" width="270" height="370" draggable={false}  className="rounded-lg object-contain lg:rotate-12" />
+            <div className="flex flex-1 justify-center mt-10 lg:mb-12 lg:justify-end lg:pr-12">
+                <Image src={resources?.Thumbnail  as string | StaticImport} alt="ebook image" loading="lazy" width="270" height="370" draggable={false}  className="rounded-lg object-contain lg:rotate-12" />
             </div>
 
         </section>
