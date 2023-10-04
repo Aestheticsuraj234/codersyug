@@ -1,9 +1,9 @@
 
-import { getResourcesBySlug, incrementViewOnDownload } from '@/server-action/action';
-import Link from "next/link"
-import { MoveRight } from "lucide-react"
+import { getResourcesBySlug } from '@/server-action/action';
+
 import Image from "next/image"
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import DownloadButton from '@/components/Resources/download-button';
 
 
 
@@ -13,7 +13,7 @@ const ResoucesDownloadPage = async ({
     params: { slug: string }
 }) => {
 
-console.log(slug)
+
 
     const resources = await getResourcesBySlug(slug)
 
@@ -27,16 +27,17 @@ console.log(slug)
                 <p className="text-gradient_blue body-regular mb-2.5 text-center uppercase">CODERSYGUG - FOR THE DEVELOPERS BY THE DEVELOPER</p>
                 <h1 className="sm:heading2 heading3">{resources?.Title}</h1>
                 <div className='text-white-800 mt-6 text-[20px]'>
+                  
                     <p className="max-w-2xl mb-6 font-semibold text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400 ">{resources?.Description}</p>
                     <div>
-                        <Link
-                            href={`${resources?.DownloadLink}`}
-                            // onClick={handleDownload}
-                            className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
-                            Download Now
-                            <MoveRight />
-                        </Link>
+                    <DownloadButton
+                  downloadLink={resources?.DownloadLink}
+                  slug={slug}
+                  text="Download Now"
+                    className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+                  />
                     </div>
+                 
                 </div>
             </div>
 
