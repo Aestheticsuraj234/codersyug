@@ -8,7 +8,7 @@ const Footer = () => {
                 Copyright © 2023 Codersyug | All Rights Reserved
             </p>
             <div className='flex gap-x-9'>
-                <Link href={"/terms-of-use"}>
+                <Link href={"/terms-conditions"}>
                     Terms & Conditions
                 </Link>
                 <Link href={"/privacy-policy"}>
