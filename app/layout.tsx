@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { AppProvider } from '@/context/GlobalContext'
 import QueryProvider from '@/components/providers/query-provider'
 import { ModalProvider } from '@/components/providers/modal-provider'
-
+import { Analytics } from '@vercel/analytics/react';
 
 
 const fonts = Open_Sans({ subsets: ['latin'] })
@@ -48,7 +48,7 @@ export default function RootLayout({
                 <Toaster />
                 {children}
                 <ModalProvider/>
-              
+                <Analytics />
               </ThemeProvider>
             </body>
           </html>

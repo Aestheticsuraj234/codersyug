@@ -17,9 +17,7 @@ console.log(slug)
 
     const resources = await getResourcesBySlug(slug)
 
-    const handleDownload = async () => {
-        await incrementViewOnDownload(slug)
-    }
+    
 
 
 
