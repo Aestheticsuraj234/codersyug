@@ -53,7 +53,7 @@ const RichTextEditor = () => {
       onChange={setEditorState}
       modules={modules}
       formats={formats}
-      className="bg-white dark:bg-gray-700 dark:text-white"
+      className="bg-white dark:bg-gray-600 dark:text-white"
     />
   );
 };
