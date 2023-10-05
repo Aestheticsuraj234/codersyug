@@ -360,3 +360,13 @@ body::selection{
 .cl-internal-b3fm6y{
   @apply hidden
 }
+
+.tiptap.ProseMirror{
+  @apply outline-none
+}
+
+
+.is-active{
+  background-color: #dadada;
+  border-radius: 2px;
+}

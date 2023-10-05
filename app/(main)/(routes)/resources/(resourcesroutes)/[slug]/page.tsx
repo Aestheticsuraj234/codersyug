@@ -1,6 +1,5 @@
 
 import { getResourcesBySlug } from '@/server-action/action';
-
 import Image from "next/image"
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import DownloadButton from '@/components/Resources/download-button';
@@ -17,6 +16,7 @@ const ResoucesDownloadPage = async ({
 
     const resources = await getResourcesBySlug(slug)
 
+    
 
 
 
