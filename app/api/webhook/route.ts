@@ -34,6 +34,7 @@ export async function POST(req: Request) {
         where: {
           userId: parseInt(userId),
           resourceSlug: resourcesSlug,
+          isPuchasedByUser: true,
         },
       });
       
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
           data: {
             userId: parseInt(userId),
             resourceSlug: resourcesSlug,
+            isPuchasedByUser: true,
             
           },
         });
@@ -50,29 +52,7 @@ export async function POST(req: Request) {
         // User has already purchased this resource, handle accordingly (e.g., show an error)
         return new NextResponse("Already Purchased", { status: 400 });
       }
-      
-    //   await db.resources.update({
-    //     where: {
-    //       Slug: resourcesSlug,
-    //     },
-    //     data: {
-    //       purchasedBy: {
-    //         connect: {
-    //           userId: parseInt(userId), // Convert userId from string to int
-    //         },
-    //       },
-    //     },
-    //   });
-      
-      
-      
-      
-      
-      
-      
-      
-      // Continue with the purchase process
-      
+ 
       
   } else {
     return new NextResponse(`Webhook Error: Unhandled event type ${event.type}`, { status: 200 })

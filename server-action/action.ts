@@ -1,6 +1,7 @@
 "use server"
 import { Prisma, Categories as PrismaCategories, ResourceType } from '@prisma/client';
 import { db } from '@/lib/db';
+import { currentProfile } from '@/lib/current-profile';
 
 interface BuildPrismaQueryParams {
   type: ResourceType;
@@ -109,21 +110,31 @@ export const getResourcesBySlug = async (slug: string) => {
 }
 
 
+interface purchasedByProps{
+  id: number;
+  userId: number;
+  resourceSlug: string;
+  isPuchasedByUser: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-export const updatePurchasedResource = async (slug: string, userId: number) => {
-  const resource = await db.purchasedResources.create({
-    data: {
-      resource: {
-        connect: {
-          Slug: slug,
-        },
-      },
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
+
+export const isResourcePurchasedByCurrentUser = async (slug: string) => {
+  const profile = await currentProfile()
+  const resource =  await db.resources.findUnique({
+    where: {
+        Slug: slug,
+        purchasedBy: {
+            some: {
+                userId: profile?.id
+            }
+        }
+
     },
-  });
-  return resource;
+   
+
+});
+console.log(Boolean(resource))
+  return Boolean(resource);
 }

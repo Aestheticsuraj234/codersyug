@@ -131,6 +131,7 @@ model purchasedResources {
   userId     Int
   user       Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
   resourceSlug  String  
+  isPuchasedByUser Boolean @default(false)
   resource   Resources @relation(fields: [resourceSlug], references: [Slug], onDelete: Cascade)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt

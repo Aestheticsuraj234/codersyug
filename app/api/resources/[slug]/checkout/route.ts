@@ -36,6 +36,7 @@ export async function POST(
                 purchasedBy: {
                     some: {
                         userId: profile.id
+                       
                     }
                 }
 
