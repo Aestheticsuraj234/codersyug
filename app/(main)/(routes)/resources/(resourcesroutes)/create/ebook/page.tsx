@@ -58,7 +58,7 @@ const formSchema = z.object({
         message: "AccessType must be selected.",
     }),
     // price is optional if access type is free
-    price: z.number().min(0, {
+    price: z.string().min(0, {
         message: "Price must be greater than 0.01.",
     }).optional(),
 
@@ -91,7 +91,7 @@ const CreateEbook = () => {
             DownloadLink: "",
             category: "",
             AccessType: "",
-            price: 0,
+            price: "",
         },
     });
 
@@ -117,7 +117,7 @@ const CreateEbook = () => {
                 downloadLink: values.DownloadLink,
                 category: values.category,
                 accessType: values.AccessType,
-                price: values?.price
+                price: values.price
 
             })
             console.log(response.data);

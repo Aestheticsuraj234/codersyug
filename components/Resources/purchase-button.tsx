@@ -16,17 +16,17 @@ const PurchaseButton = ({
     const handlePurchase = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_URL}/api/resources/${slug}/checkout`);
+            const response = await axios.post(`/api/resources/${slug}/checkout`);
             window.location.assign(response.data.url);
             toast({
                 title: "Redirecting to payment gateway",
                 description: "Please wait...",
             });
             console.log(response.data);
-        } catch (error) {
+        } catch (error:any) {
             console.error(error);
             toast({
-                title: "Something went wrong",
+                title: `${error.response.data.message}`,
                 description: "Please try again",
             });
         } finally {
