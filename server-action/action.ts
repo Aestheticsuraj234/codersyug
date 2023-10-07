@@ -54,11 +54,13 @@ export async function getResources(params: BuildPrismaQueryParams) {
       category: true,
       Thumbnail: true,
       type: true,
-      author:true
+      author: true,
+      Price: true,
+      accessType: true,
     },
     skip: offset,
     take: perPage,
-    
+
   });
 
   return resources;
@@ -98,6 +100,29 @@ export const getResourcesBySlug = async (slug: string) => {
       category: true,
       Thumbnail: true,
       type: true,
+      accessType: true,
+      Price: true,
+      purchasedBy: true,
+    },
+  });
+  return resource;
+}
+
+
+
+export const updatePurchasedResource = async (slug: string, userId: number) => {
+  const resource = await db.purchasedResources.create({
+    data: {
+      resource: {
+        connect: {
+          Slug: slug,
+        },
+      },
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
     },
   });
   return resource;

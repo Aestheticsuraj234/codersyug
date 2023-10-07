@@ -33,6 +33,7 @@ import { isBase64Image, slugify } from "@/lib/utils";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { Categories } from "@prisma/client";
+import { ResourceAccessType } from "@prisma/client"
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 
@@ -52,13 +53,26 @@ const formSchema = z.object({
     }),
     category: z.string().min(1, {
         message: "Category must be selected.",
-    })
+    }),
+    AccessType: z.string().min(1, {
+        message: "AccessType must be selected.",
+    }),
+    // price is optional if access type is free
+    price: z.number().min(0, {
+        message: "Price must be greater than 0.01.",
+    }).optional(),
+
+
+
+
+
 });
 
 
 // wanted to convert Categories object to array 
 
 const categoriesArray = Object.values(Categories);
+const accessTypeArray = Object.values(ResourceAccessType);
 
 const CreateEbook = () => {
 
@@ -76,6 +90,8 @@ const CreateEbook = () => {
             Thumbnail: "",
             DownloadLink: "",
             category: "",
+            AccessType: "",
+            price: 0,
         },
     });
 
@@ -100,6 +116,9 @@ const CreateEbook = () => {
                 thumbnail: values.Thumbnail,
                 downloadLink: values.DownloadLink,
                 category: values.category,
+                accessType: values.AccessType,
+                price: values?.price
+
             })
             console.log(response.data);
             setIsSubmitting(false);
@@ -330,13 +349,73 @@ const CreateEbook = () => {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="AccessType"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>AccessType</FormLabel>
+                                    <FormControl>
+                                        <Select onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <SelectTrigger className="w-[180px]">
+                                                <SelectValue placeholder="Select Access Type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <ScrollArea className="no-scrollbar h-44 w-auto">
+                                                    <SelectGroup>
+                                                        <SelectLabel>Access Type</SelectLabel>
+                                                        {accessTypeArray.map((accessType) => {
+                                                            return (
+                                                                <SelectItem
+                                                                    key={accessType}
+                                                                    {...field}
+                                                                    value={accessType}
+                                                                >
+                                                                    {accessType}
+                                                                </SelectItem>
+                                                            )
+                                                        })}
+                                                    </SelectGroup>
+                                                </ScrollArea>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage>{form.formState.errors.AccessType?.message}</FormMessage>
+                                </FormItem>
+                            )}
+                        />
+
+
+                        {form.watch("AccessType") === ResourceAccessType.PAID && (
+                            <FormField
+                                control={form.control}
+                                name="price"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Price</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Enter Price"
+                                                {...field}
+                                                className="!ring-0 !ring-offset-0"
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Enter the price for the paid resource.
+                                        </FormDescription>
+                                        <FormMessage>{form.formState.errors.price?.message}</FormMessage>
+                                    </FormItem>
+                                )}
+                            />
+                        )}
 
 
 
-                        {/* Other form fields go here */}
-                        <Button type="submit" >{
-                            isSubmitting ? <Loader2 className="animate-spin" /> : "Publish"
-                        }</Button>
+                        <Button type="submit" >
+                            {isSubmitting ? <Loader2 className="animate-spin" /> : "Publish"}
+                        </Button>
                     </form>
                 </Form>
             </div>

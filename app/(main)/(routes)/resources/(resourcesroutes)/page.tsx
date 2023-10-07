@@ -52,6 +52,8 @@ const Page = async ({ searchParams }: Props) => {
                   key={resource.id}
                   type={resource.type}
                   title={resource.Title}
+                  AccessType={resource.accessType}
+                  Price={resource.Price}
                   id={resource.id}
                   image={resource.Thumbnail}
                   downloadNumber={resource.Views}

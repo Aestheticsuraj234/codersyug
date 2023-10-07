@@ -6,9 +6,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-
 }
-
 
 model Profile {
   id         Int           @id @default(autoincrement())
@@ -23,6 +21,7 @@ model Profile {
   updatedAt  DateTime      @updatedAt
   likesOn    Likes[] // This creates a one-to-many relationship with Likes
   visited    VisitedBlog[] // This creates a one-to-many relationship with VisitedBlog
+  Purchased  purchasedResources[] // This creates a one-to-many relationship with purchasedResources
   resources  Resources[] // This creates a one-to-many relationship with Resources
 }
 
@@ -41,7 +40,7 @@ model Blog {
   category    String?
   subCategory String?
   authorId    Int
-  author      Profile       @relation(fields: [authorId], references: [id] ,onDelete: Cascade)
+  author      Profile       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   savedBy     Profile[]     @relation("SavedBlogs")
   comments    Comment[] // One-to-many relationship with comments
   // One-to-many relationship with likes
@@ -54,9 +53,9 @@ model Blog {
 model VisitedBlog {
   id        Int      @id @default(autoincrement())
   visitorId Int
-  visitor   Profile  @relation(fields: [visitorId], references: [id],onDelete: Cascade)
+  visitor   Profile  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
   blogId    Int
-  blog      Blog     @relation(fields: [blogId], references: [id] , onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -69,9 +68,9 @@ model Comment {
   id          Int      @id @default(autoincrement())
   text        String
   commenterId Int
-  commenter   Profile  @relation(fields: [commenterId], references: [id],onDelete: Cascade)
+  commenter   Profile  @relation(fields: [commenterId], references: [id], onDelete: Cascade)
   blogId      Int
-  blog        Blog     @relation(fields: [blogId], references: [id],onDelete: Cascade)
+  blog        Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -81,12 +80,12 @@ model Comment {
 
 model Likes {
   id        Int      @id @default(autoincrement())
-  liker     Profile  @relation(fields: [userId], references: [id],onDelete: Cascade)
+  liker     Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   blogId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Blog      Blog     @relation(fields: [blogId], references: [id],onDelete: Cascade)
+  Blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
 
   @@unique([userId, blogId])
   @@index([userId, blogId])
@@ -96,21 +95,69 @@ model Likes {
 model Resources {
   id           Int           @id @default(autoincrement())
   type         ResourceType? @default(EBOOK)
+  accessType   ResourceAccessType? @default(FREE) // Default to free
   Title        String
   Slug         String        @unique
   Description  String?       @db.LongText
   Thumbnail    String?       @db.LongText
+  Price        Float?        @default(0)
   DownloadLink String?       @db.LongText
   Views        Int?          @default(0)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   category     Categories?
+  attachment   Attachment[]
   subCategory  String?
   authorId     Int
-  author       Profile       @relation(fields: [authorId], references: [id],onDelete:Cascade)
-
+  author       Profile       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  purchasedBy  purchasedResources[] // This creates a one-to-many relationship with purchasedResources
   @@index([authorId])
 }
+
+model Attachment {
+  id         Int       @id @default(autoincrement())
+  name       String
+  url        String    @db.Text
+  resourceId Int
+  resource   Resources @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([resourceId])
+}
+
+model purchasedResources {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  user       Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resourceSlug  String  
+  resource   Resources @relation(fields: [resourceSlug], references: [Slug], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([resourceSlug])
+}
+
+
+
+
+model StripeCustomer {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  stripeCustomerId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+enum ResourceAccessType {
+  FREE
+  PAID
+}
+
 
 model test {
   id        Int      @id @default(autoincrement())
@@ -124,6 +171,7 @@ enum ResourceType {
   NOTES
   VIDEO
   CHEATSHEETS
+  PROJECTS
 }
 
 enum Categories {
@@ -154,10 +202,9 @@ enum Categories {
   CSharp
   CPlusPlus
   C
-
   WebDevelopment
-
   ProgrammingTips
   Git
   GitHub
+  BlockChain
 }

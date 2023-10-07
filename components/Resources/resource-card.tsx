@@ -3,8 +3,6 @@ import React from 'react'
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -17,12 +15,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from '../ui/button'
-import { FlagTriangleRight, Loader2, MoreVerticalIcon, Pencil, Trash2 } from 'lucide-react'
-import { currentUser, useUser } from '@clerk/nextjs'
+import { FlagTriangleRight, Loader2, LockIcon, MoreVerticalIcon, Pencil, Trash2 } from 'lucide-react'
+import {  useUser } from '@clerk/nextjs'
 import { deleteResource } from '@/server-action/action'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'
-import { set } from 'zod'
+import { ResourceAccessType } from '@prisma/client'
+
 interface resourceCardProps {
   id: number
   title: string
@@ -32,6 +31,8 @@ interface resourceCardProps {
   type: string
   slug: string
   author: any
+  AccessType: string
+  Price: number
 }
 
 const ResourceCard = ({
@@ -40,6 +41,8 @@ const ResourceCard = ({
   image,
   downloadNumber,
   downloadLink,
+  AccessType,
+  Price,
   type,
   slug,
   author
@@ -117,21 +120,26 @@ const ResourceCard = ({
           <CardTitle className=" paragraph-semibold line-clamp-1 w-full text-left">{title}</CardTitle>
         </CardHeader>
       </Link>
-      <CardContent className="flex-between mt-4 p-0">
+      <CardContent className="flex-between mt-4 p-0 mb-4">
         <div className="flex-center body-medium gap-1.5 ">
           <Image
             src="/downloads.svg" width={20} height={20} alt="download"
           />
           {downloadNumber}
-          <Badge className='
-           
-            bg-gradient-to-r dark:from-pink-300 dark:via-purple-300 dark:to-indigo-400  
-            from-gray-700 via-gray-900 to-black
-           ml-2
-           
-               '>
+          <Badge 
+          variant={"outline"}
+          >
             {type}
           </Badge>
+         {
+            AccessType === ResourceAccessType.FREE ? <Badge 
+            variant={"free"}
+            >
+              Free
+            </Badge>: <Badge variant={"paid"} className='flex-center gap-2'>
+         <LockIcon size={16} className='text-xs'/>   Unlock
+            </Badge>
+         }
         </div>
         <Link href={`/resources/${slug}`} className="flex-center text-gradient_purple-blue body-semibold gap-1.5">
           Download Now
