@@ -8,6 +8,7 @@ import { AppProvider } from '@/context/GlobalContext'
 import QueryProvider from '@/components/providers/query-provider'
 import { ModalProvider } from '@/components/providers/modal-provider'
 import { Analytics } from '@vercel/analytics/react';
+import  ConfettiProvider  from '@/components/providers/confetti-provider'
 
 
 const fonts = Open_Sans({ subsets: ['latin'] })
@@ -49,6 +50,7 @@ export default function RootLayout({
                 {children}
                 <ModalProvider/>
                 <Analytics />
+                <ConfettiProvider />
               </ThemeProvider>
             </body>
           </html>

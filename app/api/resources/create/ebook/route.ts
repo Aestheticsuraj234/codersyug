@@ -4,9 +4,8 @@ import { currentProfile } from "@/lib/current-profile";
 
 export const POST = async (req: Request) => {
     try {
-        const { title, slug, description, thumbnail, downloadLink, category } = await req.json();
-        // console.log(title, slug, description, thumbnail, downloadLink, category);
-
+        const { title, slug, description, thumbnail, downloadLink, category ,   accessType,price } = await req.json();
+      
 
         const profile = await currentProfile();
 
@@ -25,6 +24,8 @@ export const POST = async (req: Request) => {
                 Thumbnail: thumbnail,
                 DownloadLink: downloadLink,
                 category: category,
+                accessType: accessType,
+                Price: parseInt(price),
                 author: {
                     connect: {
                         id: profile?.id

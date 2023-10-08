@@ -318,6 +318,14 @@ body::selection{
   text-fill-color: transparent;
 }
 
+.text-gradient_green {
+  background: linear-gradient(90deg, #4cffae 0%, #73f899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
 .gradient_blue-purple {
   background: linear-gradient(90deg, #4ca5ff 0%, #b573f8 100%);
 }

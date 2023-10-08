@@ -74,3 +74,11 @@ export function formUrlQuery({ params, key, value, keysToRemove }: UrlQueryParam
     { skipNull: true }
   );
 }
+
+
+export const formatPrice = (price: number) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "INR"
+  }).format(price)
+}
