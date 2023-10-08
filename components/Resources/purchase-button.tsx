@@ -27,7 +27,7 @@ const PurchaseButton = ({
                 title: "Redirecting to payment gateway",
                 description: "Please wait...",
             });
-            console.log(response.data);
+            
 
             // Trigger the confetti animation after the redirection
             

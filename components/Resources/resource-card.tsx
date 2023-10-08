@@ -55,8 +55,7 @@ const ResourceCard = ({
   const handleResourceDelete = async (id: number) => {
     try {
       setIsDelete(true);
-      const deletedResource = await deleteResource(id);
-      console.log("Resource deleted successfully:", deletedResource);
+       await deleteResource(id);
       setIsDelete(false);
       router.refresh();
       // Optionally, you can trigger any additional actions after successful deletion here.

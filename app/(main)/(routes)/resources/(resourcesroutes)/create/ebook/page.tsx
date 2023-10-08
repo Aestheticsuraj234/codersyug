@@ -96,7 +96,7 @@ const CreateEbook = () => {
     });
 
     const onSubmit = async (values: any) => {
-        console.log(values);
+       
         try {
             setIsSubmitting(true);
 
@@ -120,7 +120,7 @@ const CreateEbook = () => {
                 price: values.price
 
             })
-            console.log(response.data);
+            
             setIsSubmitting(false);
 
             if (response.status === 201) {
@@ -131,7 +131,7 @@ const CreateEbook = () => {
                 });
                 form.reset();
             } else {
-                console.log('Request failed:', response.status, response.statusText);
+              
                 toast({
                     title: "Uh oh! Something went wrong.",
                     description: "There was a problem with your request.",
