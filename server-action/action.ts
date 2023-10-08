@@ -110,16 +110,6 @@ export const getResourcesBySlug = async (slug: string) => {
 }
 
 
-interface purchasedByProps{
-  id: number;
-  userId: number;
-  resourceSlug: string;
-  isPuchasedByUser: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-
 export const isResourcePurchasedByCurrentUser = async (slug: string) => {
   const profile = await currentProfile()
   const resource =  await db.resources.findUnique({
@@ -135,6 +125,6 @@ export const isResourcePurchasedByCurrentUser = async (slug: string) => {
    
 
 });
-console.log(Boolean(resource))
+
   return Boolean(resource);
 }

@@ -6,24 +6,33 @@ import { formatPrice } from '@/lib/utils';
 import { useToast } from '../ui/use-toast';
 import { Loader2 } from 'lucide-react';
 
+
 const PurchaseButton = ({
     slug,
     price,
 }: any) => {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
+  
 
     const handlePurchase = async () => {
         try {
             setIsLoading(true);
             const response = await axios.post(`/api/resources/${slug}/checkout`);
+            
+            // Redirect to the payment gateway first
             window.location.assign(response.data.url);
+
             toast({
                 title: "Redirecting to payment gateway",
                 description: "Please wait...",
             });
             console.log(response.data);
-        } catch (error:any) {
+
+            // Trigger the confetti animation after the redirection
+            
+    
+        } catch (error: any) {
             console.error(error);
             toast({
                 title: `${error.response.data.message}`,

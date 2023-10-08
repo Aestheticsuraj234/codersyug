@@ -7,8 +7,9 @@ import { ResourceAccessType } from '@prisma/client';
 import { Badge } from '@/components/ui/badge';
 import {  Gift, LockIcon, Unlock } from 'lucide-react';
 import PurchaseButton from '@/components/Resources/purchase-button';
-
 import DownloadLinkAlert from '@/components/Resources/purchased-link-code_block';
+import ResourceDetailsHeader from '@/components/Resources/resource-details-headers';
+import { Separator } from "@/components/ui/separator"
 
 
 const ResoucesDownloadPage = async ({
@@ -23,11 +24,14 @@ const ResoucesDownloadPage = async ({
     const isUnlocked = await isResourcePurchasedByCurrentUser(slug);
 
 
-
-
-
     return (
-        <section className="nav-padding hero-height  y-paddings  flex w-[100%] flex-col items-center justify-center gap-5 lg:flex-row px-12">
+        <section className='nav-padding paddings mt-6 hero-height  y-paddings'>
+           <ResourceDetailsHeader
+           category={resources?.category}
+              type={resources?.type}
+           />
+           <Separator/> 
+        <div className="  flex w-[100%] flex-col items-center justify-center gap-5 lg:flex-row ">
             <div className='flex flex-1 flex-col items-start justify-center'>
                 <div className='flex-start w-full mt-2 mb-2 '>
                     {
@@ -106,9 +110,9 @@ const ResoucesDownloadPage = async ({
 
             <div className="flex flex-1 justify-center mt-10 lg:mb-12 lg:justify-end lg:pr-12">
                 <Image src={resources?.Thumbnail as string | StaticImport} alt="ebook image" loading="lazy" width="270" height="370" draggable={false} className="rounded-lg object-contain lg:rotate-12" />
-
             </div>
 
+        </div>
         </section>
     );
 };

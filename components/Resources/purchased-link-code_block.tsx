@@ -2,18 +2,18 @@
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
+
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogFooter,
-  
+
   } from "@/components/ui/dialog"
   import { Input } from "@/components/ui/input";
   import { Button } from "@/components/ui/button";
   import { Label } from "@/components/ui/label";
   import { Check, Copy } from "lucide-react";
 import { useState } from "react";
+
   
   const DownloadLinkAlert = ({
     triggertext,
@@ -23,9 +23,9 @@ import { useState } from "react";
     downloadLink
   }: any) => {
     const [copied, setCopied] = useState(false);
-
+    
     const onCopy = () => {
-        navigator.clipboard.write(downloadLink);
+        navigator.clipboard.writeText(downloadLink);
         setCopied(true);
     
         setTimeout(() => {
@@ -35,7 +35,7 @@ import { useState } from "react";
 
 
     return (
-      <Dialog>
+      <Dialog >
         <DialogTrigger className={classNames} >{triggertext}</DialogTrigger>
         <DialogContent className="bg-white text-black p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
@@ -57,7 +57,7 @@ import { useState } from "react";
             />
             <Button  onClick={onCopy} size="icon">
               {copied 
-                ? <Check className="w-4 h-4" /> 
+                ? <Check className="w-4 h-4 text-green-400" /> 
                 : <Copy className="w-4 h-4" />
               }
             </Button>
