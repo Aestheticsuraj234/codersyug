@@ -19,6 +19,7 @@ const PurchaseButton = ({
         try {
             setIsLoading(true);
             const response = await axios.post(`/api/resources/${slug}/checkout`);
+            console.log(response.data.url);
             
             // Redirect to the payment gateway first
             window.location.assign(response.data.url);
