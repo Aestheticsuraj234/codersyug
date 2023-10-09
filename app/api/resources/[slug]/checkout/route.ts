@@ -112,8 +112,8 @@ console.log("[StripeCustomer_checkout]", stripeCustomer)
             mode: "payment",
             line_items,
             // payment_method_types: ["card"],
-            success_url: `${process.env.NEXT_PUBLIC_URL}/resources/${params.slug}?success=1`,
-            cancel_url: `${process.env.NEXT_PUBLIC_URL}/resources/${params.slug}?canceled=1`,
+            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/resources/${params.slug}?success=1`,
+            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/resources/${params.slug}?canceled=1`,
             metadata: {
                 userId: profile.id,
                 resourcesSlug: resources.Slug!,

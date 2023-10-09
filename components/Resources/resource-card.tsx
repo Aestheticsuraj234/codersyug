@@ -68,7 +68,7 @@ const ResourceCard = ({
 
   const isResourceUnlockedByCurrentUser = async () => {
     try {
-      const resource = await isResourcePurchasedByCurrentUser(slug); // Use slug instead of id
+      const resource = await isResourcePurchasedByCurrentUser(slug); 
       setIsResourceUnlocked(!!resource);
 
     } catch (error) {
