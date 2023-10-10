@@ -3,9 +3,11 @@ import ResourceHeader from '@/components/Resources/resource-header';
 import Filters from '@/components/Resources/filters';
 import SearchForm from '@/components/Resources/search-form';
 import StickyButton from '@/components/Resources/sticky-button';
-import { getResources } from '@/server-action/action';
+import { getProjectResources, getResources } from '@/server-action/action';
 
 import { Categories, ResourceType } from '@prisma/client';
+import { Separator } from '@/components/ui/separator';
+import ProjectCard from '@/components/Resources/project-card';
 
 
 
@@ -28,6 +30,41 @@ const Page = async ({ searchParams }: Props) => {
     page: 1, // You can set the page and perPage values as needed
     perPage: 10,
   });
+
+  const notes = await getResources({
+    type: ResourceType.NOTES, // Specify the resource type
+    query,
+    category,
+    page: 1, // You can set the page and perPage values as needed
+    perPage: 10,
+
+  })
+
+  const videos = await getResources({
+    type: ResourceType.VIDEO, // Specify the resource type
+    query,
+    category,
+    page: 1, // You can set the page and perPage values as needed
+    perPage: 10,
+  })
+
+  const projects = await getProjectResources({
+    type: ResourceType.PROJECTS, // Specify the resource type
+    query,
+    category,
+    page: 1, // You can set the page and perPage values as needed
+    perPage: 10,
+  })
+
+  const cheatsheets = await getResources({
+    type: ResourceType.CHEATSHEETS, // Specify the resource type
+    query,
+    category,
+    page: 1, // You can set the page and perPage values as needed
+    perPage: 10,
+  })
+
+
 
   return (
     <>
@@ -63,9 +100,81 @@ const Page = async ({ searchParams }: Props) => {
                 />
               ))
             ) : (
+              null
+            )}
+          </div>
+          <Separator />
+          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
+            {notes && notes.length > 0 ? (
+              notes.map((resource: any) => (
+                <ResourceCard
+                  key={resource.id}
+                  type={resource.type}
+                  title={resource.Title}
+                  AccessType={resource.accessType}
+                  Price={resource.Price}
+                  id={resource.id}
+                  image={resource.Thumbnail}
+                  downloadNumber={resource.Views}
+                  slug={resource.Slug}
+                  downloadLink={resource.DownloadLink}
+                  author={resource.author}
+                />
+              ))
+            ) : (
               <p className="body-regular text-white-400">
                 No resources found
               </p>
+            )}
+          </div>
+          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
+            {cheatsheets && cheatsheets.length > 0 ? (
+
+              cheatsheets.map((resource: any) => (
+                <>
+                  <Separator />
+                  <ResourceCard
+                    key={resource.id}
+                    type={resource.type}
+                    title={resource.Title}
+                    AccessType={resource.accessType}
+                    Price={resource.Price}
+                    id={resource.id}
+                    image={resource.Thumbnail}
+                    downloadNumber={resource.Views}
+                    slug={resource.Slug}
+                    downloadLink={resource.DownloadLink}
+                    author={resource.author}
+                  />
+                </>
+              ))
+            ) : (
+              null
+            )}
+          </div>
+          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
+            {projects && projects.length > 0 ? (
+
+              projects.map((resource: any) => (
+                <>
+                  <Separator />
+                  <ProjectCard
+                    TechStacks={resource.TechStacks}
+                    Thumbnail={resource.Thumbnail}
+                    Title={resource.Title}
+                    accessType={resource.accessType}
+                    author={resource.author}
+                    downloadNumber={resource.Views}
+                    previewLink={resource.PreviewLink}
+                    price={resource.Price}
+                    slug={resource.Slug}
+                    sourceCodeLink={resource.SourceCodeLink}
+                    type={resource.type}
+                  />
+                </>
+              ))
+            ) : (
+              null
             )}
           </div>
         </section>

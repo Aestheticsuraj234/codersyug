@@ -44,7 +44,7 @@ export async function POST(
            
 
         });
-        console.log("[resources_slug_checkout]", Boolean(ALREADY_PURCHASED))
+    
 // if resource is already purchased by user, return already purchased
         if (ALREADY_PURCHASED) {
             return new NextResponse("Already Purchased", { status: 400 })
@@ -63,8 +63,6 @@ export async function POST(
                     product_data: {
                         name: resources.Title!,
                         description: resources.Description! || undefined,
-
-
                     },
                     unit_amount: Math.round(resources.Price! * 100) || undefined
                 },

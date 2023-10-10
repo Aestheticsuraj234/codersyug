@@ -1,5 +1,5 @@
 
-import { getResourcesBySlug, isResourcePurchasedByCurrentUser } from '@/server-action/action';
+import { getResourcesBySlug, incrementViewOnDownload, isResourcePurchasedByCurrentUser } from '@/server-action/action';
 import Image from "next/image"
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import DownloadButton from '@/components/Resources/download-button';
@@ -23,6 +23,7 @@ const ResoucesDownloadPage = async ({
     const resources = await getResourcesBySlug(slug);
     const isUnlocked = await isResourcePurchasedByCurrentUser(slug);
 
+   
 
     return (
         <section className='nav-padding paddings mt-6 hero-height  y-paddings'>
@@ -77,6 +78,7 @@ const ResoucesDownloadPage = async ({
                                 : (
                                     isUnlocked ? (
                                         <DownloadLinkAlert
+                                        slug={slug}
                                             classNames={"inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"}
                                             triggertext={"Reveal Link"}
                                             downloadLink={resources?.DownloadLink}

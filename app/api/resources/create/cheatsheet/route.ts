@@ -16,7 +16,7 @@ export const POST = async (req: Request) => {
                 });
         }
 
-        const ebook = await db.resources.create({
+        const cheatsheets = await db.resources.create({
             data: {
                 Title: title,
                 Slug: slug,
@@ -37,11 +37,11 @@ export const POST = async (req: Request) => {
             }
         })
 
-        // console.log(ebook);
+        // console.log(cheatsheets);
 
 
 
-        return NextResponse.json(ebook, {
+        return NextResponse.json(cheatsheets, {
             status: 201,
         });
 

@@ -8,7 +8,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Code, FileCode2, Pen, ScrollText, Youtube, } from "lucide-react";
+import { Code, FileCode2, GanttChartSquare, GitBranch, Pen, ScrollText, Youtube, } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge"
 
@@ -32,16 +32,16 @@ const StickyButton = () => {
             id: 2,
             name: "Notes",
             icon: <ScrollText className="dark:text-zinc-100 text-zinc-800 " />,
-            routerLink: "/resources/create/Notes",
-            isInDevelopment: true
+            routerLink: "/resources/create/notes",
+            isInDevelopment: false
 
         },
         {
             id: 3,
             name: "Cheatsheets",
             icon: <Code className="dark:text-zinc-100 text-zinc-800 " />,
-            routerLink: "/resources/create/CheatSheet",
-            isInDevelopment: true
+            routerLink: "/resources/create/cheatsheets",
+            isInDevelopment: false
 
 
         },
@@ -51,9 +51,14 @@ const StickyButton = () => {
             icon: <Youtube className="dark:text-zinc-100 text-zinc-800 " />,
             routerLink: "/resources/create/Videos",
             isInDevelopment: true
-
-
         },
+        {
+            id:5,
+            name: "Projects",
+            icon: <GitBranch className="dark:text-zinc-100 text-zinc-800 " />,
+            routerLink: "/resources/create/projects",
+            isInDevelopment: false
+        }
     ]
     return (
         <div className="fixed bottom-12 right-5 z-50 ">
