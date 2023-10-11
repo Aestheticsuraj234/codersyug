@@ -107,7 +107,7 @@ model Resources {
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
   category     Categories?
-  techStack    TechStack[]
+  techStack    String?               @db.LongText // This is a comma separated string of tech stack
   attachment   Attachment[]
   subCategory  String?
   authorId     Int
@@ -117,16 +117,7 @@ model Resources {
   @@index([authorId])
 }
 
-model TechStack {
-  id         Int       @id @default(autoincrement())
-  name       String    @unique
-  resourceId Int
-  resource   Resources @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
 
-  @@index([resourceId])
-}
 
 model Attachment {
   id         Int       @id @default(autoincrement())

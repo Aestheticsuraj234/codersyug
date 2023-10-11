@@ -98,7 +98,7 @@ const ProjectCard = ({
                 <div className="overflow-x-auto max-w-full">
                     <ScrollArea className="no-scrollbar">
                         <ul className="dark:text-zinc-100 text-zinc-800 text-xs no-scrollbar flex gap-2 py-2 sm:max-w-md">
-                            {TechStacks.map((techstack: string) => (
+                            {TechStacks && TechStacks?.map((techstack: string) => (
                                 <button
                                     key={techstack}
 

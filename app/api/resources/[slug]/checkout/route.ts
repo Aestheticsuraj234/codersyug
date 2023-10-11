@@ -27,8 +27,6 @@ export async function POST(
 
         })
 
-        console.log("[resources_slug_checkout]", resources)
-        // if resource is already purchased by user, return already purchased
 
         const ALREADY_PURCHASED = await db.resources.findUnique({
             where: {
@@ -103,7 +101,7 @@ export async function POST(
 
         }
 
-console.log("[StripeCustomer_checkout]", stripeCustomer)
+
         // create a new checkout session
         const session = await stripe.checkout.sessions.create({
             customer: stripeCustomer.stripeCustomerId,
