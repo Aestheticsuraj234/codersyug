@@ -4,7 +4,7 @@
 CodersYug is an all-in-one platform tailored to empower computer science students on their academic journey and beyond. This platform provides a plethora of services and resources designed to enhance the learning experience and career prospects of its users.
 ### Database Model👻
 
-<img align='center' src="https://cloud.appwrite.io/v1/storage/buckets/64e6ef5650a3bc944e6f/files/6526461588fdc54f0bae/view?project=64d3707fc8db92bf44ff&mode=admin" width="230">
+<img align='center' src="https://cloud.appwrite.io/v1/storage/buckets/64e6ef5650a3bc944e6f/files/6526461588fdc54f0bae/view?project=64d3707fc8db92bf44ff&mode=admin" width="630" height="630">
 
 
 ## Key Features
