@@ -167,7 +167,7 @@ const ResourceCard = ({
 
         </div>
         <Link href={`/resources/${slug}`} className="flex-center text-gradient_purple-blue body-semibold gap-1.5">
-          {AccessType === ResourceAccessType.FREE ? "Download" : `${isResourceUnlocked ? `Get ${type}` : `Unlock Now`
+          {AccessType === ResourceAccessType.FREE ? "Download" : `${isResourceUnlocked ? `Get ${type}` : `Unlock`
             }`}
           <Image src="/arrow-blue.svg" width={13} height={10} alt="arrow" />
         </Link>

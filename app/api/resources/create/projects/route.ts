@@ -43,16 +43,7 @@ export const POST = async (req: Request) => {
                     accessType: accessType,
                     type: resourceType,
                     Price: parseInt(price),
-                   techStack:{
-                    connectOrCreate: techStacks.map((techStack:any) => ({
-                        where: {
-                            name: techStack,
-                        },
-                        create: {
-                            name: techStack,
-                        },
-                    })),
-                   },
+                    techStack:JSON.stringify(techStacks),
                     author:{
                         connect: {
                             id: profile?.id

@@ -58,6 +58,7 @@ export async function getResources(params: BuildPrismaQueryParams) {
       author: true,
       Price: true,
       accessType: true,
+      techStack: true,
     },
     skip: offset,
     take: perPage,
@@ -71,7 +72,7 @@ export async function getResources(params: BuildPrismaQueryParams) {
 interface BuildPrismaResourceQueryParams {
   type: ResourceType;
   query: string;
-  
+
   category: PrismaCategories | 'All'; // Use the Prisma enum type
   page: number;
   perPage: number;
@@ -81,22 +82,14 @@ export async function getProjectResources(params: BuildPrismaResourceQueryParams
   const { type, query, category, page, perPage } = params;
   const offset = (page - 1) * perPage;
 
-  // Fetch tech stacks from the database
-  const techStacks = await db.techStack.findMany();
-  
-  // Extract tech stack names into an array
-  const techStackNames = techStacks.map((stack) => stack.name);
+
+
+
 
   // Define the where object with Prisma's type
   const where: Prisma.ResourcesWhereInput = {
     type,
-    OR: techStackNames.map((stackName) => ({
-      techStack: {
-        some: {
-          name: stackName,
-        },
-      },
-    })),
+
   };
 
   // Create an array to hold filter conditions
@@ -107,6 +100,11 @@ export async function getProjectResources(params: BuildPrismaResourceQueryParams
       Title: {
         contains: query,
       },
+
+      techStack: {
+        contains: query
+      }
+
     });
   }
 

@@ -26,9 +26,8 @@ import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 import { set } from 'zod';
 import { Separator } from '../ui/separator';
 
-
-
 interface projectCardProps {
+    id: number;
     Title: string;
     Thumbnail: string;
     TechStacks: string[];
@@ -40,36 +39,44 @@ interface projectCardProps {
     sourceCodeLink: string;
     author: any;
     downloadNumber: number;
-
 }
 
 const ProjectCard = ({
+    id,
     Title,
     Thumbnail,
     TechStacks,
     type,
     slug,
-    price,
     accessType,
-    previewLink,
-    sourceCodeLink,
     author,
     downloadNumber
-
 }: projectCardProps) => {
     const { user } = useUser();
-
     const isAdmin = author?.userId === user?.id;
     const [isDelete, setIsDelete] = useState(false);
     const [isResourceUnlocked, setIsResourceUnlocked] = useState<boolean>(false);
     const router = useRouter();
     const [isMounted, setIsMounted] = useState(false);
+    
+    const handleResourceDelete = async (id: number) => {
+        try {
+          setIsDelete(true);
+           await deleteResource(id);
+          setIsDelete(false);
+          router.refresh();
+          // Optionally, you can trigger any additional actions after successful deletion here.
+        } catch (error) {
+          console.error("Error deleting resource:", error);
+          setIsDelete(false);
+          // Handle errors here if needed.
+        }
+      }
 
     const isResourceUnlockedByCurrentUser = async () => {
         try {
             const resource = await isResourcePurchasedByCurrentUser(slug);
             setIsResourceUnlocked(!!resource);
-
         } catch (error) {
             console.error("Error fetching resource:", error);
         }
@@ -79,13 +86,12 @@ const ProjectCard = ({
         isResourceUnlockedByCurrentUser();
     }, []);
 
-
-
+    console.log(TechStacks)
+   const parsedArray = TechStacks || [];
 
 
     return (
         <Card className='w-full max-w-fit border-0 bg-white shadow-md rounded-md dark:bg-zinc-800 p-4 sm:max-w-[356px]'>
-
             <CardHeader className="flex-center flex-col gap-2.5 !p-0 mb-3">
                 <div className="relative w-full aspect-video rounded-md overflow-hidden">
                     <Image
@@ -98,10 +104,9 @@ const ProjectCard = ({
                 <div className="overflow-x-auto max-w-full">
                     <ScrollArea className="no-scrollbar">
                         <ul className="dark:text-zinc-100 text-zinc-800 text-xs no-scrollbar flex gap-2 py-2 sm:max-w-md">
-                            {TechStacks && TechStacks?.map((techstack: string) => (
+                            {parsedArray && parsedArray?.map((techstack: any) => (
                                 <button
                                     key={techstack}
-
                                     className={`bg-gradient-to-r mb-4 from-gray-700 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 text-white font-normal whitespace-nowrap rounded-lg px-2 py-1 capitalize `}
                                 >
                                     {techstack}
@@ -111,8 +116,10 @@ const ProjectCard = ({
                         </ul>
                     </ScrollArea>
                 </div>
-                <div className='flex-between w-full'>
-                    <Link href={`/resources/#`}> <CardTitle className="paragraph-semibold line-clamp-1 w-full text-left hover:underline">{Title}</CardTitle></Link>
+                <div className='flex-between mt-4 p-0 mb-4 w-full '>
+                    <Link href={`/resources/#`}>
+                        <CardTitle className="paragraph-semibold line-clamp-1 w-full text-left hover:underline">{Title}</CardTitle>
+                    </Link>
                     <Popover>
                         <PopoverTrigger>
                             <Button variant='ghost' size='icon' className='mx-2'>
@@ -123,39 +130,43 @@ const ProjectCard = ({
                             align='center'
                             sideOffset={5}
                             className='bg-white dark:bg-zinc-900 flex flex-col items-start justify-start w-full'>
-                            {isAdmin
-                                ? (
-                                    <>
-                                        <Button variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
-                                            <Pencil className='w-5 h-5 hover:text-green-400 text-zinc-500' />
-                                            Edit <Badge variant='default' className='ml-2'>Soon!</Badge>
-                                        </Button>
-                                        <Button variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
-                                            {isDelete ? <Loader2
-                                                className="animate-spin w-5 h-5 hover:text-red-700 text-zinc-500"
-                                            /> : (<> <Trash2 className='w-5 h-5 hover:text-red-700 text-zinc-500' />
-                                                Delete</>)}
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <Button variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
-                                        <FlagTriangleRight className='h-5 w-5 hover:text-red-500 text-zinc-500' />
-                                        Report <Badge variant='default' className='ml-2'>Soon</Badge>
+                            {isAdmin ? (
+                                <>
+                                    <Button  variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
+                                        <Pencil className='w-5 h-5 hover:text-green-400 text-zinc-500' />
+                                        Edit <Badge variant='default' className='ml-2'>Soon!</Badge>
                                     </Button>
-                                )}
+                                    <Button onClick={() => handleResourceDelete(id)} variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
+                                        {isDelete ? (
+                                            <Loader2 className="animate-spin w-5 h-5 hover:text-red-700 text-zinc-500" />
+                                        ) : (
+                                            <>
+                                                <Trash2 className='w-5 h-5 hover:text-red-700 text-zinc-500' />
+                                                Delete
+                                            </>
+                                        )}
+                                    </Button>
+                                </>
+                            ) : (
+                                <Button variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
+                                    <FlagTriangleRight className='h-5 w-5 hover:text-red-500 text-zinc-500' />
+                                    Report <Badge variant='default' className='ml-2'>Soon</Badge>
+                                </Button>
+                            )}
                         </PopoverContent>
                     </Popover>
                 </div>
-
                 <div className='flex-between flex-row w-full'>
                     <Badge variant='outline' className='ml-2 h-8' >{type}</Badge>
                     <Badge variant='outline' className='ml-2 h-8'>{accessType}</Badge>
                     {
                         accessType === ResourceAccessType.FREE ? (
-                            <Badge variant={"free"} className='h-8'><div className='flex justify-center items-center gap-2 flex-row'>
-                                <Gift size={16} className='text-xs' />
-                                <p>Free</p>
-                            </div></Badge>
+                            <Badge variant={"free"} className='h-8'>
+                                <div className='flex justify-center items-center gap-2 flex-row'>
+                                    <Gift size={16} className='text-xs' />
+                                    <p>Free</p>
+                                </div>
+                            </Badge>
                         ) : (
                             <Badge variant={`${isResourceUnlocked ? "destructive" : "paid"}`} className='h-8'>
                                 {isResourceUnlocked ? (
@@ -172,28 +183,23 @@ const ProjectCard = ({
                             </Badge>
                         )
                     }
-
                 </div>
             </CardHeader>
             <Separator />
             <CardContent className='flex-between flex-row w-full mt-4'>
-                <Button size={"lg"} shape={"default"} className='flex-center ' >
-                    <Download size={16} className='text-xs ' />
+                <Button size={"lg"} shape={"default"} className='flex-center' >
+                    <Download size={16} className='text-xs' />
                     <p>{downloadNumber}</p>
-
                 </Button>
-                <Button size={"icon"} shape={"circle"} disabled={accessType===ResourceAccessType.PAID} >
+                <Button size={"icon"} shape={"circle"} disabled={accessType === ResourceAccessType.PAID} >
                     <Github size={16} className='text-xs' />
                 </Button>
                 <Button size={"icon"} shape={"circle"} >
                     <Globe2 size={16} className='text-xs' />
                 </Button>
-
-
-
             </CardContent>
         </Card>
     )
 }
 
-export default ProjectCard
+export default ProjectCard;

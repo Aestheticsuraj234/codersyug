@@ -151,7 +151,7 @@ const CreateProjects = () => {
                     title: "Article Submitted Successfully",
                     description: "Your article has been submitted successfully.",
                 });
-                form.reset();
+                // form.reset();
                 console.log(response.data);
             } else {
                 toast({

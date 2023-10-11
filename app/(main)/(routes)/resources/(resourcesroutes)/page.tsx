@@ -65,7 +65,6 @@ const Page = async ({ searchParams }: Props) => {
   })
 
 
-
   return (
     <>
       <main className='flex-center paddings mx-auto w-full max-w-screen-2xl flex-col '>
@@ -104,6 +103,9 @@ const Page = async ({ searchParams }: Props) => {
             )}
           </div>
           <Separator />
+          <h1 className="heading3 text-center text-white-800 mt-12">
+            Coding Notes
+            </h1>
           <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
             {notes && notes.length > 0 ? (
               notes.map((resource: any) => (
@@ -127,12 +129,15 @@ const Page = async ({ searchParams }: Props) => {
               </p>
             )}
           </div>
+          <h1 className="heading3 text-center text-white-800 mt-12">
+            Coding Cheatsheets
+            </h1>
           <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
             {cheatsheets && cheatsheets.length > 0 ? (
 
               cheatsheets.map((resource: any) => (
                 <>
-                  <Separator />
+               
                   <ResourceCard
                     key={resource.id}
                     type={resource.type}
@@ -152,14 +157,21 @@ const Page = async ({ searchParams }: Props) => {
               null
             )}
           </div>
-          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
+          <h1 className="heading3 text-center text-white-800 mt-12">
+            Coding Projects
+            </h1>
+          <div className='
+         mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'
+            
+>
             {projects && projects.length > 0 ? (
-
               projects.map((resource: any) => (
                 <>
-                  <Separator />
+                
                   <ProjectCard
-                    TechStacks={resource.TechStacks}
+                  key={resource.id}
+                  id={resource.id}
+                    TechStacks={JSON.parse(resource.techStack)}
                     Thumbnail={resource.Thumbnail}
                     Title={resource.Title}
                     accessType={resource.accessType}
@@ -177,6 +189,7 @@ const Page = async ({ searchParams }: Props) => {
               null
             )}
           </div>
+
         </section>
       </main>
     </>
