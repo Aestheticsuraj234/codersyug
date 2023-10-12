@@ -85,6 +85,7 @@ const Page = async ({ searchParams }: Props) => {
   <StickyButton />
   <section className='flex-center mt-6 w-full flex-col sm:mt-20'>
     <ResourceHeader query={query} category={category} />
+    {resourceCards(resources[0])}
     {resources[1].length > 0 && (
       <>
         <h1 className="heading3 text-center text-white-800 mt-12">Coding Notes</h1>
