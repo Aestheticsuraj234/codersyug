@@ -1,5 +1,5 @@
 "use client"
-import React, { ChangeEvent, useContext, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -29,12 +29,17 @@ import Image from "next/image";
 
 import { useForm } from "react-hook-form";
 
-import { isBase64Image, slugify } from "@/lib/utils";
+import { cn, isBase64Image, slugify } from "@/lib/utils";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { Categories, ResourceType } from "@prisma/client";
 import { ResourceAccessType } from "@prisma/client"
 import { ScrollArea } from "@/components/ui/scroll-area";
+import TagsInput from 'react-tagsinput'
+
+import 'react-tagsinput/react-tagsinput.css'
+
+
 
 
 const formSchema = z.object({
@@ -42,21 +47,29 @@ const formSchema = z.object({
         message: "Title must be at least 10 characters.",
     }),
     Slug: z.string().readonly(),
+
     Description: z.string().min(10, {
         message: "Description must be at least 10 characters.",
     }),
+
     Thumbnail: z.string().url({
         message: "Thumbnail must be a valid URL.",
     }),
     DownloadLink: z.string().url({
         message: "DownloadLink must be a valid URL.",
     }),
+    PreviewLink: z.string().url({
+        message: "PreviewLink must be a valid URL.",
+    }).optional(),
     category: z.string().min(1, {
         message: "Category must be selected.",
     }),
     AccessType: z.string().min(1, {
         message: "AccessType must be selected.",
     }),
+    TechStacks: z.array(z.string().min(1, {
+        message: "TechStacks must be selected."
+    })),
     // price is optional if access type is free
     price: z.string().min(0, {
         message: "Price must be greater than 0.01.",
@@ -74,11 +87,12 @@ const formSchema = z.object({
 const categoriesArray = Object.values(Categories);
 const accessTypeArray = Object.values(ResourceAccessType);
 
-const CreateEbook = () => {
+const CreateProjects = () => {
 
     const { startUpload } = useUploadThing("media");
 
     const [files, setFiles] = useState<File[]>([]);
+    const [tags, setTags] = useState<any>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm({
@@ -89,11 +103,16 @@ const CreateEbook = () => {
             Description: "",
             Thumbnail: "",
             DownloadLink: "",
+            PreviewLink: "",
             category: "",
             AccessType: "",
             price: "",
+            TechStacks: [""],
         },
     });
+
+
+
 
     const onSubmit = async (values: any) => {
        
@@ -106,22 +125,24 @@ const CreateEbook = () => {
                 const imgRes = await startUpload(files);
 
                 if (imgRes && imgRes[0].url) {
-                    values.thumbnail = imgRes[0].url; // Update the thumbnail with the uploaded image URL
+                    values.thumbnail = imgRes[0].url; 
                 }
             }
-            const response = await axios.post("/api/resources/create/ebook", {
+
+            const response = await axios.post("/api/resources/create/projects", {
                 title: values.Title,
                 slug: values.Slug,
                 description: values.Description,
                 thumbnail: values.Thumbnail,
                 downloadLink: values.DownloadLink,
+                previewLink: values.PreviewLink,
                 category: values.category,
                 accessType: values.AccessType,
                 price: values.price,
-                resourceType:ResourceType.EBOOK
+                resourceType: ResourceType.PROJECTS,
+                techStacks: values.TechStacks, 
+            });
 
-            })
-            
             setIsSubmitting(false);
 
             if (response.status === 201) {
@@ -130,32 +151,28 @@ const CreateEbook = () => {
                     title: "Article Submitted Successfully",
                     description: "Your article has been submitted successfully.",
                 });
-                form.reset();
+                // form.reset();
+                console.log(response.data);
             } else {
-              
                 toast({
                     title: "Uh oh! Something went wrong.",
                     description: "There was a problem with your request.",
                 });
                 form.reset();
             }
-
-        } catch (error) {
+        } catch (error:any) {
             setIsSubmitting(false);
-            console.error("Error:", error);
+            console.error("Error:", error.response);
             toast({
                 title: "Uh oh! Something went wrong.",
                 description: "There was a problem with your request.",
             });
-
-
-        }
-        finally {
+        } finally {
             setIsSubmitting(false);
             form.reset();
         }
-
     };
+
 
     const handleImage = (
         e: ChangeEvent<HTMLInputElement>,
@@ -185,7 +202,7 @@ const CreateEbook = () => {
     return (
         <div className="mt-20 flex flex-col items-center justify-center mx-10 mb-10">
             <h1 className="text-3xl font-extrabold bg-gradient-to-r from-gray-700 text-center mb-2 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">
-                Publish E-Books For Community
+                Publish Your Project for Coders
             </h1>
             <div className="flex flex-col space-y-4 w-full mt-10">
                 <Form {...form}>
@@ -200,7 +217,7 @@ const CreateEbook = () => {
                                         <Input placeholder="Top Chrome Extensions that you should know" className="  !ring-0 !ring-offset-0 " {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        Enter Your E-book Title
+                                        Enter Your Projects Title
                                     </FormDescription>
                                     <FormMessage>{form.formState.errors.Title?.message}</FormMessage>
                                 </FormItem>
@@ -270,7 +287,7 @@ const CreateEbook = () => {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Upload Thumbnail for your E-book
+                                        Upload Thumbnail for your Projects
                                     </FormDescription>
                                     <FormMessage>
                                         {form.formState.errors.Thumbnail?.message}
@@ -283,14 +300,30 @@ const CreateEbook = () => {
                             name="DownloadLink"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>DownloadLink</FormLabel>
+                                    <FormLabel>Project Link</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="https://drive.google.com/file/d/1ld1sgmdiAcfJpjBxI5icMinWRxY-8AWi/view" {...field} className="!ring-0 !ring-offset-0 " />
+                                        <Input placeholder="https://github.com/Aestheticsuraj234/ai-saas" {...field} className="!ring-0 !ring-offset-0 " />
                                     </FormControl>
                                     <FormDescription>
-                                        Enter Your E-book DownloadLink
+                                        Enter Your Projects ProjectLink
                                     </FormDescription>
                                     <FormMessage>{form.formState.errors.DownloadLink?.message}</FormMessage>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="PreviewLink"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Preview Link(Optional)</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="https://github.com/Aestheticsuraj234/ai-saas" {...field} className="!ring-0 !ring-offset-0 " />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Enter Your Projects PreviewLink
+                                    </FormDescription>
+                                    <FormMessage>{form.formState.errors.PreviewLink?.message}</FormMessage>
                                 </FormItem>
                             )}
                         />
@@ -305,12 +338,40 @@ const CreateEbook = () => {
                                         <Input placeholder="17+ chapters packed with example source code" {...field} className="!ring-0 !ring-offset-0 " />
                                     </FormControl>
                                     <FormDescription>
-                                        Enter Your E-book Description
+                                        Enter Your Projects Description
                                     </FormDescription>
                                     <FormMessage>{form.formState.errors.Description?.message}</FormMessage>
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="TechStacks"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>TechStacks</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Enter TechStacks (comma-separated)"
+                                            {...field}
+                                            className="!ring-0 !ring-offset-0"
+                                            onChange={(e) => {
+                                                // Split the input value into an array using commas as the delimiter
+                                                const techStacksArray = e.target.value.split(",").map((stack) => stack.trim());
+                                                // Update the form value for TechStacks
+                                                field.onChange(techStacksArray);
+                                            }}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Enter Your Projects TechStacks, separated by commas (e.g., react, next-js, prisma, sql-server)
+                                    </FormDescription>
+                                    <FormMessage>{form.formState.errors.TechStacks?.message}</FormMessage>
+                                </FormItem>
+                            )}
+                        />
+
+
 
 
                         <FormField
@@ -424,4 +485,4 @@ const CreateEbook = () => {
     );
 };
 
-export default CreateEbook;
+export default CreateProjects;

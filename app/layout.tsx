@@ -8,7 +8,8 @@ import { AppProvider } from '@/context/GlobalContext'
 import QueryProvider from '@/components/providers/query-provider'
 import { ModalProvider } from '@/components/providers/modal-provider'
 import { Analytics } from '@vercel/analytics/react';
-import  ConfettiProvider  from '@/components/providers/confetti-provider'
+
+import { cn } from '@/lib/utils'
 
 
 const fonts = Open_Sans({ subsets: ['latin'] })
@@ -39,7 +40,7 @@ export default function RootLayout({
         <QueryProvider>
           <html lang="en">
     
-            <body className={fonts.className}>
+            <body className={cn(fonts.className,"min-h-screen ")}>
 
               <ThemeProvider
                 attribute="class"
@@ -50,7 +51,7 @@ export default function RootLayout({
                 {children}
                 <ModalProvider/>
                 <Analytics />
-                <ConfettiProvider />
+            
               </ThemeProvider>
             </body>
           </html>

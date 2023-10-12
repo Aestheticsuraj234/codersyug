@@ -13,7 +13,7 @@
     "@clerk/nextjs": "^4.23.3",
     "@hookform/resolvers": "^3.3.1",
     "@mantine/hooks": "^7.0.0",
-    "@prisma/client": "^5.3.1",
+    "@prisma/client": "^5.4.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -56,6 +56,8 @@
     "react-icons": "^4.10.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-quill": "^2.0.0",
+    "react-tag-input": "^6.8.1",
+    "react-tagsinput": "^3.20.3",
     "stripe": "^13.9.0",
     "tailwind-merge": "^1.14.0",
     "tailwind-scrollbar": "^3.0.5",
@@ -70,7 +72,8 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",
     "@types/dompurify": "^3.0.3",
+    "@types/react-tagsinput": "^3.20.0",
     "@types/uuid": "^9.0.3",
-    "prisma": "^5.4.1"
+    "prisma": "^5.4.2"
   }
 }

@@ -74,7 +74,7 @@ const formSchema = z.object({
 const categoriesArray = Object.values(Categories);
 const accessTypeArray = Object.values(ResourceAccessType);
 
-const CreateEbook = () => {
+const CreateCheatSheets = () => {
 
     const { startUpload } = useUploadThing("media");
 
@@ -109,7 +109,7 @@ const CreateEbook = () => {
                     values.thumbnail = imgRes[0].url; // Update the thumbnail with the uploaded image URL
                 }
             }
-            const response = await axios.post("/api/resources/create/ebook", {
+            const response = await axios.post("/api/resources/create/cheatsheet", {
                 title: values.Title,
                 slug: values.Slug,
                 description: values.Description,
@@ -118,7 +118,7 @@ const CreateEbook = () => {
                 category: values.category,
                 accessType: values.AccessType,
                 price: values.price,
-                resourceType:ResourceType.EBOOK
+                resourceType: ResourceType.CHEATSHEETS
 
             })
             
@@ -185,7 +185,7 @@ const CreateEbook = () => {
     return (
         <div className="mt-20 flex flex-col items-center justify-center mx-10 mb-10">
             <h1 className="text-3xl font-extrabold bg-gradient-to-r from-gray-700 text-center mb-2 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">
-                Publish E-Books For Community
+                Publish CheatSheet For Community
             </h1>
             <div className="flex flex-col space-y-4 w-full mt-10">
                 <Form {...form}>
@@ -200,7 +200,7 @@ const CreateEbook = () => {
                                         <Input placeholder="Top Chrome Extensions that you should know" className="  !ring-0 !ring-offset-0 " {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        Enter Your E-book Title
+                                        Enter Your CheatSheet Title
                                     </FormDescription>
                                     <FormMessage>{form.formState.errors.Title?.message}</FormMessage>
                                 </FormItem>
@@ -270,7 +270,7 @@ const CreateEbook = () => {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Upload Thumbnail for your E-book
+                                        Upload Thumbnail for your CheatSheet
                                     </FormDescription>
                                     <FormMessage>
                                         {form.formState.errors.Thumbnail?.message}
@@ -288,7 +288,7 @@ const CreateEbook = () => {
                                         <Input placeholder="https://drive.google.com/file/d/1ld1sgmdiAcfJpjBxI5icMinWRxY-8AWi/view" {...field} className="!ring-0 !ring-offset-0 " />
                                     </FormControl>
                                     <FormDescription>
-                                        Enter Your E-book DownloadLink
+                                        Enter Your CheatSheet DownloadLink
                                     </FormDescription>
                                     <FormMessage>{form.formState.errors.DownloadLink?.message}</FormMessage>
                                 </FormItem>
@@ -305,7 +305,7 @@ const CreateEbook = () => {
                                         <Input placeholder="17+ chapters packed with example source code" {...field} className="!ring-0 !ring-offset-0 " />
                                     </FormControl>
                                     <FormDescription>
-                                        Enter Your E-book Description
+                                        Enter Your CheatSheet Description
                                     </FormDescription>
                                     <FormMessage>{form.formState.errors.Description?.message}</FormMessage>
                                 </FormItem>
@@ -404,7 +404,7 @@ const CreateEbook = () => {
                                             />
                                         </FormControl>
                                         <FormDescription>
-                                            Enter the price for the paid resource.
+                                            Enter the price for the paid resource in ₹ .
                                         </FormDescription>
                                         <FormMessage>{form.formState.errors.price?.message}</FormMessage>
                                     </FormItem>
@@ -424,4 +424,4 @@ const CreateEbook = () => {
     );
 };
 
-export default CreateEbook;
+export default CreateCheatSheets;
