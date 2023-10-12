@@ -75,26 +75,37 @@ const Page = async ({ searchParams }: Props) => {
   return (
     <>
       <main className='flex-center paddings mx-auto w-full max-w-screen-2xl flex-col '>
-        <section className='nav-padding w-full'>
-          <div className="flex-center relative min-h-[274px] w-full flex-col rounded-xl bg-[url('/jsm_resources_banner.svg')] bg-cover bg-center text-center">
-            <h1 className='sm:heading1 heading2 mb-6 text-center text-white '>CodersYug Resources</h1>
-          </div>
-          <SearchForm />
-        </section>
-        <Filters />
-        <StickyButton />
-        <section className='flex-center mt-6 w-full flex-col sm:mt-20'>
-          <ResourceHeader query={query} category={category} />
-          {resourceCards(resources[0])}
-          <Separator />
-          <h1 className="heading3 text-center text-white-800 mt-12">Coding Notes</h1>
-          {resourceCards(resources[1])}
-          <h1 className="heading3 text-center text-white-800 mt-12">Coding Cheatsheets</h1>
-          {resourceCards(resources[3])}
-          <h1 className="heading3 text-center text-white-800 mt-12">Coding Projects</h1>
-          {resourceCards(projects, true)} {/* Pass true to indicate projects */}
-        </section>
-      </main>
+  <section className='nav-padding w-full'>
+    <div className="flex-center relative min-h-[274px] w-full flex-col rounded-xl bg-[url('/jsm_resources_banner.svg')] bg-cover bg-center text-center">
+      <h1 className='sm:heading1 heading2 mb-6 text-center text-white '>CodersYug Resources</h1>
+    </div>
+    <SearchForm />
+  </section>
+  <Filters />
+  <StickyButton />
+  <section className='flex-center mt-6 w-full flex-col sm:mt-20'>
+    <ResourceHeader query={query} category={category} />
+    {resources[1].length > 0 && (
+      <>
+        <h1 className="heading3 text-center text-white-800 mt-12">Coding Notes</h1>
+        {resourceCards(resources[1])}
+      </>
+    )}
+    {resources[3].length > 0 && (
+      <>
+        <h1 className="heading3 text-center text-white-800 mt-12">Coding Cheatsheets</h1>
+        {resourceCards(resources[3])}
+      </>
+    )}
+    {projects.length > 0 && (
+      <>
+        <h1 className="heading3 text-center text-white-800 mt-12">Coding Projects</h1>
+        {resourceCards(projects, true)} {/* Pass true to indicate projects */}
+      </>
+    )}
+  </section>
+</main>
+
     </>
   );
 };
