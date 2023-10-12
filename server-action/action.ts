@@ -183,6 +183,9 @@ export const getResourcesBySlug = async (slug: string) => {
       accessType: true,
       Price: true,
       purchasedBy: true,
+      techStack: true,
+      previewLink: true,
+      createdAt: true,
     },
   });
   return resource;

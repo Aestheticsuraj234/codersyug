@@ -65,11 +65,11 @@ const ProjectCard = ({
            await deleteResource(id);
           setIsDelete(false);
           router.refresh();
-          // Optionally, you can trigger any additional actions after successful deletion here.
+        
         } catch (error) {
           console.error("Error deleting resource:", error);
           setIsDelete(false);
-          // Handle errors here if needed.
+       
         }
       }
 
@@ -86,7 +86,6 @@ const ProjectCard = ({
         isResourceUnlockedByCurrentUser();
     }, []);
 
-    console.log(TechStacks)
    const parsedArray = TechStacks || [];
 
 
@@ -117,7 +116,7 @@ const ProjectCard = ({
                     </ScrollArea>
                 </div>
                 <div className='flex-between mt-4 p-0 mb-4 w-full '>
-                    <Link href={`/resources/#`}>
+                    <Link href={`/resources/${slug}`}>
                         <CardTitle className="paragraph-semibold line-clamp-1 w-full text-left hover:underline">{Title}</CardTitle>
                     </Link>
                     <Popover>
