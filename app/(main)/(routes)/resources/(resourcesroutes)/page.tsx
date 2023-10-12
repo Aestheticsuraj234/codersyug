@@ -9,61 +9,68 @@ import { Categories, ResourceType } from '@prisma/client';
 import { Separator } from '@/components/ui/separator';
 import ProjectCard from '@/components/Resources/project-card';
 
-
-
 interface Props {
   searchParams: { [key: string]: string | undefined };
 }
 
 const Page = async ({ searchParams }: Props) => {
-  // Map the category name to the Categories enum using a function
-  const category = mapCategoryNameToEnum(searchParams?.category || 'All'); // Provide an empty string as a default
+  const category = mapCategoryNameToEnum(searchParams?.category || 'All');
   const query = searchParams?.query || "";
 
+  const resourceTypes = [ResourceType.EBOOK, ResourceType.NOTES, ResourceType.VIDEO, ResourceType.CHEATSHEETS];
+  const resources = await Promise.all(
+    resourceTypes.map((type) => getResources({ type, query, category, page: 1, perPage: 10 }))
+  );
 
-
-  // Fetch resources based on the selected category and query
-  const resources = await getResources({
-    type: ResourceType.EBOOK, // Specify the resource type
+  const projects = await getProjectResources({
+    type: ResourceType.PROJECTS,
     query,
     category,
-    page: 1, // You can set the page and perPage values as needed
+    page: 1,
     perPage: 10,
   });
 
-  const notes = await getResources({
-    type: ResourceType.NOTES, // Specify the resource type
-    query,
-    category,
-    page: 1, // You can set the page and perPage values as needed
-    perPage: 10,
-
-  })
-
-  const videos = await getResources({
-    type: ResourceType.VIDEO, // Specify the resource type
-    query,
-    category,
-    page: 1, // You can set the page and perPage values as needed
-    perPage: 10,
-  })
-
-  const projects = await getProjectResources({
-    type: ResourceType.PROJECTS, // Specify the resource type
-    query,
-    category,
-    page: 1, // You can set the page and perPage values as needed
-    perPage: 10,
-  })
-
-  const cheatsheets = await getResources({
-    type: ResourceType.CHEATSHEETS, // Specify the resource type
-    query,
-    category,
-    page: 1, // You can set the page and perPage values as needed
-    perPage: 10,
-  })
-
+  const resourceCards = (resourceList: any[], isProject = false) => {
+    return (
+      <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
+        {resourceList && resourceList.length > 0
+          ? resourceList.map((resource: any) => (
+              isProject ? (
+                <ProjectCard
+                id={resource.id}
+                  key={resource.id}
+                  TechStacks={JSON.parse(resource.techStack)}
+                  Thumbnail={resource.Thumbnail}
+                  Title={resource.Title}
+                  accessType={resource.accessType}
+                  author={resource.author}
+                  downloadNumber={resource.Views}
+                  previewLink={resource.PreviewLink}
+                  price={resource.Price}
+                  slug={resource.Slug}
+                  sourceCodeLink={resource.SourceCodeLink}
+                  type={resource.type}
+                />
+              ) : (
+                <ResourceCard
+                  key={resource.id}
+                  type={resource.type}
+                  title={resource.Title}
+                  AccessType={resource.accessType}
+                  Price={resource.Price}
+                  id={resource.id}
+                  image={resource.Thumbnail}
+                  downloadNumber={resource.Views}
+                  slug={resource.Slug}
+                  downloadLink={resource.DownloadLink}
+                  author={resource.author}
+                />
+              )
+            ))
+          : null}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -77,119 +84,15 @@ const Page = async ({ searchParams }: Props) => {
         <Filters />
         <StickyButton />
         <section className='flex-center mt-6 w-full flex-col sm:mt-20'>
-          <ResourceHeader
-            query={searchParams?.query || ""}
-            category={category}
-          />
-          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
-            {resources && resources.length > 0 ? (
-              resources.map((resource: any) => (
-                <ResourceCard
-                  key={resource.id}
-                  type={resource.type}
-                  title={resource.Title}
-                  AccessType={resource.accessType}
-                  Price={resource.Price}
-                  id={resource.id}
-                  image={resource.Thumbnail}
-                  downloadNumber={resource.Views}
-                  slug={resource.Slug}
-                  downloadLink={resource.DownloadLink}
-                  author={resource.author}
-                />
-              ))
-            ) : (
-              null
-            )}
-          </div>
+          <ResourceHeader query={query} category={category} />
+          {resourceCards(resources[0])}
           <Separator />
-          <h1 className="heading3 text-center text-white-800 mt-12">
-            Coding Notes
-            </h1>
-          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
-            {notes && notes.length > 0 ? (
-              notes.map((resource: any) => (
-                <ResourceCard
-                  key={resource.id}
-                  type={resource.type}
-                  title={resource.Title}
-                  AccessType={resource.accessType}
-                  Price={resource.Price}
-                  id={resource.id}
-                  image={resource.Thumbnail}
-                  downloadNumber={resource.Views}
-                  slug={resource.Slug}
-                  downloadLink={resource.DownloadLink}
-                  author={resource.author}
-                />
-              ))
-            ) : (
-              <p className="body-regular text-white-400">
-                No resources found
-              </p>
-            )}
-          </div>
-          <h1 className="heading3 text-center text-white-800 mt-12">
-            Coding Cheatsheets
-            </h1>
-          <div className='mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'>
-            {cheatsheets && cheatsheets.length > 0 ? (
-
-              cheatsheets.map((resource: any) => (
-                <>
-               
-                  <ResourceCard
-                    key={resource.id}
-                    type={resource.type}
-                    title={resource.Title}
-                    AccessType={resource.accessType}
-                    Price={resource.Price}
-                    id={resource.id}
-                    image={resource.Thumbnail}
-                    downloadNumber={resource.Views}
-                    slug={resource.Slug}
-                    downloadLink={resource.DownloadLink}
-                    author={resource.author}
-                  />
-                </>
-              ))
-            ) : (
-              null
-            )}
-          </div>
-          <h1 className="heading3 text-center text-white-800 mt-12">
-            Coding Projects
-            </h1>
-          <div className='
-         mt-12 flex w-full flex-wrap justify-center gap-16 sm:justify-start'
-            
->
-            {projects && projects.length > 0 ? (
-              projects.map((resource: any) => (
-                <>
-                
-                  <ProjectCard
-                  key={resource.id}
-                  id={resource.id}
-                    TechStacks={JSON.parse(resource.techStack)}
-                    Thumbnail={resource.Thumbnail}
-                    Title={resource.Title}
-                    accessType={resource.accessType}
-                    author={resource.author}
-                    downloadNumber={resource.Views}
-                    previewLink={resource.PreviewLink}
-                    price={resource.Price}
-                    slug={resource.Slug}
-                    sourceCodeLink={resource.SourceCodeLink}
-                    type={resource.type}
-                  />
-                </>
-              ))
-            ) : (
-              null
-            )}
-          </div>
-
+          <h1 className="heading3 text-center text-white-800 mt-12">Coding Notes</h1>
+          {resourceCards(resources[1])}
+          <h1 className="heading3 text-center text-white-800 mt-12">Coding Cheatsheets</h1>
+          {resourceCards(resources[3])}
+          <h1 className="heading3 text-center text-white-800 mt-12">Coding Projects</h1>
+          {resourceCards(projects, true)} {/* Pass true to indicate projects */}
         </section>
       </main>
     </>
