@@ -34,7 +34,6 @@ const Navbar = () => {
                     <Github
                     size={25}
                     className='text-zinc-800 dark:text-zinc-100'
-
                     />
                     </Button>
                     </Link>

@@ -18,6 +18,7 @@ const BlogMainContainer = () => {
             setIsFetching(true);
             const response = await axios.get("/api/blog");
             setAllBlogData(response.data);
+            console.log("Blog Fetched Successfully:", response.data);
 
             toast({
                 title: "Success",

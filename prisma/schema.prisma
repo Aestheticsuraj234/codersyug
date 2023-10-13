@@ -28,7 +28,8 @@ model Profile {
 model Blog {
   id          Int           @id @default(autoincrement())
   title       String
-  slug        String        @unique
+  slug        String?        @unique
+  blogUrl     String?        
   description String?       @db.LongText
   thumbnail   String?       @db.LongText
   likes       Int?          @default(0)
@@ -46,9 +47,14 @@ model Blog {
   // One-to-many relationship with likes
   liked       Likes[]
   VisitedBy   VisitedBlog[] // One-to-many relationship with VisitedBlog
+  BlogType    BlogType?     @default(New)
 
   @@index([authorId])
 }
+
+
+
+
 
 model VisitedBlog {
   id        Int      @id @default(autoincrement())
@@ -159,6 +165,12 @@ enum ResourceAccessType {
   PAID
 }
 
+
+enum BlogType {
+  New
+  Existing
+}
+
 model test {
   id        Int      @id @default(autoincrement())
   name      String
@@ -173,6 +185,7 @@ enum ResourceType {
   CHEATSHEETS
   PROJECTS
 }
+
 
 enum Categories {
   Frontend

@@ -27,7 +27,10 @@ import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { Loader2Icon } from 'lucide-react';
 import BlogBottomBar from '@/components/Blogs/mobile-blog-bottombar';
-
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { BlogType } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
     ssr: false,
@@ -36,7 +39,7 @@ const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
 
 // Define a props interface for QuillEditor
 interface QuillEditorProps {
-    value: string;
+    value: any;
     onChange: (value: string) => void;
     modules: Record<string, unknown>; // You can define a more specific type for modules if needed
     formats: string[];
@@ -44,7 +47,7 @@ interface QuillEditorProps {
 }
 const QuillEditor = ({ value, onChange, modules, formats, className }: QuillEditorProps) => {
     const handleChange = (html: string) => {
-        onChange(html); // Call the onChange callback with the HTML content
+        onChange(html);
     };
 
     return (
@@ -65,8 +68,12 @@ const FormSchema = z.object({
     title: z.string().min(10, {
         message: "Title must be at least 10 characters.",
     }),
+
     description: z.string().min(10, {
         message: "Description must be at least 10 characters.",
+    }),
+    BlogUrl: z.string().min(0, {
+        message: "BlogUrl must be a valid URL.",
     }),
     thumbnail: z.string().url({
         message: "Thumbnail must be a valid URL.",
@@ -77,15 +84,24 @@ const FormSchema = z.object({
     subCategory: z.string().min(3, {
         message: "Sub Category must be at least 3 characters.",
     }),
-    content: z.string().min(10, {
+    content: z.string().min(0, {
         message: "Content must be at least 10 characters.",
-    })
+    }).optional(),
+    BlogType: z.string().min(1, {
+        message: "AccessType must be selected.",
+    }),
 })
+
+
+const blogTypeArray = Object.values(BlogType);
+
+
 
 const SubmitArticle = () => {
     const [isMounted, setIsMounted] = useState(false);
     const { startUpload } = useUploadThing("media");
     const [files, setFiles] = useState<File[]>([]);
+    const router = useRouter()
     const [editorState, setEditorState] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const modules = {
@@ -115,6 +131,8 @@ const SubmitArticle = () => {
         resolver: zodResolver(FormSchema),
         defaultValues: {
             title: "",
+            BlogUrl: "",
+            BlogType: "",
             description: "",
             thumbnail: "",
             category: "",
@@ -124,6 +142,9 @@ const SubmitArticle = () => {
     })
 
     async function onSubmit(values: any) {
+
+        console.log(values);
+
         try {
             setIsSubmitted(true);
             const blob = values.thumbnail;
@@ -136,32 +157,37 @@ const SubmitArticle = () => {
                 }
             }
 
-            const response = await axios.post('/api/blog', {
+
+            const response = await axios.post("/api/blog", {
                 title: values.title,
-                slug: slugify(values.title),
+                slug: values.BlogType === BlogType.New ? slugify(values.title) : null,
+                BlogUrl: values.BlogType === BlogType.Existing ? values.BlogUrl : null,
+                blogType: values.BlogType,
                 description: values.description,
                 thumbnail: values.thumbnail,
                 category: values.category,
                 subCategory: values.subCategory,
                 content: values.content,
-            });
+                BlogType: values.BlogType,
+            })
 
-            console.log(response);
 
+            console.log(response.data);
             if (response.status === 201) {
                 setIsSubmitted(false);
                 toast({
                     title: "Article Submitted Successfully",
                     description: "Your article has been submitted successfully.",
                 });
-                form.reset();
+
             } else {
                 console.log('Request failed:', response.status, response.statusText);
                 toast({
                     title: "Uh oh! Something went wrong.",
                     description: "There was a problem with your request.",
                 });
-                form.reset();
+
+
             }
         } catch (error) {
             console.error("Error:", error);
@@ -172,6 +198,7 @@ const SubmitArticle = () => {
         } finally {
             setIsSubmitted(false);
             form.reset();
+            router.refresh();
         }
     }
 
@@ -232,8 +259,47 @@ const SubmitArticle = () => {
                             )}
                         />
 
-                        {/* Slug Field (Auto-generated) */}
-                        <FormItem>
+
+                        <FormField
+                            control={form.control}
+                            name="BlogType"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Blog Type</FormLabel>
+                                    <FormControl>
+                                        <Select onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <SelectTrigger className="w-[180px]">
+                                                <SelectValue placeholder="Select Access Type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <ScrollArea className="no-scrollbar h-44 w-auto">
+                                                    <SelectGroup>
+                                                        <SelectLabel>Blog-Type</SelectLabel>
+                                                        {blogTypeArray.map((blogtype) => {
+                                                            return (
+                                                                <SelectItem
+                                                                    key={blogtype}
+                                                                    {...field}
+                                                                    value={blogtype}
+                                                                >
+                                                                    {blogtype}
+                                                                </SelectItem>
+                                                            )
+                                                        })}
+                                                    </SelectGroup>
+                                                </ScrollArea>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage>{form.formState.errors.BlogType?.message}</FormMessage>
+                                </FormItem>
+                            )}
+                        />
+
+
+                        {form.watch("BlogType") === BlogType.New && (<FormItem>
                             <FormLabel>Slug</FormLabel>
                             <FormControl>
                                 <Input value={slugify(form.getValues().title || '')} readOnly />
@@ -242,7 +308,29 @@ const SubmitArticle = () => {
                                 The slug will be auto-generated based on the title.
                             </FormDescription>
                             <FormMessage />
-                        </FormItem>
+                        </FormItem>)
+                        }
+
+                        {
+                            form.watch("BlogType") === BlogType.Existing && (<FormField
+                                control={form.control}
+                                name="BlogUrl"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>BlogUrl</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter BlogUrl" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Enter a BlogUrl for your article (at least 10 characters).
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />)
+                        }
+
+
 
                         {/* Description */}
                         <FormField
@@ -346,7 +434,7 @@ const SubmitArticle = () => {
                         />
 
                         {/* Rich text */}
-                        <FormField
+                        {form.watch("BlogType") === BlogType.New && (<FormField
                             control={form.control}
                             name="content"
                             render={({ field }) => (
@@ -354,7 +442,7 @@ const SubmitArticle = () => {
                                     <FormLabel>Write Your Content</FormLabel>
                                     <FormControl>
                                         <QuillEditor
-                                            value={field.value} // Pass editorState as the value
+                                            value={field.value || ""} // Pass editorState as the value
                                             onChange={
                                                 (value) => handleContent(value, field.onChange)
 
@@ -370,8 +458,8 @@ const SubmitArticle = () => {
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
-
+                        />)
+                        }
                         <Button type="submit" className="w-full mb-4 font-bold">
                             {
                                 isSubmitted ? (
@@ -386,7 +474,7 @@ const SubmitArticle = () => {
                 </Form>
             </div>
             <div className="md:hidden items-center justify-center flex text-center mx-4 ">
-            <BlogBottomBar />
+                <BlogBottomBar />
             </div>
         </div>
     )

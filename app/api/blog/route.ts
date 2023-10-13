@@ -1,20 +1,23 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
+import { BlogType } from "@prisma/client";
 
 
 export const POST = async (req: Request) => {
     try {
         const {
             title,
+            blogType,
             slug,
+            BlogUrl,
             description,
             thumbnail,
             category,
             subCategory,
             content,
         } = await req.json();
-      
+
         const profile = await currentProfile();
         if (!profile) {
             return new NextResponse(
@@ -30,46 +33,109 @@ export const POST = async (req: Request) => {
             // Define the average reading speed in words per minute
             const wordsPerMinute = 200;
 
-            // Split the content string into words by spaces
+            // Split the content into words using spaces
             const words = content.trim().split(/\s+/);
 
             // Calculate the number of words in the content
             const numberOfWords = words.length;
 
-            // Calculate the estimated reading time in minutes
-            const readTime = Math.ceil(numberOfWords / wordsPerMinute);
+            // Calculate the estimated reading time based on words and punctuation
+            const readingTime = Math.ceil(numberOfWords / wordsPerMinute);
 
-            return readTime;
+            // A minimum reading time to ensure content isn't shown as "0 min read"
+            const minReadingTime = 1;
+
+            return readingTime < minReadingTime ? minReadingTime : readingTime;
+        }
+
+
+
+        let NewBlog;
+        // use switch case to check the blog type
+        switch (blogType) {
+            case BlogType.Existing:
+               
+             
+                // create a new existing blog
+                NewBlog = await db.blog.create({
+                    data: {
+                        title: title,
+                        BlogType: blogType,
+                        blogUrl: BlogUrl,
+                        description: description,
+                        thumbnail: thumbnail,
+                        category: category,
+                        subCategory: subCategory,
+                        author: {
+                            connect: {
+                                id: profile.id
+                            }
+                        }
+
+                    }
+                })
+                console.log("Existing",NewBlog);
+                return new NextResponse(
+                    JSON.stringify({ message: "Blog created successfully" }),
+                    {
+                        status: 201,
+                    }
+                )
+
+            case BlogType.New:
+                // check if the blog is already exist
+                const newBlog = await db.blog.findUnique({
+                    where: {
+                        slug: slug
+                    }
+                })
+
+                if (newBlog) {
+                    return new NextResponse(
+                        JSON.stringify({ message: "Blog already exist" }),
+                        {
+                            status: 400,
+                        }
+                    )
+                }
+
+                // create a new  blog
+                NewBlog = await db.blog.create({
+                    data: {
+                        title: title,
+                        BlogType: blogType,
+                        slug: slug,
+                        description: description,
+                        thumbnail: thumbnail,
+                        category: category,
+                        subCategory: subCategory,
+                        content: content,
+                        readTime: calculateReadTime(content),
+                        author: {
+                            connect: {
+                                id: profile.id
+                            }
+                        }
+                    }
+                })
+                console.log("New",NewBlog);
+
+                return new NextResponse(
+                    JSON.stringify({ message: "Blog created successfully" }),
+                    {
+                        status: 201,
+                    }
+                )
+
+
+
         }
 
 
 
 
-        const newBlog = await db.blog.create({
-            data: {
-                title: title,
-                description: description,
-                thumbnail: thumbnail,
-                category: category,
-                subCategory: subCategory,
-                content: content,
-                slug: slug,
-                readTime: calculateReadTime(content),
-                author: {
-                    connect: {
-                        id: profile?.id
-                    }
-                }
-                
-            }
-        })
-
-        return NextResponse.json(newBlog, {
-            status: 201,
-        });
-
-    } catch (error) {
-       
+    } catch (error: any) {
+        console.log(error.message);
         return new NextResponse(
             JSON.stringify({ message: "error" }),
             {
@@ -111,12 +177,13 @@ export const GET = async () => {
             }
         })
 
+        console.log(blogs);
         return NextResponse.json(blogs, {
             status: 200,
         })
 
     } catch (error) {
-        
+
         return new NextResponse(
             JSON.stringify({ message: "error" }),
             {

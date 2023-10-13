@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/popover"
 import { Badge } from "../ui/badge";
 import { useState } from "react";
+import { BlogType } from "@prisma/client";
 
 const BlogCard = ({ data, isFetching }: any) => {
     const router = useRouter();
@@ -53,7 +54,7 @@ const BlogCard = ({ data, isFetching }: any) => {
                 data?.map((item: any) => (
                     <Card
                         key={item.id}
-                        className="w-full max-w-fit border cursor-pointer sm:max-w-[356px]"
+                        className="w-full max-w-fit border  flex-between flex-col cursor-pointer sm:max-w-[356px]"
                     >
                         <CardHeader>
                             <div className="flex flex-1 justify-between items-center w-full">
@@ -110,15 +111,23 @@ const BlogCard = ({ data, isFetching }: any) => {
                                     item?.title
                                 )}
                             </CardTitle>
+                            <div className="text-xs text-muted-foreground">
+    {isFetching ? (
+        <Skeleton className="w-auto h-auto text-xs" />
+    ) : (
+        <>
+            {item?.blogType === BlogType.New && (
+                <>
+                    {formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"}
+                </>
+            )}
+        </>
+    )}
+</div>
+
                         </CardHeader>
                         <CardContent>
-                            <CardDescription>
-                                {isFetching ? (
-                                    <Skeleton className="w-auto h-auto text-xs" />
-                                ) : (
-                                    formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"
-                                )}
-                            </CardDescription>
+                           
                             {isFetching ? (
                                 <Skeleton className="w-[250px] h-[152px] object-cover rounded-lg mt-1" />
                             ) : (
