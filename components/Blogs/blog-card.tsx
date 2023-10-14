@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
@@ -31,6 +30,8 @@ const BlogCard = ({ data, isFetching }: any) => {
     const { user } = useUser();
     const [isDelete, setIsDelete] = useState(false);
 
+    console.log("BlogCard data:", data)
+
     const isAdmin = data?.author?.userId === user?.id;
 
     const handleBlogDelete = async (id: number) => {
@@ -45,6 +46,16 @@ const BlogCard = ({ data, isFetching }: any) => {
             setIsDelete(false);
 
             // Handle errors here if needed.
+        }
+    };
+
+    // handle card click
+    const handleCardClick = (item: any) => {
+        if (item?.BlogType === BlogType.New) {
+            router.push(`/blogs/${item?.slug}`);
+        }
+        else {
+            window.open(item?.blogUrl, "_blank")
         }
     };
 
@@ -64,7 +75,7 @@ const BlogCard = ({ data, isFetching }: any) => {
                                     ) : (
                                         <>
                                             <AvatarImage src={item?.author?.imageUrl} />
-                                            <AvatarFallback>CN</AvatarFallback>
+                                            <AvatarFallback>CY</AvatarFallback>
                                         </>
                                     )}
                                 </Avatar>
@@ -89,8 +100,8 @@ const BlogCard = ({ data, isFetching }: any) => {
                                                     </Button>
                                                     <Button onClick={() => handleBlogDelete(item?.id)} variant='ghost' size='default' className='flex flex-row justify-center items-center gap-2'>
                                                         {isDelete ? <Loader2
-                                                        className="animate-spin w-5 h-5 hover:text-red-700 text-zinc-500"
-                                                        
+                                                            className="animate-spin w-5 h-5 hover:text-red-700 text-zinc-500"
+
                                                         /> : (<> <Trash2 className='w-5 h-5 hover:text-red-700 text-zinc-500' />
                                                             Delete</>)}
                                                     </Button>
@@ -104,7 +115,7 @@ const BlogCard = ({ data, isFetching }: any) => {
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                            <CardTitle onClick={() => router.push(`/blogs/${item.slug}`)} className=" paragraph-semibold line-clamp-1 w-full text-left">
+                            <CardTitle onClick={() => handleCardClick(item)} className=" paragraph-semibold cursor-pointer hover:underline line-clamp-1 w-full text-left">
                                 {isFetching ? (
                                     <Skeleton className="w-auto h-auto leading-none tracking-normal" />
                                 ) : (
@@ -112,22 +123,22 @@ const BlogCard = ({ data, isFetching }: any) => {
                                 )}
                             </CardTitle>
                             <div className="text-xs text-muted-foreground">
-    {isFetching ? (
-        <Skeleton className="w-auto h-auto text-xs" />
-    ) : (
-        <>
-            {item?.blogType === BlogType.New && (
-                <>
-                    {formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"}
-                </>
-            )}
-        </>
-    )}
-</div>
+                                {isFetching ? (
+                                    <Skeleton className="w-auto h-auto text-xs" />
+                                ) : (
+                                    <>
+                                        {item?.BlogType === BlogType.New && (
+                                            <>
+                                                {formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"}
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </div>
 
                         </CardHeader>
                         <CardContent>
-                           
+
                             {isFetching ? (
                                 <Skeleton className="w-[250px] h-[152px] object-cover rounded-lg mt-1" />
                             ) : (
@@ -153,6 +164,7 @@ const BlogCard = ({ data, isFetching }: any) => {
                                     }
                                     comment={item?.comments?.length || 0}
                                     slug={item?.slug}
+                                   
                                 />
                             )}
                         </CardFooter>

@@ -1,3 +1,5 @@
+import { BlogType } from "@prisma/client"
+
 export  interface BlogContentInterFace {
     liked: any
     author: {
@@ -10,6 +12,7 @@ export  interface BlogContentInterFace {
     authorId: number | string,
     category: string,
     content: HTMLAllCollection | string,
+    BlogType: BlogType,
     createdAt: string,
     updatedAt: string,
     description: string,
@@ -18,7 +21,7 @@ export  interface BlogContentInterFace {
     slug: string,
     title: string,
     thumbnail: string,
-    id: number | string,
+    id: number,
     comments: {
       length: number
       id: number | string,

@@ -1,5 +1,5 @@
 "use client";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -7,12 +7,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { BookmarkIcon, Heart, MessageCircle, Loader2, BookmarkPlus } from "lucide-react";
-import axios from "axios";
-import { currentProfile } from "@/lib/current-profile";
+
 import { toast } from "../ui/use-toast";
+import { useRouter as useNavigation } from "next/navigation";
+import { isBlogLike, isBlogSave, likeBlog, saveBlog } from "@/server-action/blog-actions";
+import { AiFillHeart } from "react-icons/ai";
+import { currentProfile } from "@/lib/current-profile";
+
 import { useRouter } from "next/navigation";
 interface IdsProps {
-  blogId: null | undefined | string | number;
+  blogId: any;
   likes: number;
   likedBy: number[];
   comment: number;
@@ -21,110 +25,127 @@ interface IdsProps {
 
 const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) => {
   const router = useRouter();
+ 
   const [like, setLikes] = useState(likes);
   const [comments, setComments] = useState(comment);
   const [isLiking, setIsLiking] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [Liked, setIsLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const userProfile = await currentProfile();
-        setProfile(userProfile);
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
-  useEffect(() => {
-    getSaved(blogId);
-  }, [blogId]);
-
-  useEffect(() => {
-    if (likedBy.includes(profile?.userId)) {
-      setIsLiked(true);
-    } else {
-      setIsLiked(false);
-    }
-  }, [likedBy, profile?.userId]);
-
-  const handleLikeClick = async () => {
-    if (isLiking) return;
-    setIsLiking(true);
-
+  const fetchProfile = async () => {
     try {
-      const res = await axios.post("/api/blog/like", {
-        blogId: blogId,
-      });
-      const data = res.data.likes;
+      const profile = await currentProfile();
+      setProfile(profile);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  }
+ 
+useEffect(()=>{
+  fetchProfile()
+  
 
-      if (data >= 0) {
-        setLikes(data);
-        setIsLiked(!isLiked);
+},[])
 
+
+ const getLiked = async () => {
+    try {
+      const isLiked = await isBlogLike(blogId,profile?.id);
+      setIsLiked(!!isLiked);
+
+    } catch (error) {
+      console.error("Error fetching LikedBlogs:", error);
+    }
+  }
+ 
+
+
+  // if my blog is liked then unlike it other wise like it and show toast accordingly
+  const toggleLikeClick = async () => {
+    try {
+      setIsLiking(true);
+      const isLiked = await isBlogLike(blogId,profile?.id);
+      if (isLiked) {
+        await likeBlog(blogId);
+        setIsLiked(false);
+        toast({
+          title: "thanks",
+          description: "We Will Send FeedBack to Author",
+        });
+        setIsLiking(false);
+        router.refresh()
+      } else {
+        await likeBlog(blogId);
+        setIsLiked(true);
         toast({
           title: "Success",
-          description: isLiked ? "Blog Unliked Successfully" : "Blog Liked Successfully",
+          description: "Blog Liked Successfully",
         });
-      } else {
-        console.error("Server returned a negative like count");
+        setIsLiking(false);
+        router.refresh()
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLiking(false);
-    }
-  };
 
-  const getSaved = async (blogId: any) => {
+    } catch (error) {
+
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+      })
+   
+  };
+  }
+
+  const getSaved = async () => {
     try {
-      const res = await axios.get(`/api/blog/saved/${blogId}`);
-      if (res.status === 200) {
-        setSaved(res.data.isSaved);
-      } else {
-        console.error("Failed to fetch saved status");
-      }
+      const isSaved = await isBlogSave(blogId);
+      setSaved(!!isSaved);
+
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching SavedBlogs:", error);
     }
   };
 
-  const handleSaveClick = async () => {
+
+  useEffect(() => {
+    getSaved();
+    getLiked();
+  }, [])
+
+
+  // if my blog is saved then unsave it other wise save it and show toast accordingly
+  const toggleSavedButton = async () => {
     try {
       setIsSaving(true);
-
-      const res = await axios.put("/api/blog", {
-        blogId: blogId,
-      });
-
-      if (res.status === 200) {
-        setSaved(true);
-        toast({
-          title: "Success",
-          description: "Blog Saved Successfully",
-        });
-        setIsSaving(false);
-      } else if (res.status === 201) {
+      const isSaved = await isBlogSave(blogId);
+      if (isSaved) {
+        await saveBlog(blogId);
         setSaved(false);
         toast({
           title: "Success",
           description: "Blog Unsaved Successfully",
         });
         setIsSaving(false);
+      } else {
+        await saveBlog(blogId);
+        setSaved(true);
+        toast({
+          title: "Success",
+          description: "Blog Saved Successfully",
+        });
+        setIsSaving(false);
       }
+
     } catch (error) {
+
       console.error(error);
       toast({
         title: "Error",
-        description: "Blog Not Saved Successfully",
-      });
-      setIsSaving(false);
+        description: "Something went wrong",
+      })
+
     }
   };
 
@@ -136,12 +157,14 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
     {
       name: "Like",
       icon: (
-        <TooltipTrigger onClick={handleLikeClick}>
+        <TooltipTrigger onClick={toggleLikeClick}>
           <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
             {isLiking ? (
               <Loader2 className="animate-spin text-gray-500 hover:text-rose-500" />
             ) : (
-              <Heart className={"text-gray-500"} />
+              Liked?
+              <AiFillHeart size={ 24} className={"text-rose-500"} />
+              :<Heart size={24} className={"text-gray-500 hover:text-rose-500"} />
             )}
             <span className="text-sm">{like}</span>
           </div>
@@ -162,7 +185,7 @@ const BlogCardActions = ({ blogId, likes, likedBy, comment, slug }: IdsProps) =>
     {
       name: "Add to library",
       icon: (
-        <TooltipTrigger onClick={handleSaveClick}>
+        <TooltipTrigger onClick={toggleSavedButton}>
           <div className="flex flex-row justify-center items-center space-x-1 cursor-pointer hover:text-gray-500 transition duration-300 ease-in-out transform hover:scale-110 hover:rotate-12">
             {isSaving ? (
               <Loader2 size={30} className="text-green-500 animate-spin" />

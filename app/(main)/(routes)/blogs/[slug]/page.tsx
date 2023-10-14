@@ -3,53 +3,43 @@ import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import HTMLReactParser from 'html-react-parser';
-import BlogBottomAction from '@/components/Blogs/blog-bottom-action';
 import { Skeleton } from '@/components/ui/skeleton';
-
 import { formatDate } from '@/lib/utils';
 import { AppContext } from '@/context/GlobalContext';
 import Image from 'next/image';
-import DOMPurify from 'dompurify'
+import DOMPurify from 'dompurify';
+import BlogBottomAction from '@/components/Blogs/blog-bottom-action';
+import { fetchBlogBySlug } from '@/server-action/blog-actions';
+
 const BlogMainContent = () => {
   const { blog } = useContext(AppContext);
   const { isLoading, setIsLoading, setBlogData, memoizedBlogData, blogData } = blog;
   const { slug } = useParams();
 
+  const fetchBlogData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchBlogBySlug(slug);
+      setBlogData(res);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching blog data:', error);
+      setIsLoading(false);
+    }
+  }
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const res = await axios.get(`/api/blog/${slug}`);
-        const data = await res.data;
-        setBlogData(data);
-        setIsLoading(false);
-       
-      } catch (error) {
-        console.error('Error fetching blog data:', error);
-        setIsLoading(false);
-      }
-    };
+    fetchBlogData();
+  }, []);
 
-    fetchData();
-  }, [slug, setIsLoading, setBlogData]);
-
-
-  const sanitizedData = () => ({
-    __html: DOMPurify.sanitize(memoizedBlogData?.content)
-  })
   return (
     <div className="flex flex-row justify-center items-center">
       <div className="mt-20 mx-4 flex-1 md:w-full  w-auto justify-center items-center">
         <h1 className="font-bold text-start text-xl text-zinc-800 dark:text-zinc-100 mb-10">
-          {isLoading ? (
-            <Skeleton style={{ width: '80%', height: '1rem' }} />
-          ) : (
-            memoizedBlogData?.title
-          )}
+          {isLoading ? <Skeleton style={{ width: '80%', height: '1rem' }} /> : memoizedBlogData?.title}
         </h1>
 
-        <div className="relative w-[100%] max-w-3xl  aspect-[70/45] mt-[2rem] m-auto ">
+        <div className="relative w-[100%] max-w-3xl  aspect-[70/45] mt-[2rem] m-auto">
           {isLoading ? (
             <Skeleton style={{ width: '100%', height: '20rem' }} />
           ) : (
@@ -58,7 +48,7 @@ const BlogMainContent = () => {
               alt="Thumbnail of the blog"
               className="w-full h-full object-contain rounded-xl"
               fill
-              sizes=' (max-width: 768px) 100vw ,700px'
+              sizes="(max-width: 768px) 100vw, 700px"
             />
           )}
         </div>
@@ -92,7 +82,7 @@ const BlogMainContent = () => {
         </div>
 
         <div className="flex flex-row justify-start items-start mt-10">
-          <div className=" md:px-10  px-2 md:py-10 py-2 mx-4 w-full h-full rounded-xl  mb-10">
+          <div className="md:px-10 px-2 md:py-10 py-2 mx-4 w-full h-full rounded-xl  mb-10">
             {isLoading ? (
               <>
                 <Skeleton style={{ width: '100%', height: '1rem' }} />
@@ -101,16 +91,24 @@ const BlogMainContent = () => {
                 {/* Add more skeleton lines for paragraphs */}
               </>
             ) : (
-              <div
-              dangerouslySetInnerHTML={sanitizedData()}
-              />
+              // Use DOMPurify to sanitize and parse the HTML content
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(memoizedBlogData?.content) }} />
             )}
           </div>
         </div>
       </div>
 
-      <BlogBottomAction />
-
+      <BlogBottomAction
+       blogId={memoizedBlogData?.id}
+       likes={memoizedBlogData?.likes}
+       likedBy={
+        memoizedBlogData?.liked?.map((like: any) => like?.userId) || []
+       }
+       comment={memoizedBlogData?.comments?.length || 0}
+       slug={memoizedBlogData?.slug}
+      
+      
+       />
     </div>
   );
 };

@@ -19,6 +19,8 @@ import BlogCardActions from '@/components/Blogs/blog-card-actions';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDate } from '@/lib/utils';
 import Empty from '@/components/Global/empty';
+import { Loader, Loader2 } from 'lucide-react';
+import { BlogType } from '@prisma/client';
 
 const SavedBlogs = () => {
   const [savedBlogs, setSavedBlogs] = useState<any>([]);
@@ -47,9 +49,20 @@ const SavedBlogs = () => {
     setIsMounted(true);
   }
 
+      // handle card click
+      const handleCardClick = (item: any) => {
+        if (item?.BlogType === BlogType.New) {
+            router.push(`/blogs/${item?.slug}`);
+        }
+        else {
+            window.open(item?.blogUrl, "_blank")
+        }
+    };
+
   return (
     <div className="mt-20 mx-4 flex-1 w-full justify-center items-center">
-      {savedBlogs.length === 0 ? (
+      { isFetching ? <Loader2 className="w-10 h-10 animate-spin text-center" /> :
+      savedBlogs.length === 0 ? (
         <Empty /> // Render Empty component when the array is empty
       ) : (
         <>
@@ -83,22 +96,29 @@ const SavedBlogs = () => {
                         </>
                       )}
                     </Avatar>
-                    <CardTitle onClick={() => router.push(`/blogs/${item.slug}`)} className="hover:underline cursor-pointer">
-                      {isFetching ? (
-                        <Skeleton className="w-auto h-auto leading-none tracking-normal" />
-                      ) : (
-                        item?.title
-                      )}
-                    </CardTitle>
+                    <CardTitle onClick={() => handleCardClick(item)} className=" paragraph-semibold cursor-pointer hover:underline line-clamp-1 w-full text-left">
+                                {isFetching ? (
+                                    <Skeleton className="w-auto h-auto leading-none tracking-normal" />
+                                ) : (
+                                    item?.title
+                                )}
+                            </CardTitle>
+                            <div className="text-xs text-muted-foreground">
+                                {isFetching ? (
+                                    <Skeleton className="w-auto h-auto text-xs" />
+                                ) : (
+                                    <>
+                                        {item?.BlogType === BlogType.New && (
+                                            <>
+                                                {formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"}
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </div>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription>
-                      {isFetching ? (
-                        <Skeleton className="w-auto h-auto text-xs" />
-                      ) : (
-                        formatDate(item?.createdAt) + " • " + item?.readTime + " m read time"
-                      )}
-                    </CardDescription>
+                    
                     {isFetching ? (
                       <Skeleton className="w-[250px] h-[152px] object-cover rounded-lg mt-1" />
                     ) : (
@@ -132,7 +152,8 @@ const SavedBlogs = () => {
             </div>
           </div>
         </>
-      )}
+      )
+                      }
     </div>
   );
 };
