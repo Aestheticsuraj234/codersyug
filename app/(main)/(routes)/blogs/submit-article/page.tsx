@@ -1,11 +1,10 @@
 "use client";
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Image from "next/image";
 import axios from "axios";
-
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -19,12 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { slugify } from '@/lib/utils';
-import { useUploadThing } from "@/lib/uploadthing";
+import { uploadFiles, useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
 import { X } from 'lucide-react';
-import 'react-quill/dist/quill.snow.css';
 
-import dynamic from 'next/dynamic';
 import { Loader2Icon } from 'lucide-react';
 import BlogBottomBar from '@/components/Blogs/mobile-blog-bottombar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -32,35 +29,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { BlogType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 
-const QuillNoSSRWrapper = dynamic(() => import('react-quill'), {
-    ssr: false,
-    loading: () => <div className="flex justify-center items-center h-64"><Loader2Icon className="animate-spin" size={64} /></div>,
-});
+import EditorJS from '@editorjs/editorjs';
+import Editor from '@/components/editor';
 
-// Define a props interface for QuillEditor
-interface QuillEditorProps {
-    value: any;
-    onChange: (value: string) => void;
-    modules: Record<string, unknown>; // You can define a more specific type for modules if needed
-    formats: string[];
-    className?: string;
-}
-const QuillEditor = ({ value, onChange, modules, formats, className }: QuillEditorProps) => {
-    const handleChange = (html: string) => {
-        onChange(html);
-    };
-
-    return (
-        <QuillNoSSRWrapper
-            value={value}
-            onChange={handleChange}
-            modules={modules}
-            formats={formats}
-            className={className}
-            theme="snow"
-        />
-    );
-};
 
 
 
@@ -84,9 +55,7 @@ const FormSchema = z.object({
     subCategory: z.string().min(3, {
         message: "Sub Category must be at least 3 characters.",
     }),
-    content: z.string().min(0, {
-        message: "Content must be at least 10 characters.",
-    }).optional(),
+    content: z.any().optional(),
     BlogType: z.string().min(1, {
         message: "AccessType must be selected.",
     }),
@@ -102,30 +71,11 @@ const SubmitArticle = () => {
     const { startUpload } = useUploadThing("media");
     const [files, setFiles] = useState<File[]>([]);
     const router = useRouter()
-    const [editorState, setEditorState] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const modules = {
-        toolbar: [
-            [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'align': [] }],
-            ['link', 'image', 'video'],
-            ['clean'],
-            [{ 'background': [] }, { 'color': [] }, { 'font': [] }, { 'code': [] }, { 'script': 'super' }, { 'script': 'sub' }],
-            ['blockquote', 'indent', 'list'],
-            [{ 'align': [] }, { 'direction': 'rtl' }],
-            ['code-block'],
-            [{ 'formula': 'formula' }],
-            [{ syntax: true }],
-        ],
-    };
+    const editorRef = useRef<EditorJS | null>(null);
 
-    const formats = [
-        'header', 'font', 'list', 'bold', 'italic', 'underline', 'strike',
-        'align', 'link', 'image', 'video', 'clean', 'background', 'color', 'code',
-        'script', 'blockquote', 'indent', 'direction', 'code-block', 'formula',
-    ];
+
+
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -137,16 +87,19 @@ const SubmitArticle = () => {
             thumbnail: "",
             category: "",
             subCategory: "",
-            content: editorState, // Initialize content with an empty string
+            content: null,
         }
     })
 
     async function onSubmit(values: any) {
-
-        console.log(values);
-
         try {
             setIsSubmitted(true);
+
+            if (editorRef.current) {
+                const content = await editorRef.current.save();
+                values.content = content; // Set the content field with the JSON content
+            }
+
             const blob = values.thumbnail;
             const hasImageChanged = isBase64Image(blob);
             if (hasImageChanged) {
@@ -157,7 +110,6 @@ const SubmitArticle = () => {
                 }
             }
 
-
             const response = await axios.post("/api/blog", {
                 title: values.title,
                 slug: values.BlogType === BlogType.New ? slugify(values.title) : null,
@@ -167,10 +119,9 @@ const SubmitArticle = () => {
                 thumbnail: values.thumbnail,
                 category: values.category,
                 subCategory: values.subCategory,
-                content: values.content,
+                content: JSON.stringify(values.content), // Ensure that values.content is a string
                 BlogType: values.BlogType,
-            })
-
+            });
 
             console.log(response.data);
             if (response.status === 201) {
@@ -179,15 +130,12 @@ const SubmitArticle = () => {
                     title: "Article Submitted Successfully",
                     description: "Your article has been submitted successfully.",
                 });
-
             } else {
                 console.log('Request failed:', response.status, response.statusText);
                 toast({
                     title: "Uh oh! Something went wrong.",
                     description: "There was a problem with your request.",
                 });
-
-
             }
         } catch (error) {
             console.error("Error:", error);
@@ -226,21 +174,16 @@ const SubmitArticle = () => {
             fileReader.readAsDataURL(file);
         }
     };
-    const handleContent = (
-        value: any,
-        fieldChange: (value: string) => void) => {
-        setEditorState(value);
-        fieldChange(value);
-    };
 
-    if (!isMounted) setIsMounted(true);
+
+
 
     return (
         <div className='mt-20 flex flex-col items-center justify-center mx-10 '>
             <h1 className='text-3xl font-extrabold bg-gradient-to-r from-gray-700 text-center mb-2 via-gray-900 to-black dark:from-indigo-300 dark:to-purple-400 bg-clip-text text-transparent'>Publish Your Own Blog</h1>
             <div className='flex flex-col  space-y-4 w-full mt-10'>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="md:w-2/3 w-full  space-y-6 mb-10">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full  space-y-6 mb-10">
                         {/* Title */}
                         <FormField
                             control={form.control}
@@ -434,31 +377,26 @@ const SubmitArticle = () => {
                         />
 
                         {/* Rich text */}
-                        {form.watch("BlogType") === BlogType.New && (<FormField
-                            control={form.control}
-                            name="content"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Write Your Content</FormLabel>
-                                    <FormControl>
-                                        <QuillEditor
-                                            value={field.value || ""} // Pass editorState as the value
-                                            onChange={
-                                                (value) => handleContent(value, field.onChange)
+                        {form.watch("BlogType") === BlogType.New && (
+                            <FormField
+                                control={form.control}
+                                name="content"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Write Your Content</FormLabel>
+                                        <FormControl>
+                                            {/* @ts-ignore */}
+                                            <Editor editorRef={editorRef} />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Enter the content for your article (at least 10 characters).
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                            } // Use the handleContent function
-                                            modules={modules}
-                                            formats={formats}
-                                            className="bg-white dark:bg-black dark:text-white rounded-md  h-96 overflow-y-auto  scrollbar-thumb-zinc-900 dark:scrollbar-thumb-zinc-100 dark:scrollbar-track-zinc-900  scrollbar-track-gray-100 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full"
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Enter the content for your article (at least 10 characters).
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />)
+                        )
                         }
                         <Button type="submit" className="w-full mb-4 font-bold">
                             {

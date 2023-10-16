@@ -1,10 +1,19 @@
 "use client";
-import React, { MutableRefObject, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import EditorJS from '@editorjs/editorjs';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 import { uploadFiles } from '@/lib/uploadthing';
 
@@ -15,9 +24,10 @@ const FormSchema = z.object({
 
 
 
-const Editor = ({ ref }:  RefObject<EditorJS>) => {
+const page = () => {
   const [isMounted, setIsMounted] = useState(false);
- 
+  const editorRef = React.useRef<EditorJS | null>(null);
+
 
   const initializeEditor = async () => {
       // @ts-ignore
@@ -55,12 +65,12 @@ const Editor = ({ ref }:  RefObject<EditorJS>) => {
          // @ts-ignore
       const CodeBox = (await import('@bomdi/codebox')).default;
 
-      if (!ref.current) {
+      if (!editorRef.current) {
           const editor = new EditorJS({
               holder: 'editorjs',
               onReady: () => {
-                  if (ref.current) {
-                      ref.current = editor;
+                  if (editorRef.current) {
+                      editorRef.current = editor;
                   }
               },
            
@@ -119,7 +129,7 @@ const Editor = ({ ref }:  RefObject<EditorJS>) => {
               },
           });
 
-          ref.current = editor;
+          editorRef.current = editor;
          
       }
   };
@@ -138,23 +148,66 @@ const Editor = ({ ref }:  RefObject<EditorJS>) => {
       if (isMounted) {
           init();
           return ()=>{
-            ref.current?.destroy();
+            editorRef.current?.destroy();
           }
       }
   }, [isMounted]);
- 
 
 
 
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      content: null,
+    }
+  })
+
+
+  async function onSubmit() {
+    if(editorRef.current){
+      editorRef.current.save().then((outputData)=>{
+      
+      
+        form.setValue('content', outputData);
+      
+      })
+    }
+    
+  }
+  
 
   
   return (
     <div className='nav-padding paddings  mt-20 bg-'>
-
+      {/* <Editor /> */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full  space-y-6 mb-10">
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Write Your Content</FormLabel>
+                <FormControl>
                 <div id="editorjs" className="prose max-w-full border rounded-sm py-10 px-10"  />
+                </FormControl>
+                <FormDescription>
+                  Enter the content for your article (at least 10 characters).
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <button  type='submit' >
+                  Save
+              </button>
+
+        </form>
+      </Form>
+              
              
     </div>
   )
 }
 
-export default Edito
+export default page
