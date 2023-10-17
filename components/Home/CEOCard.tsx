@@ -10,7 +10,7 @@ const CEOCard = () => {
             id:1,
             name:'Suraj Jha',
             designation:'Founder & CEO',
-            image:'https://cloud.appwrite.io/v1/storage/buckets/64e6ef5650a3bc944e6f/files/652eeeb7053e34939885/view?project=64d3707fc8db92bf44ff&mode=admin',
+            image:'https://cloud.appwrite.io/v1/storage/buckets/64e6ef5650a3bc944e6f/files/652ef07c61fb9e4b9963/view?project=64d3707fc8db92bf44ff&mode=admin',
             description:'CodersYug is an all-in-one platform designed to empower computer science students throughout their academic journey and beyond. It offers a wide range of services and resources to enhance their learning experience and career prospects.',
             instagram:'https://www.instagram.com/surajjha_/',
             linkedin:'https://www.linkedin.com/in/suraj-jha-7b0a3b1b3/',
