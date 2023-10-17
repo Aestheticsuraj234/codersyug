@@ -67,7 +67,7 @@ const blogTypeArray = Object.values(BlogType);
 
 
 const SubmitArticle = () => {
-    const [isMounted, setIsMounted] = useState(false);
+   
     const { startUpload } = useUploadThing("media");
     const [files, setFiles] = useState<File[]>([]);
     const router = useRouter()
@@ -381,7 +381,7 @@ const SubmitArticle = () => {
                             <FormField
                                 control={form.control}
                                 name="content"
-                                render={({ field }) => (
+                                render={() => (
                                     <FormItem>
                                         <FormLabel>Write Your Content</FormLabel>
                                         <FormControl>

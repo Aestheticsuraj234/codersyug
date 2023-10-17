@@ -1,15 +1,24 @@
-"use client"
+"use client";
 import React, { useEffect, useContext } from 'react';
-import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDate } from '@/lib/utils';
 import { AppContext } from '@/context/GlobalContext';
 import Image from 'next/image';
-import DOMPurify from 'dompurify';
+
 import BlogBottomAction from '@/components/Blogs/blog-bottom-action';
 import { fetchBlogBySlug } from '@/server-action/blog-actions';
+import Output from 'editorjs-react-renderer';
+
+import ParagraphRenderer from '@/components/Blogs/renderes/CustomParagraphRenderer';
+import HeadingRenderer from '@/components/Blogs/renderes/CustomHeaderRenderer';
+import CustomCodeRenderer from '@/components/Blogs/renderes/CustomCodeRender';
+import CustomImageRenderer from '@/components/Blogs/renderes/CustomImageRender';
+import CustomListRender from '@/components/Blogs/renderes/CustomListRender';
+import CustomWarningRender from '@/components/Blogs/renderes/CustomWarningRender';
+import CustomCheckListRender from '@/components/Blogs/renderes/CustomCheckListRender';
+import CustomQouteRender from '@/components/Blogs/renderes/CustomQouteRender';
 
 const BlogMainContent = () => {
   const { blog } = useContext(AppContext);
@@ -32,14 +41,27 @@ const BlogMainContent = () => {
     fetchBlogData();
   }, []);
 
+  const ParsedContent = memoizedBlogData?.content ? JSON.parse(memoizedBlogData.content) : null;
+
+  const renderers = {
+    header: HeadingRenderer,
+    paragraph: ParagraphRenderer,
+    code: CustomCodeRenderer,
+    image: CustomImageRenderer,
+    list: CustomListRender,
+    warning: CustomWarningRender,
+    checklist: CustomCheckListRender,
+    quote: CustomQouteRender,
+  }
+
   return (
-    <div className="flex flex-row justify-center items-center">
-      <div className="mt-20 mx-4 flex-1 md:w-full  w-auto justify-center items-center">
+    <div className="flex flex-row justify-center items-center paddings nav-padding">
+      <div className="mx-4 flex-1 md:w-full w-auto justify-center items-center overflow-y-auto">
         <h1 className="font-bold text-start text-xl text-zinc-800 dark:text-zinc-100 mb-10">
           {isLoading ? <Skeleton style={{ width: '80%', height: '1rem' }} /> : memoizedBlogData?.title}
         </h1>
 
-        <div className="relative w-[100%] max-w-3xl  aspect-[70/45] mt-[2rem] m-auto">
+        <div className="relative w-[100%] max-w-3xl aspect-[70/45] mt-[2rem] m-auto">
           {isLoading ? (
             <Skeleton style={{ width: '100%', height: '20rem' }} />
           ) : (
@@ -81,8 +103,8 @@ const BlogMainContent = () => {
           </div>
         </div>
 
-        <div className="flex flex-row justify-start items-start mt-10">
-          <div className="md:px-10 px-2 md:py-10 py-2 mx-4 w-full h-full rounded-xl  mb-10">
+        <div className="flex flex-row justify-start items-start mt-10 max-w-full w-full">
+          <div className="md:px-10 px-2 md:py-10 py-2 mx-4 w-full h-full rounded-xl mb-10">
             {isLoading ? (
               <>
                 <Skeleton style={{ width: '100%', height: '1rem' }} />
@@ -91,24 +113,25 @@ const BlogMainContent = () => {
                 {/* Add more skeleton lines for paragraphs */}
               </>
             ) : (
-              // Use DOMPurify to sanitize and parse the HTML content
-              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(memoizedBlogData?.content) }} />
+              <section className='flex flex-col justify-start items-start mt-10 max-w-full w-full prose'>
+                {ParsedContent ? (
+                  <>
+                    <Output data={ParsedContent} renderers={renderers} />
+                  </>
+                ) : null}
+              </section>
             )}
           </div>
         </div>
       </div>
 
       <BlogBottomAction
-       blogId={memoizedBlogData?.id}
-       likes={memoizedBlogData?.likes}
-       likedBy={
-        memoizedBlogData?.liked?.map((like: any) => like?.userId) || []
-       }
-       comment={memoizedBlogData?.comments?.length || 0}
-       slug={memoizedBlogData?.slug}
-      
-      
-       />
+        blogId={memoizedBlogData?.id}
+        likes={memoizedBlogData?.likes}
+        likedBy={memoizedBlogData?.liked?.map((like: any) => like?.userId) || []}
+        comment={memoizedBlogData?.comments?.length || 0}
+        slug={memoizedBlogData?.slug}
+      />
     </div>
   );
 };

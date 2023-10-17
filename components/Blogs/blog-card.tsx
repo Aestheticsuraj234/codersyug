@@ -65,10 +65,10 @@ const BlogCard = ({ data, isFetching }: any) => {
                 data?.map((item: any) => (
                     <Card
                         key={item.id}
-                        className="w-full max-w-fit border  flex-between flex-col cursor-pointer sm:max-w-[356px]"
+                        className="w-full max-w-fit border  flex justify-between items-start flex-col cursor-pointer sm:max-w-[356px]"
                     >
-                        <CardHeader>
-                            <div className="flex flex-1 justify-between items-center w-full">
+                        <CardHeader className="w-full">
+                            <div className="flex  justify-between items-start">
                                 <Avatar>
                                     {isFetching ? (
                                         <Skeleton className="aspect-square h-full w-full rounded-full" />
@@ -154,7 +154,7 @@ const BlogCard = ({ data, isFetching }: any) => {
                         </CardContent>
                         <CardFooter className="flex flex-row w-full mx-2">
                             {isFetching ? (
-                                <Skeleton className="flex flex-row justify-between items-center w-full mt-2" />
+                                <Skeleton className="w-auto h-auto leading-none tracking-normal" />
                             ) : (
                                 <BlogCardActions
                                     blogId={item?.id}
