@@ -140,6 +140,14 @@ body::selection{
     background-clip: text;
     /* text-fill-color: transparent; */
   }
+  .linear-gradient-border{
+    background: linear-gradient(90deg, #c0ff4c 2.34%, #13f08c 100.78%);
+    border: 1px solid transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* text-fill-color: transparent; */
+  }
 
   .heading1 {
     @apply text-[64px] leading-[67.2px] font-bold;
@@ -231,9 +239,9 @@ body::selection{
     @apply flex justify-end;
   }
 
-  .inner-width {
+  /* .inner-width {
     @apply 3xl:max-w-[1280px] w-full mx-auto;
-  }
+  } */
 
   .inter-width {
     @apply lg:w-[80%] w-[100%];
