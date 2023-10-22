@@ -58,10 +58,10 @@ function Footer() {
             <div className="bg-gray-100 dark:bg-[#161a22] h-1/2 w-full flex md:flex-row flex-col justify-around items-start p-20">
                 <div className="p-5">
                     <ul>
-                        <p className="text-zinc-800 dark:text-zinc-100 font-bold text-2xl pb-6 flex flex-row flex-center text-start gap-2">
+                        <Link href={"/"} className="text-zinc-800 cursor-pointer dark:text-zinc-100 font-bold text-2xl pb-6 flex flex-row flex-center text-start gap-2">
                             <Code2 className="text-zinc-800 dark:text-zinc-100 cursor-pointer font-bold" size={30} />
                             CODERSYUG
-                        </p>
+                        </Link>
 
                         <div className="flex gap-6 pb-5">
                             {socialLinks.map((socialLink, index) => (
@@ -92,7 +92,7 @@ function Footer() {
                 </div>
                 <div className="p-5">
                     <ul>
-                        <p className="text-gray-800 font-bold text-2xl pb-4">Support</p>
+                        <p className="text-zinc-800 dark:text-zinc-100  font-bold text-2xl pb-4">Support</p>
                         {generateListItems([
                             { id: 1, title: "Report a Bug🐛", href: "https://github.com/Aestheticsuraj234/codersyug/issues" },
                             { id: 2, title: "Contact Us📞" },

@@ -9,27 +9,28 @@ generator client {
 }
 
 model Profile {
-  id         Int                  @id @default(autoincrement())
-  userId     String               @unique
-  name       String
-  email      String               @unique
-  imageUrl   String?
-  blogs      Blog[] // This creates a one-to-many relationship with Blog
-  savedBlogs Blog[]               @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
-  comments   Comment[] // This creates a one-to-many relationship with Comment
-  createdAt  DateTime             @default(now())
-  updatedAt  DateTime             @updatedAt
-  likesOn    Likes[] // This creates a one-to-many relationship with Likes
-  visited    VisitedBlog[] // This creates a one-to-many relationship with VisitedBlog
-  Purchased  purchasedResources[] // This creates a one-to-many relationship with purchasedResources
-  resources  Resources[] // This creates a one-to-many relationship with Resources
+  id                 Int                  @id @default(autoincrement())
+  userId             String               @unique
+  name               String
+  email              String               @unique
+  imageUrl           String?
+  blogs              Blog[] // This creates a one-to-many relationship with Blog
+  savedBlogs         Blog[]               @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
+  comments           Comment[] // This creates a one-to-many relationship with Comment
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  likesOn            Likes[] // This creates a one-to-many relationship with Likes
+  visited            VisitedBlog[] // This creates a one-to-many relationship with VisitedBlog
+  Purchased          purchasedResources[] // This creates a one-to-many relationship with purchasedResources
+  resources          Resources[] // This creates a one-to-many relationship with Resources
+  quizParticipations QuizParticipation[] // This creates a one-to-many relationship with QuizParticipation
 }
 
 model Blog {
   id          Int           @id @default(autoincrement())
   title       String
-  slug        String?        @unique
-  blogUrl     String?        
+  slug        String?       @unique
+  blogUrl     String?
   description String?       @db.LongText
   thumbnail   String?       @db.LongText
   likes       Int?          @default(0)
@@ -44,17 +45,12 @@ model Blog {
   author      Profile       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   savedBy     Profile[]     @relation("SavedBlogs")
   comments    Comment[] // One-to-many relationship with comments
-  // One-to-many relationship with likes
-  liked       Likes[]
+  liked       Likes[] // One-to-many relationship with likes
   VisitedBy   VisitedBlog[] // One-to-many relationship with VisitedBlog
   BlogType    BlogType?     @default(New)
 
   @@index([authorId])
 }
-
-
-
-
 
 model VisitedBlog {
   id        Int      @id @default(autoincrement())
@@ -113,7 +109,7 @@ model Resources {
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
   category     Categories?
-  techStack    String?               @db.LongText // This is a comma separated string of tech stack
+  techStack    String?              @db.LongText // This is a comma-separated string of tech stack
   attachment   Attachment[]
   subCategory  String?
   authorId     Int
@@ -122,8 +118,6 @@ model Resources {
 
   @@index([authorId])
 }
-
-
 
 model Attachment {
   id         Int       @id @default(autoincrement())
@@ -152,19 +146,64 @@ model purchasedResources {
 }
 
 model StripeCustomer {
-  id               Int    @id @default(autoincrement())
-  userId           Int    @unique
-  stripeCustomerId String @unique
+  id               Int      @id @default(autoincrement())
+  userId           Int      @unique
+  stripeCustomerId String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Quiz {
+  id                 Int                 @id @default(autoincrement())
+  title              String?
+  uniqueCode         String?             @unique
+  startDate          DateTime? // The start date of the quiz
+  endDate            DateTime? // The end date of the quiz
+  dayNumber          Int? // The day number of the quiz
+  questions          Question[]
+  isReady            Boolean?             @default(false)
+  quizParticipations QuizParticipation[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([startDate])
+  @@index([endDate])
+}
+
+model Question {
+  id            Int      @id @default(autoincrement())
+  text          String?
+  options       Json? // Store options as a JSON string
+  correctOption String? // Store the correct option
+  timer         Int? // Timer for each question in seconds (e.g., 20 seconds)
+  quiz          Quiz?     @relation(fields: [quizId], references: [id] ,onDelete: Cascade)
+  quizId        Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([quizId])
+}
+
+model QuizParticipation {
+  id         Int       @id @default(autoincrement())
+  userId     String   @unique
+  user       Profile   @relation(fields: [userId], references: [userId],onDelete: Cascade)
+  quizId     Int?
+  quiz       Quiz?      @relation(fields: [quizId], references: [id],onDelete: Cascade)
+  uniqueCode String?   // The unique code for the quiz
+  submission DateTime? // Timestamp of when the user submitted the quiz
+  score      Int? // User's score for the quiz
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([quizId])
 }
 
 enum ResourceAccessType {
   FREE
   PAID
 }
-
 
 enum BlogType {
   New
@@ -185,7 +224,6 @@ enum ResourceType {
   CHEATSHEETS
   PROJECTS
 }
-
 
 enum Categories {
   Frontend

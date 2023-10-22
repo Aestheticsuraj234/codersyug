@@ -42,7 +42,7 @@ const AppBar = () => {
     ];
 
     return (
-        <div className="z-50 w-full py-6 px-5 flex  md:flex-row flex-col overflow-x-auto  justify-around md:items-center items-start space-y-7 md:space-y-0 bg-gray-800 border-emerald-300 border rounded-2xl">
+        <div className="z-50 w-full py-6 px-5 flex  md:flex-row flex-col overflow-x-auto  justify-around md:items-center items-start space-y-7 md:space-y-0 dark:bg-gray-800 bg-gray-100  dark:border-emerald-300 border-zinc-500 border rounded-2xl">
             {HackathonNavItems.map((route) => (
                 <a key={route.href} href={route.href}>
                     <span

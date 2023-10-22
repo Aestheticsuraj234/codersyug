@@ -1,33 +1,64 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { GetNumberOfParticipants } from '@/server-action/hackathon';
 import { Calendar, MoveRight, UserCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 const PrizeCard = () => {
-      // Define the end date and time of the hackathon
-  const hackathonEndDate = new Date('2023-11-20T00:00:00Z').getTime();
-
-  // Initialize state for the remaining time
-  const [remainingTime, setRemainingTime] = useState(getRemainingTime());
-
-  // Function to calculate the remaining time
-  function getRemainingTime() {
-    const now = new Date().getTime();
-    const timeDifference = hackathonEndDate - now;
-
-    if (timeDifference <= 0) {
-      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    // Define the end date and time of the hackathon
+    const hackathonEndDate = new Date('2023-11-20T00:00:00Z').getTime();
+    const [participants, setParticipants] = useState(0);
+    // Initialize state for the remaining time
+    const [remainingTime, setRemainingTime] = useState(getRemainingTime());
+    const [isMounted, setIsMounted] = useState(false);
+  
+    // Function to calculate the remaining time
+    function getRemainingTime() {
+      const now = new Date().getTime();
+      const timeDifference = hackathonEndDate - now;
+  
+      if (timeDifference <= 0) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+  
+      const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+  
+      return { days, hours, minutes, seconds };
+    }
+  
+    const GettingNumberOfParticipants = async () => {
+      const Participants = await GetNumberOfParticipants();
+      setParticipants(Participants);
+    }
+  
+    useEffect(() => {
+      // Update the remaining time every second
+      const interval = setInterval(() => {
+        setRemainingTime(getRemainingTime());
+      }, 1000);
+  
+      return () => {
+        clearInterval(interval);
+      };
+    }, []);
+  
+    useEffect(() => {
+      GettingNumberOfParticipants();
+    },[participants])
+  
+    useEffect(() => {
+      setIsMounted(true)
+  
+    })
+    if(!isMounted){
+      return null
     }
 
-    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-   
-
-    return { days, hours, minutes };
-  }
   return (
-    <Link href="#" className="relative flex flex-col items-center gap-5 p-5 sm:p-6 overflow-hidden bg-gray-900 border border-slate-200 rounded-2xl sm:flex-row hover:border-slate-300 dark:hover:border-slate-600 dark:border-slate-800/80">
+    <Link href="#" className="relative flex flex-col items-center gap-5 p-5 sm:p-6 overflow-hidden dark:bg-gray-900 bg-zinc-100 border border-slate-200 rounded-2xl sm:flex-row hover:border-slate-300 dark:hover:border-slate-600 dark:border-slate-800/80">
       <div className="relative min-h-[88px] max-h-[164px] w-full min-w-32 sm:h-[164px] sm:min-h-[164px] sm:max-h-[164px] sm:w-[164px] sm:min-w-[164px] sm:max-w-[164px] rounded overflow-hidden">
         <img
           alt="Airbyte banner"
@@ -56,7 +87,7 @@ const PrizeCard = () => {
             <div className="flex flex-row gap-2">
               <span className="font-medium">Ends in</span>
               <div className="text-emerald-500 font-semibold">
-                {`${remainingTime.days}d : ${remainingTime.hours}h : ${remainingTime.minutes}m `}
+              {`${remainingTime.days}d : ${remainingTime.hours}h : ${remainingTime.minutes}m : ${remainingTime.seconds}s`}
               </div>
             </div>
           </div>
@@ -97,7 +128,7 @@ const PrizeCard = () => {
           <div className="flex flex-col items-start flex-1 gap-2 text-sm">
             <div className="flex md:flex-row flex-col items-center font-medium gap-2 text-slate-600 dark:text-slate-300">
               <UserCircle2 size={24} />
-              <span className='flex '>717 participating</span>
+              <span className='flex '>{participants} participating</span>
             </div>
           </div>
           <div className="flex flex-row justify-start xl:justify-end">

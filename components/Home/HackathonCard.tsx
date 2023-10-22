@@ -1,14 +1,16 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { GetNumberOfParticipants } from '@/server-action/hackathon';
 import { Calendar, MoveRight, UserCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 const HackathonCard = () => {
   // Define the end date and time of the hackathon
   const hackathonEndDate = new Date('2023-11-20T00:00:00Z').getTime();
-
+  const [participants, setParticipants] = useState(0);
   // Initialize state for the remaining time
   const [remainingTime, setRemainingTime] = useState(getRemainingTime());
+  const [isMounted, setIsMounted] = useState(false);
 
   // Function to calculate the remaining time
   function getRemainingTime() {
@@ -27,6 +29,11 @@ const HackathonCard = () => {
     return { days, hours, minutes, seconds };
   }
 
+  const GettingNumberOfParticipants = async () => {
+    const Participants = await GetNumberOfParticipants();
+    setParticipants(Participants);
+  }
+
   useEffect(() => {
     // Update the remaining time every second
     const interval = setInterval(() => {
@@ -38,8 +45,20 @@ const HackathonCard = () => {
     };
   }, []);
 
+  useEffect(() => {
+    GettingNumberOfParticipants();
+  },[participants])
+
+  useEffect(() => {
+    setIsMounted(true)
+
+  })
+  if(!isMounted){
+    return null
+  }
+
   return (
-    <Link href="#" className="relative flex flex-col items-center gap-5 p-5 sm:p-6 overflow-hidden bg-transparent border border-slate-200 rounded-2xl sm:flex-row hover:border-slate-300 dark:hover:border-slate-600 dark:border-slate-800/80">
+    <Link href="/hackathons" className="relative flex flex-col items-center gap-5 p-5 sm:p-6 overflow-hidden bg-transparent border border-slate-200 rounded-2xl sm:flex-row hover:border-slate-300 dark:hover:border-slate-600 dark:border-slate-800/80">
       <div className="relative min-h-[88px] max-h-[164px] w-full min-w-32 sm:h-[164px] sm:min-h-[164px] sm:max-h-[164px] sm:w-[164px] sm:min-w-[164px] sm:max-w-[164px] rounded overflow-hidden">
         <img
           alt="Airbyte banner"
@@ -88,11 +107,11 @@ const HackathonCard = () => {
           <div className="flex flex-col items-start flex-1 gap-2 text-sm">
             <div className="flex md:flex-row flex-col items-center font-medium gap-2 text-slate-600 dark:text-slate-300">
               <UserCircle2 size={24} />
-              <span className='flex '>717 participating</span>
+              <span className='flex '>{participants} participating</span>
             </div>
           </div>
           <div className="flex flex-row justify-start xl:justify-end">
-            <Link href={"/hackathons"} className="rounded-full flex text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 hover:dark:border-slate-700 hover:bg-slate-50 hover:dark:bg-slate-800 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 dark:focus:ring-offset-slate-800 disabled:bg-white disabled:border-slate-200 disabled:cursor-not-allowed disabled:text-slate-300 disabled:dark:bg-slate-950 disabled:dark:border-slate-800 disabled:dark:text-slate-800 text-xs py-1.5 px-4 items-center">
+            <Link href={"/hackathons"} className="rounded-full flex text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 hover:dark:border-slate-700 hover:bg-slate-50 hover:dark:bg-slate-800 focus:ring focus:ring-offset-2 focus:ring-offset-white  dark:focus:ring-offset-slate-800 disabled:bg-white disabled:border-slate-200 disabled:cursor-not-allowed disabled:text-slate-300 disabled:dark:bg-slate-950 disabled:dark:border-slate-800 disabled:dark:text-slate-800 text-xs py-1.5 px-4 items-center">
               <span className="pr-1.5">Learn more</span>
               <MoveRight size={24} />
             </Link>

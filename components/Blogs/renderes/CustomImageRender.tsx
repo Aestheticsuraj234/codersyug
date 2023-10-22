@@ -8,7 +8,7 @@ function CustomImageRenderer({ data }: any) {
 
   return (
     <div className='relative w-full'>
-      <Image alt='image' className='object-contain' src={src} layout="responsive" width={320} height={300 / aspectRatio} />
+      <Image alt='image' className='object-contain' src={src} layout="responsive" width={120} height={100 / aspectRatio} />
     </div>
   );
 }
