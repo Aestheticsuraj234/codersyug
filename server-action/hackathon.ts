@@ -55,7 +55,7 @@ export const isUserAlreadyRegistered = async () => {
         return false;
     }
 
-  const RegisteredUser = await db.quizParticipation.findUnique({
+    const RegisteredUser = await db.quizParticipation.findUnique({
         where: {
             userId: profile?.userId // Use 'userId' instead of 'id'
         },
@@ -69,4 +69,79 @@ export const GetNumberOfParticipants = async () => {
     const participants = await db.quizParticipation.count();
 
     return participants
+}
+
+export const VerifyUniqueCode = async (uniqueCode: string) => {
+    const profile = await currentProfile();
+
+    if (!profile) {
+        // If the user is not logged in, return an appropriate message or value
+        return "User is not logged in";
+    }
+
+    const registeredParticipant = await db.quizParticipation.findFirst({
+        where: {
+            uniqueCode: uniqueCode, // Check if the provided uniqueCode matches any participant's uniqueCode
+            userId: profile.userId, // Check that the participant is the same user who is logged in
+        },
+    });
+
+    const isParticipantVerfied = await db.quizParticipation.findFirst({
+        where: {
+            userId: profile.userId,
+            isVerified: true
+        }
+    })
+
+
+
+    if (isParticipantVerfied) {
+        return "You have already verified your account."
+    }
+
+
+    if (registeredParticipant) {
+        // If a matching participant is found, update the participant's isVerified field to true
+        await db.quizParticipation.update({
+            where: {
+                id: registeredParticipant.id,
+            },
+            data: {
+                isVerified: true,
+            },
+        });
+    }
+
+
+
+
+    if (!registeredParticipant) {
+        // If no participant with the provided uniqueCode is found, return an appropriate message or value
+        return "Invalid unique code";
+    }
+
+    // If a matching participant is found, you can return additional information if needed
+    return {
+        participant: registeredParticipant,
+        message: "Unique code verified",
+    };
+};
+
+
+
+export const isUserVerified = async () => {
+    const profile = await currentProfile();
+
+    if (!profile) {
+        return false;
+    }
+
+    const VerifiedUser = await db.quizParticipation.findFirst({
+        where: {
+            userId: profile?.userId,
+            isVerified: true
+        },
+    });
+
+    return Boolean(VerifiedUser);
 }

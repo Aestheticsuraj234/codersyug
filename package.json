@@ -76,6 +76,7 @@
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
+    "typewriter-effect": "^2.21.0",
     "uploadthing": "^5.5.3",
     "uuid": "^9.0.0",
     "zod": "^3.22.2",

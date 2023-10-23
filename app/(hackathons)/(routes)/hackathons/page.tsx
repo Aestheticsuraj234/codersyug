@@ -39,8 +39,8 @@ const HackathonPage = () => {
         try {
             setIsRegistering(true);
             const response = await HandleRegistration();
-    
-            if (response ==="You have already participated in the quiz.") {
+
+            if (response === "You have already participated in the quiz.") {
                 toast({
                     title: 'Already Registered🤷‍♂️',
                     description: 'You have already participated in the quiz',
@@ -68,7 +68,7 @@ const HackathonPage = () => {
             setIsRegistering(false);
         }
     };
-    
+
 
     return (
         <>
@@ -76,8 +76,8 @@ const HackathonPage = () => {
                 <motion.h1
                     variants={textVariant(0.5)}
                     className="max-w-3xl text-center flex md:flex-row flex-col justify-center items-center gap-2 bg-gradient-to-r from-yellow-300 to-green-600  bg-clip-text text-transparent mb-2 text-2xl font-extrabold tracking-tight leading-none md:text-4xl xl:text-5xl">
-                    <Image src="/code-2.svg" alt="hero" width={100} height={100}/>
-                  
+                    <Image src="/code-2.svg" alt="hero" width={100} height={100} />
+
                     Codersyug Hackathon
                 </motion.h1>
                 <motion.p className="max-w-2xl mb-6 text-center font-semibold text-gray-800 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
@@ -87,20 +87,24 @@ const HackathonPage = () => {
                 </motion.p>
                 {
                     isUserRegistered ? (
-                        <Button
-                            onClick={()=>router.push("/")}
-                            className={`rounded-full flex dark:bg-white dark:text-black bg-black text-white border-transparent focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-zinc-100 disabled:bg-zinc-300 disabled:cursor-not-allowed disabled:dark:text-slate-400 text-base py-3 px-6`}
-                        >
-                            Get Started🚀
-                        </Button>
-                       
+                        <>
+                            <Button
+                                onClick={() => router.push("/QuizEnter")}
+                                className={`rounded-full flex dark:bg-white dark:text-black bg-black text-white border-transparent focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-zinc-100 disabled:bg-zinc-300 disabled:cursor-not-allowed disabled:dark:text-slate-400 text-base py-3 px-6`}
+                            >
+                                Get Started🚀
+                            </Button>
+                            <p className='  text-center text-gray-800 dark:text-gray-400 font-semibold text-lg mt-5'>
+                                Click on Get Started to start the quiz🧠
+                            </p>
+                        </>
                     ) : (
                         <Button
-                        onClick={onRegister}
-                        className={`rounded-full flex dark:bg-white dark:text-black bg-black text-white border-transparent  text-base py-3 px-6 ${isRegistering ? 'hidden' : ''}`}
-                    >
-                        {isRegistering ? <Loader2 className="animate-spin dark:text-black text-white" size={30} /> : 'Register Now'}
-                    </Button>
+                            onClick={onRegister}
+                            className={`rounded-full flex dark:bg-white dark:text-black bg-black text-white border-transparent  text-base py-3 px-6 ${isRegistering ? 'hidden' : ''}`}
+                        >
+                            {isRegistering ? <Loader2 className="animate-spin dark:text-black text-white" size={30} /> : 'Register Now'}
+                        </Button>
                     )
                 }
 
@@ -113,7 +117,7 @@ const HackathonPage = () => {
             <StickyButton />
             <Timeline />
             <Prize />
-            <Rules/>
+            <Rules />
             <About />
             <Participation />
             <FrequentlyAskedQuestion />

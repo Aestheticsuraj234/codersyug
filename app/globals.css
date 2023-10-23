@@ -85,6 +85,10 @@ body::selection{
   background-color: rgb(37, 33, 33);
   color: white;
 }
+html,body:root{
+  height: 100%;
+  width: 100%;
+}
 
 
 .leftsidebar {

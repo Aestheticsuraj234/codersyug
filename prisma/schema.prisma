@@ -188,6 +188,7 @@ model QuizParticipation {
   id         Int       @id @default(autoincrement())
   userId     String   @unique
   user       Profile   @relation(fields: [userId], references: [userId],onDelete: Cascade)
+  isVerified Boolean? @default(false)
   quizId     Int?
   quiz       Quiz?      @relation(fields: [quizId], references: [id],onDelete: Cascade)
   uniqueCode String?   // The unique code for the quiz

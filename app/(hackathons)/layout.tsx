@@ -1,7 +1,7 @@
 import Footer from "@/components/Global/footer";
 import AppBar from "@/components/Hackathon/AppBar";
 
-const AuthLayout = ({ children }: {
+const HackathonLayout = ({ children }: {
     children: React.ReactNode
 }) => {
 
@@ -16,4 +16,4 @@ const AuthLayout = ({ children }: {
     )
 }
 
-export default AuthLayout;
+export default HackathonLayout;
