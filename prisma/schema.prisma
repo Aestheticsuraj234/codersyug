@@ -12,7 +12,7 @@ model Profile {
   id                 Int                  @id @default(autoincrement())
   userId             String               @unique
   name               String
-  email              String               @unique
+  email              String               
   imageUrl           String?
   blogs              Blog[] // This creates a one-to-many relationship with Blog
   savedBlogs         Blog[]               @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
