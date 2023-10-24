@@ -12,7 +12,7 @@ const Routes = [
     {
         icon: Compass,
         label: "Your Quizzes",
-        href: "/quizmain/your-quizzes"
+        href: "/quizmain/quizzes"
     },
     {
         icon:BarChart4,

@@ -59,6 +59,7 @@ const HackathonPage = () => {
                 });
             }
         } catch (error) {
+            console.log("Error_Registration",error);
             toast({
                 variant: 'destructive',
                 title: 'error',
