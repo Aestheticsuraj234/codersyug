@@ -12,7 +12,7 @@ model Profile {
   id                 Int                  @id @default(autoincrement())
   userId             String               @unique
   name               String
-  email              String               @unique
+  email              String               
   imageUrl           String?
   blogs              Blog[] // This creates a one-to-many relationship with Blog
   savedBlogs         Blog[]               @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
@@ -156,11 +156,14 @@ model StripeCustomer {
 model Quiz {
   id                 Int                 @id @default(autoincrement())
   title              String?
+  thumbnail          String?             @db.LongText
+  description        String?             @db.LongText
   uniqueCode         String?             @unique
   startDate          DateTime? // The start date of the quiz
   endDate            DateTime? // The end date of the quiz
   dayNumber          Int? // The day number of the quiz
   questions          Question[]
+  level              Level? // The level of the quiz (e.g., Beginner, Intermediate, Advanced)
   isReady            Boolean?             @default(false)
   quizParticipations QuizParticipation[]
   createdAt          DateTime            @default(now())
@@ -168,6 +171,13 @@ model Quiz {
 
   @@index([startDate])
   @@index([endDate])
+}
+
+
+enum Level {
+  Beginner
+  Intermediate
+  Advanced
 }
 
 model Question {

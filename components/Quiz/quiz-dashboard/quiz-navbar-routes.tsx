@@ -15,7 +15,9 @@ const QuizNavbarRoutes = () => {
         <div className=" w-1.5 h-1.5 text-center  bg-green-400 rounded-full  mx-1 "></div>
         Online🎊
       </Badge>
-      <UserButton />
+      <UserButton
+      afterSignOutUrl="/"
+      />
     </div>
   )
 }
