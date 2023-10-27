@@ -8,14 +8,16 @@ import Alert from "@/components/Global/alert";
 import { useRouter } from "next/navigation";
 
 interface CourseCardProps {
-  uniqueCode: string;
-  title: string;
-  thumbnail: string;
-  dayNumber: number;
-  questions: number;
-  startTime: Date;
-  level: string;
+  uniqueCode: string | null;
+  title: string | null;
+  thumbnail: string | null;
+  dayNumber: string | null;
+  questions: number | null;
+  startTime: Date ; // Update this line
+  endTime: Date;
+  level: string | null;
 }
+
 
 export const CourseCard = ({
   uniqueCode,
@@ -24,6 +26,7 @@ export const CourseCard = ({
   dayNumber,
   questions,
   startTime,
+  endTime,
   level
 }: CourseCardProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -33,7 +36,6 @@ export const CourseCard = ({
 
   useEffect(() => {
     const now = new Date();
-    const endTime = new Date(startTime);
     const timeDiff = endTime.getTime() - now.getTime();
 
     if (timeDiff < 0) {
@@ -82,6 +84,7 @@ export const CourseCard = ({
     <>
       <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
         <div className="relative w-full aspect-video rounded-md overflow-hidden">
+        {/* @ts-ignore */}
           <Image fill className="object-cover" alt={title} src={thumbnail} />
         </div>
         <div className="flex flex-col pt-2">

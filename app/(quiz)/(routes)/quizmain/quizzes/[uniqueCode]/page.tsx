@@ -8,11 +8,15 @@ import {
   Youtube,
 } from 'lucide-react';
 import {BsWhatsapp,BsInstagram, BsTelegram}     from 'react-icons/bs';
-const QuizDetailPage = ({
+import { getQuizByUniqueCode } from '@/server-action/quiz';
+const QuizDetailPage = async({
     params: { uniqueCode }
 }: {
     params: { uniqueCode: string }
 }) => {
+
+  const quiz = await getQuizByUniqueCode(uniqueCode);
+
   return (
     <div className="p-6 max-w-screen-2xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -22,20 +26,20 @@ const QuizDetailPage = ({
               <div className="rounded-full flex items-center justify-center bg-emerald-100 p-1">
                 <BrainCircuit  className="text-emerald-500 h-4 w-4" />
               </div>
-              <span className="text-xs text-muted-foreground">10 Questions</span>
+              <span className="text-xs text-muted-foreground">{quiz?.questions.length} Questions</span>
             </div>
             <h3 className="font-semibold text-lg md:text-2xl mb-2 capitalize">
-              Fullstack Javascript Quiz
+              {quiz?.title}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit quo inventore nemo id tempora sed est ipsa minus sequi libero ut ad quasi delectus velit praesentium, vitae voluptate aspernatur. Illo?
+               {quiz?.description}
             </p>
             <div className="flex gap-1 flex-wrap">
               <div className="border-indigo-300 border-2 bg-indigo-100 px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground font-semibold rounded-md text-center flex items-center justify-center">
-                Day-1
+                Day-{quiz?.dayNumber}
               </div>
               <div className="border-rose-300 border-2 bg-rose-100 px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground font-semibold rounded-md text-center flex items-center justify-center">
-                Beginner
+                {quiz?.level}
               </div>
              
             </div>

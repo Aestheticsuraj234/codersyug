@@ -6,16 +6,26 @@ import {Quiz , Question} from "@prisma/client";
 
 
 
-export const createQuiz = async (quiz: Quiz) => {
-    const profile = await currentProfile();
-    if (!profile) {
-        throw new Error("Not logged in");
-    }
-    const newQuiz = await db.quiz.create({
-        data: {
-        ...quiz,
-
-        },
+export const getQuiz = async () => {
+    const quiz = await db.quiz.findMany({
+        include: {
+            questions: true
+        }
     });
-    return newQuiz;
+    console.log(quiz);
+    return quiz;
 };
+
+
+export const getQuizByUniqueCode = async (uniqueCode: string) => {
+    const quiz = await db.quiz.findUnique({
+        where: {
+            uniqueCode
+        },
+        include: {
+            questions: true
+        }
+    });
+    console.log(quiz);
+    return quiz;
+}

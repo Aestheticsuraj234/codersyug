@@ -1,27 +1,27 @@
 "use client"
 
-// ##################################_🔥React_Imports_🔥##################################
+// ?##################################_🔥React_Imports_🔥##################################
 
 import React, { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-// #################################_React-Hook-Form-Impots🔪##################################
+// ?#################################_React-Hook-Form-Impots🔪##################################
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm, useFieldArray } from "react-hook-form";
 
-// #################################🥇Icon_Imports🥇##################################
-import { Calendar as CalendarIcon, CheckCircle, LayoutDashboard, ListChecks, Loader2, MinusCircle, PlusCircle, SheetIcon, Timer, UploadCloud, X } from "lucide-react";
+// ?#################################🥇Icon_Imports🥇##################################
+import { Activity, Calendar as CalendarIcon, CheckCircle, LayoutDashboard, ListChecks, ListTodo, Loader2, MinusCircle, PlusCircle, SheetIcon, Timer, UploadCloud, X } from "lucide-react";
 
-// ################################👑Utils_Imports#####################################
+// ?################################👑Utils_Imports#####################################
 import { Level } from "@prisma/client";
 import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 
-// ###################🎊Shadcn_UI_Components_Imports🎊#####################################
+// ?###################🎊Shadcn_UI_Components_Imports🎊#####################################
 import {
     Popover,
     PopoverContent,
@@ -53,11 +53,13 @@ import { Calendar } from "@/components/ui/calendar"
 import { toast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IconBadge } from "@/components/Global/icon-badge";
+import axios from "axios";
+import { BsQuestionCircle } from "react-icons/bs";
 
 
 
 
-// ###########################🚀Form-Schema🚀############################################
+// ?###########################🚀Form-Schema🚀############################################
 const formSchema = z.object({
     Title: z.string().min(10, {
         message: "Title must be at least 10 characters.",
@@ -85,7 +87,7 @@ const formSchema = z.object({
             questionTitle: z.string().min(1),
             options: z.array(z.string()).min(2).max(4),
             correctOption: z.string(),
-            timer: z.number().min(1).max(60),
+            timer: z.string().min(1).max(60),
         })
     ),
 });
@@ -98,7 +100,7 @@ const LevelArray = Object.values(Level);
 
 
 const CreateQuiz = () => {
-    // #################################🔥State_Variables🔥#####################################
+    // ?#################################🔥State_Variables🔥#####################################
     const { startUpload } = useUploadThing("media");
     const [date, setDate] = useState<Date>()
     const [files, setFiles] = useState<File[]>([]);
@@ -107,7 +109,7 @@ const CreateQuiz = () => {
 
 
 
-    // #################################🔥React_Hook_Form🔥#####################################
+    // !#################################🔥React_Hook_Form🔥#####################################
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -116,7 +118,7 @@ const CreateQuiz = () => {
             Description: "",
             Thumbnail: "",
             Level: "",
-            NumberOfDay: "",
+            NumberOfDay: "1",
             StartDate: new Date(),
             EndDate: new Date(),
             questions: [
@@ -124,7 +126,7 @@ const CreateQuiz = () => {
                     questionTitle: '',
                     options: ['', '', '', ''],
                     correctOption: '', // Default to the first option
-                    timer: 30,
+                    timer: "30",
                 },
             ],
         },
@@ -137,7 +139,8 @@ const CreateQuiz = () => {
     });
 
 
-    // #################################👩‍💻Functions👩‍💻#####################################
+    // !#################################👩‍💻Functions👩‍💻#####################################
+
     const toggleCreating = () => {
         setIsCreating((current) => !current);
     };
@@ -147,69 +150,68 @@ const CreateQuiz = () => {
             questionTitle: '',
             options: ['', '', '', ''],
             correctOption: '', // Default to the first option
-            timer: 30,
+            timer: "30",
         });
     };
 
     const onSubmit = async (values: any) => {
+        console.log(values);
 
-        // try {
-        //     setIsSubmitting(true);
+        try {
+            setIsSubmitting(true);
 
-        //     const blob = values.thumbnail;
-        //     const hasImageChanged = isBase64Image(blob);
-        //     if (hasImageChanged) {
-        //         const imgRes = await startUpload(files);
+            const blob = values.thumbnail;
+            const hasImageChanged = isBase64Image(blob);
+            if (hasImageChanged) {
+                const imgRes = await startUpload(files);
 
-        //         if (imgRes && imgRes[0].url) {
-        //             values.thumbnail = imgRes[0].url; // Update the thumbnail with the uploaded image URL
-        //         }
-        //     }
-        //     const response = await axios.post("/api/resources/create/Quiz", {
-        //         title: values.Title,
-        //         slug: values.Slug,
-        //         description: values.Description,
-        //         thumbnail: values.Thumbnail,
-        //         downloadLink: values.DownloadLink,
-        //         category: values.category,
-        //         accessType: values.AccessType,
-        //         price: values.price,
-        //         resourceType: ResourceType.QuizS
+                if (imgRes && imgRes[0].url) {
+                    values.thumbnail = imgRes[0].url; // Update the thumbnail with the uploaded image URL
+                }
+            }
+            const response = await axios.post("/api/quiz/create", {
+                Title: values.Title,
+                Description: values.Description,
+                Thumbnail: values.Thumbnail,
+                Level: values.Level,
+                NumberOfDay: values.NumberOfDay,
+                StartDate: values.StartDate,
+                EndDate: values.EndDate,
+                questions: values.questions,
+            })
 
-        //     })
+            setIsSubmitting(false);
 
-        //     setIsSubmitting(false);
+            if (response.status === 201) {
+                setIsSubmitting(false);
+                toast({
+                    title: "QUIZ🧠 Submitted Successfully",
+                    description: "Your QUIZ🧠 has been submitted successfully.",
+                });
+                form.reset();
+            } else {
 
-        //     if (response.status === 201) {
-        //         setIsSubmitting(false);
-        //         toast({
-        //             title: "Article Submitted Successfully",
-        //             description: "Your article has been submitted successfully.",
-        //         });
-        //         form.reset();
-        //     } else {
+                toast({
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+                form.reset();
+            }
 
-        //         toast({
-        //             title: "Uh oh! Something went wrong.",
-        //             description: "There was a problem with your request.",
-        //         });
-        //         form.reset();
-        //     }
-
-        // } catch (error) {
-        //     setIsSubmitting(false);
-        //     console.error("Error:", error);
-        //     toast({
-        //         title: "Uh oh! Something went wrong.",
-        //         description: "There was a problem with your request.",
-        //     });
+        } catch (error) {
+            setIsSubmitting(false);
+            console.error("Error:", error);
+            toast({
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+            });
 
 
-        // }
-        // finally {
-        //     setIsSubmitting(false);
-        //     form.reset();
-        // }
+        }
+        finally {
+            setIsSubmitting(false);
+            form.reset();
+        }
 
     };
 
@@ -317,7 +319,7 @@ const CreateQuiz = () => {
                                 <FormItem>
                                     <FormLabel>Number Of Day</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="e.g Day-1" {...field} className="!ring-0 !ring-offset-0 " />
+                                        <Input placeholder="e.g 1" {...field} className="!ring-0 !ring-offset-0 " />
                                     </FormControl>
                                     <FormDescription>
                                         Enter Your Quiz DownloadLink
@@ -496,25 +498,21 @@ const CreateQuiz = () => {
                                     <Form {...form}>
                                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
                                             {fields.map((question, index) => (
-                                                <div key={question.id} className="
-                space-y-4
-                border
-                rounded-md
-                p-4
-                bg-slate-200
-              
-              ">
+                                                <div key={question.id} className="   space-y-4 border rounded-md p-4 bg-slate-200">
                                                     <FormField
                                                         control={form.control}
                                                         name={`questions.${index}.questionTitle`}
                                                         render={({ field }) => (
                                                             <FormItem>
-                                                                <FormControl>
-                                                                    <Input
-                                                                        placeholder={`Question #${index + 1}`}
-                                                                        {...field}
-                                                                    />
-                                                                </FormControl>
+                                                                <div className="flex flex-row justify-center items-center space-x-2">
+                                                                    <IconBadge variant={"level"} icon={Activity} size={"sm"} />
+                                                                    <FormControl>
+                                                                        <Input
+                                                                            placeholder={`Question #${index + 1}`}
+                                                                            {...field}
+                                                                        />
+                                                                    </FormControl>
+                                                                </div>
                                                                 <FormMessage />
                                                             </FormItem>
                                                         )}
@@ -526,12 +524,15 @@ const CreateQuiz = () => {
                                                             key={optionIndex}
                                                             render={({ field }) => (
                                                                 <FormItem>
-                                                                    <FormControl>
-                                                                        <Input
-                                                                            placeholder={`Option ${optionIndex + 1}`}
-                                                                            {...field}
-                                                                        />
-                                                                    </FormControl>
+                                                                    <div className="flex flex-row justify-center items-center space-x-2">
+                                                                        <IconBadge variant={"warning"} icon={ListTodo} size={"sm"} />
+                                                                        <FormControl>
+                                                                            <Input
+                                                                                placeholder={`Option ${optionIndex + 1}`}
+                                                                                {...field}
+                                                                            />
+                                                                        </FormControl>
+                                                                    </div>
                                                                     <FormMessage />
                                                                 </FormItem>
                                                             )}

@@ -35,9 +35,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Categories, ResourceType } from "@prisma/client";
 import { ResourceAccessType } from "@prisma/client"
 import { ScrollArea } from "@/components/ui/scroll-area";
-import TagsInput from 'react-tagsinput'
 
-import 'react-tagsinput/react-tagsinput.css'
 
 
 
