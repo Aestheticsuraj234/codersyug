@@ -7,12 +7,23 @@ import { IconBadge } from "@/components/Global/icon-badge";
 import Alert from "@/components/Global/alert";
 import { useRouter } from "next/navigation";
 
+
+interface QuestionProps {
+  id: number;
+    text: string | null;
+    options: string | null;
+    correctOption: string | null;
+    timer: number | null;
+    quizId: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
 interface CourseCardProps {
   uniqueCode: string | null;
   title: string | null;
   thumbnail: string | null;
   dayNumber: string | null;
-  questions: number | null;
+  questions: QuestionProps[]
   startTime: Date ; // Update this line
   endTime: Date;
   level: string | null;
@@ -33,7 +44,8 @@ export const CourseCard = ({
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [quizStatus, setQuizStatus] = useState<string>("");
   const router = useRouter();
-
+  const firstQuestion = questions[0];
+  const NumberOfQuestions = questions.length;
   useEffect(() => {
     const now = new Date();
     const timeDiff = endTime.getTime() - now.getTime();
@@ -104,7 +116,7 @@ export const CourseCard = ({
             <div className="flex items-center gap-x-1 text-slate-500">
               <IconBadge size="sm" icon={BrainCircuit} variant={"success"} />
               <span>
-                {questions} {questions === 1 ? "Question" : "Questions"}
+                {NumberOfQuestions} {NumberOfQuestions === 1 ? "Question" : "Questions"}
               </span>
             </div>
           </div>
@@ -129,9 +141,9 @@ export const CourseCard = ({
             />
 
           ) : quizStatus === "Start Quiz" ? (
-            <button onClick={() => router.push(`/quizmain/quizzes/${uniqueCode}`)} className="bg-emerald-400 hover:bg-emerald-600 text-white py-1 px-3 rounded-md flex-1">
+            <Link href={`/quiz/${uniqueCode}`} className="bg-emerald-400 hover:bg-emerald-600 text-white py-1 px-3 rounded-md flex-1">
               Start Quiz
-            </button>
+            </Link>
           ) : (
             <button
               disabled
