@@ -18,7 +18,7 @@ if(!isUserVerify) {
       <h1 className='text-4xl font-bold text-center text-zinc-900 dark:text-zinc-100'>Coming Soon🥇</h1>
       <DigitalHackathonTimer />
     
-      <Link href="https://chat.whatsapp.com/FSRSe9N8jte5TqZ8aR0QeF" className="text-green-500 dark:text-green-400 font-extrabold text-center ">
+      <Link href="https://discord.gg/3dZqzQK" className="text-green-500 dark:text-green-400 font-extrabold text-center ">
         Join the WhatsApp Group so that we will notify you.!
       </Link>
     
