@@ -88,3 +88,9 @@ export function generateUniqueCode(userId:any) {
   const randomPart = crypto.randomBytes(4).toString('hex'); // Generate a random 8-character hexadecimal string
   return `${userId}-${randomPart}`;
 }
+
+export function generateUniqueCodeForQuiz() {
+  const randomPart = crypto.randomBytes(4).toString('hex'); // Generate a random 8-character hexadecimal string
+  return `${randomPart}`;
+
+}

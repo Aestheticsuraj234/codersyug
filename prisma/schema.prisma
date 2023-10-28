@@ -156,11 +156,14 @@ model StripeCustomer {
 model Quiz {
   id                 Int                 @id @default(autoincrement())
   title              String?
+  thumbnail          String?             @db.LongText
+  description        String?             @db.LongText
   uniqueCode         String?             @unique
-  startDate          DateTime? // The start date of the quiz
-  endDate            DateTime? // The end date of the quiz
-  dayNumber          Int? // The day number of the quiz
+  startDate          DateTime // The start date of the quiz
+  endDate            DateTime // The end date of the quiz
+  dayNumber          String? // The day number of the quiz
   questions          Question[]
+  level              Level? // The level of the quiz (e.g., Beginner, Intermediate, Advanced)
   isReady            Boolean?             @default(false)
   quizParticipations QuizParticipation[]
   createdAt          DateTime            @default(now())
@@ -170,10 +173,17 @@ model Quiz {
   @@index([endDate])
 }
 
+
+enum Level {
+  Beginner
+  Intermediate
+  Advanced
+}
+
 model Question {
   id            Int      @id @default(autoincrement())
   text          String?
-  options       Json? // Store options as a JSON string
+  options       String?   @db.LongText // This is a comma-separated string of options
   correctOption String? // Store the correct option
   timer         Int? // Timer for each question in seconds (e.g., 20 seconds)
   quiz          Quiz?     @relation(fields: [quizId], references: [id] ,onDelete: Cascade)
