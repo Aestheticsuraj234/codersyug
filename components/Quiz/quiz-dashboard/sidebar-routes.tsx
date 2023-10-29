@@ -8,7 +8,7 @@ const Routes = [
   {
     icon: Layout,
     label: "Dashboard",
-    href: "/quizmain/dashboard",
+    href: "/quizmain",
   },
   {
     icon: Compass,

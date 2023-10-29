@@ -23,8 +23,11 @@ export const sendMail = async (email: string, name: string, uniqueCode: string) 
       <html>
         <body>
           <h1>Hello👋 ${name},</h1>
-          <p>You are successfully registered for the quiz.</p>
+          <p>You are successfully registered for the Quiz-Wuiz.</p>
           <p>Your Unique Code is <pre><code>${uniqueCode}</code></pre>.</p>
+          <p>Use this code to login to the quiz.</p>
+          <p> Join our WhatsApp Group for more updates: <a href="https://chat.whatsapp.com/FSRSe9N8jte5TqZ8aR0QeF">Join</a></p>
+          <p>Thank you👑.</p>
         </body>
       </html>
     `,

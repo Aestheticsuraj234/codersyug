@@ -165,6 +165,7 @@ model Quiz {
   questions          Question[]
   level              Level? // The level of the quiz (e.g., Beginner, Intermediate, Advanced)
   isReady            Boolean?             @default(false)
+  score              Int? // The score of the quiz
   quizParticipations QuizParticipation[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -181,13 +182,14 @@ enum Level {
 }
 
 model Question {
-  id            Int      @id @default(autoincrement())
+  id            String      @id @default(uuid())
   text          String?
   options       String?   @db.LongText // This is a comma-separated string of options
   correctOption String? // Store the correct option
   timer         Int? // Timer for each question in seconds (e.g., 20 seconds)
   quiz          Quiz?     @relation(fields: [quizId], references: [id] ,onDelete: Cascade)
   quizId        Int
+  isAnswered    Boolean?  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

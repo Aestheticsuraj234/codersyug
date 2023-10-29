@@ -29,3 +29,13 @@ export const getQuizByUniqueCode = async (uniqueCode: string) => {
     console.log(quiz);
     return quiz;
 }
+
+export const getQuestionById = async (id: string) => {
+    const question = await db.question.findUnique({
+        where: {
+            id
+        }
+    });
+    console.log(question);
+    return question;
+}

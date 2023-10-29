@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface QuestionSidebarItemProps {
  
-  id: number;
+  id: string;
   uniqueCode: string |null;
   isLocked: boolean;
   title:string |null
