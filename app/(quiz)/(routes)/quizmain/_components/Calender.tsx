@@ -9,11 +9,11 @@ const DashboardCalender = () => {
     const today = new Date(); // Get the current date
     const fromDate = setYear(today, 2023); // Set the year to 2023
     fromDate.setMonth(10); // Set the month to November (zero-based, so 10 is November)
-    fromDate.setDate(22); // Set the date to 22
+    fromDate.setDate(10); // Set the date to 22
 
     const [date, setDate] = React.useState<DateRange | undefined>({
         from: fromDate, // Use the calculated `from` date
-        to: addDays(fromDate, 20),
+        to: addDays(fromDate, 10),
     })
 
     return (

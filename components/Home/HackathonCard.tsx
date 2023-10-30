@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const HackathonCard = () => {
   // Define the end date and time of the hackathon
-  const hackathonEndDate = new Date('2023-11-20T00:00:00Z').getTime();
+  const hackathonStartDate = new Date('2023-11-10T00:00:00Z').getTime();
   const [participants, setParticipants] = useState(0);
   // Initialize state for the remaining time
   const [remainingTime, setRemainingTime] = useState(getRemainingTime());
@@ -15,7 +15,7 @@ const HackathonCard = () => {
   // Function to calculate the remaining time
   function getRemainingTime() {
     const now = new Date().getTime();
-    const timeDifference = hackathonEndDate - now;
+    const timeDifference = hackathonStartDate - now;
 
     if (timeDifference <= 0) {
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -58,7 +58,7 @@ const HackathonCard = () => {
   }
 
   return (
-    <Link href="/hackathons" className="relative flex flex-col items-center gap-5 p-5 sm:p-6 overflow-hidden bg-transparent border border-slate-200 rounded-2xl sm:flex-row hover:border-slate-300 dark:hover:border-slate-600 dark:border-slate-800/80">
+    <Link href="/quiz-wuiz-hackathon" className="relative flex flex-col items-center gap-5 p-5 sm:p-6 overflow-hidden bg-transparent border border-slate-200 rounded-2xl sm:flex-row hover:border-slate-300 dark:hover:border-slate-600 dark:border-slate-800/80">
       <div className="relative min-h-[88px] max-h-[164px] w-full min-w-32 sm:h-[164px] sm:min-h-[164px] sm:max-h-[164px] sm:w-[164px] sm:min-w-[164px] sm:max-w-[164px] rounded overflow-hidden">
         <img
           alt="Airbyte banner"
@@ -90,17 +90,17 @@ const HackathonCard = () => {
             </div>
             <span className="text-slate-200 dark:text-slate-800">|</span>
             <div className="flex flex-row gap-2">
-              <span className="font-medium">Ends in</span>
+              <span className="font-medium">Starts in</span>
               <div className="text-emerald-500 font-semibold">
                 {`${remainingTime.days}d : ${remainingTime.hours}h : ${remainingTime.minutes}m : ${remainingTime.seconds}s`}
               </div>
             </div>
           </div>
           <h2 className="mb-1 text-2xl font-bold text-slate-800 font-heading dark:text-slate-200">
-            Codersyug Hackathon
+            Codersyug Hackathon - <span className='text-rose-500 font-bold'>"QUIZ WUIZ"</span>
           </h2>
           <p className="text-slate-600 dark:text-slate-300 font-normal">
-          Codersyug Hackathon is a 10-day long hackathon where you can attempt quizzes and win exciting prizes🎊.
+          QUIZ WUIZ is a 10-day long hackathon where you can attempt quizzes and win exciting prizes🎊.
           </p>
         </div>
         <div className="flex flex-row items-center justify-end w-full gap-5">
@@ -111,8 +111,8 @@ const HackathonCard = () => {
             </div>
           </div>
           <div className="flex flex-row justify-start xl:justify-end">
-            <Link href={"/hackathons"} className="rounded-full flex text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 hover:dark:border-slate-700 hover:bg-slate-50 hover:dark:bg-slate-800 focus:ring focus:ring-offset-2 focus:ring-offset-white  dark:focus:ring-offset-slate-800 disabled:bg-white disabled:border-slate-200 disabled:cursor-not-allowed disabled:text-slate-300 disabled:dark:bg-slate-950 disabled:dark:border-slate-800 disabled:dark:text-slate-800 text-xs py-1.5 px-4 items-center">
-              <span className="pr-1.5">Learn more</span>
+            <Link href={"/quiz-wuiz-hackathon"} className="rounded-full flex text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 hover:dark:border-slate-700 hover:bg-slate-50 hover:dark:bg-slate-800 focus:ring focus:ring-offset-2 focus:ring-offset-white  dark:focus:ring-offset-slate-800 disabled:bg-white disabled:border-slate-200 disabled:cursor-not-allowed disabled:text-slate-300 disabled:dark:bg-slate-950 disabled:dark:border-slate-800 disabled:dark:text-slate-800 text-xs py-1.5 px-4 items-center">
+              <span className="pr-1.5">lets Start</span>
               <MoveRight size={24} />
             </Link>
           </div>

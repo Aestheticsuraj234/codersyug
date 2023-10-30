@@ -25,10 +25,10 @@ const prizeItems = [
 
 const PrizeBox = () => {
     return (
-        <div className='grid md:grid-cols-2  grid-cols-1 gap-4 bg-zinc-100 px-2 py-2 rounded-md w-full'>
+        <div className='grid md:grid-cols-2  grid-cols-1 gap-4 bg-zinc-100 dark:bg-zinc-800 px-2 py-2 rounded-md w-full'>
             {prizeItems.map((prize, index) => (
                 <div key={index} className='flex flex-row items-center gap-4'>
-                    <div className='w-32 h-32 rounded-full bg-white flex items-center justify-center overflow-hidden'>
+                    <div className='w-32 h-32 rounded-full bg-white dark:bg-zinc-700 flex items-center justify-center overflow-hidden'>
                         <img
                             src={prize.imageUrl}
                             alt={prize.name}
@@ -37,7 +37,7 @@ const PrizeBox = () => {
                         />
                     </div>
                     <div>
-                        <p className='text-lg font-bold text-gray-700'>
+                        <p className='text-lg font-bold text-gray-700 dark:text-gray-100'>
                             {prize.name}
                         </p>
                         <span className='text-sm'>

@@ -4,7 +4,7 @@ import { GetNumberOfParticipants } from '@/server-action/hackathon';
 
 const Timeline = () => {
   // Define the end date and time of the hackathon
-  const hackathonEndDate = new Date('2023-11-20T00:00:00Z').getTime();
+  const hackathonEndDate = new Date('2023-11-10T00:00:00Z').getTime();
   const [participants, setParticipants] = useState(0);
   // Initialize state for the remaining time
   const [remainingTime, setRemainingTime] = useState(getRemainingTime());
@@ -74,7 +74,7 @@ const Timeline = () => {
                 text-zinc-800
                 '>  {`${remainingTime.days}d : ${remainingTime.hours}h : ${remainingTime.minutes}m : ${remainingTime.seconds}s`}
                 </h1>
-                <span>Ends in
+                <span>Starts in
                 </span>
             </div>
             <div className='flex flex-col justify-center items-center gap-4'>

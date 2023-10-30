@@ -145,3 +145,19 @@ export const isUserVerified = async () => {
 
     return Boolean(VerifiedUser);
 }
+
+export const getUniqueCode = async () => {
+    const profile = await currentProfile();
+
+    if (!profile) {
+        return false;
+    }
+
+    const UniqueCode = await db.quizParticipation.findUnique({
+        where: {
+            userId: profile?.userId, 
+        },
+    });
+
+    return UniqueCode?.uniqueCode;
+}

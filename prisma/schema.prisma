@@ -205,9 +205,10 @@ model QuizParticipation {
   quiz       Quiz?      @relation(fields: [quizId], references: [id],onDelete: Cascade)
   uniqueCode String?   // The unique code for the quiz
   submission DateTime? // Timestamp of when the user submitted the quiz
-  score      Int? // User's score for the quiz
+  score      Int?      @default(0)
+  rank      Int?     @default(0)  
   createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+    updatedAt  DateTime  @updatedAt
 
   @@index([userId])
   @@index([quizId])

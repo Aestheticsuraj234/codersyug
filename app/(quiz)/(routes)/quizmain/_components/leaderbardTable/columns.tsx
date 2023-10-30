@@ -1,32 +1,21 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import Image from "next/image"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
+import { ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 // This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type LeaderBoards = {
-  userId: string
-  name: string
-  email: string
-  avatar: string
-  score: number
-  rank: number
- 
-}
 
-export const columns: ColumnDef<LeaderBoards>[] = [
+
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "rank",
     header: "Rank",
   },
   {
-    accessorKey: "avatar",
+    accessorKey: "imageUrl",
     header: "Avatar",
     cell: ({ row }: any) => {
-      const value = row.original.avatar
+      const value = row.original.imageUrl
       return (
         <div className="flex flex-row items-start justify-start">
           <img

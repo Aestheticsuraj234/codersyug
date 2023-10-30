@@ -39,3 +39,17 @@ export const getQuestionById = async (id: string) => {
     console.log(question);
     return question;
 }
+
+
+export const getAllParticipants = async () => {
+    const participants = await db.quizParticipation.findMany({
+        include:{
+            user: true
+        }
+    });
+    console.log(participants);
+    return participants;
+}
+
+
+
