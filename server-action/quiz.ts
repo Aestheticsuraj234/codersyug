@@ -29,3 +29,27 @@ export const getQuizByUniqueCode = async (uniqueCode: string) => {
     console.log(quiz);
     return quiz;
 }
+
+export const getQuestionById = async (id: string) => {
+    const question = await db.question.findUnique({
+        where: {
+            id
+        }
+    });
+    console.log(question);
+    return question;
+}
+
+
+export const getAllParticipants = async () => {
+    const participants = await db.quizParticipation.findMany({
+        include:{
+            user: true
+        }
+    });
+    console.log(participants);
+    return participants;
+}
+
+
+

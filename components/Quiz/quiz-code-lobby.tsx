@@ -7,10 +7,15 @@ import { QuizCodeForm } from "./quiz-input";
 // @ts-ignore
 import Typewriter from 'typewriter-effect/dist/core';
 import { useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Check, CopyIcon } from "lucide-react";
+import { Button } from "../ui/button";
+import UniqueCodeComponent from "./uniquecode";
 
-const QuizLobbyEnter =  () => {
-    const {user} =  useUser();
+
+const QuizLobbyEnter = () => {
+    const { user } = useUser();
+   
     useEffect(() => {
         // Create the Typewriter effect for "Hello" and the user's name
         const typewriterOptions = {
@@ -29,13 +34,18 @@ const QuizLobbyEnter =  () => {
         new Typewriter('#typewriter', typewriterOptions);
     }, [user]);
 
+   
+
+  
+
     return (
         <>
             <section className="nav-padding paddings ">
+         <UniqueCodeComponent/>
                 <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
                     <div className="mr-auto place-self-center lg:col-span-7">
                         <div id="typewriter" className="font-semibold text-zinc-700 dark:text-zinc-300 text-2xl">
-                        
+
                         </div>
                         <h1 className="max-w-3xl text-gray-700 dark:text-gray-200 mb-2 text-xl font-extrabold tracking-tight leading-none md:text-2xl xl:text-3xl ">
                             <br />Enter Your code and let's start our quiz.
@@ -44,7 +54,7 @@ const QuizLobbyEnter =  () => {
                             Enter your code and start your quiz. If you don't have a code, then click <Link href={"/hackathons"} className="underline font-bold text-green-500">Here</Link>
                         </p>
                         <div className="w-full">
-                        <QuizCodeForm />
+                            <QuizCodeForm />
                         </div>
                     </div>
                     <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">

@@ -15,6 +15,7 @@ import { Code2, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Rules from '@/components/Hackathon/Rules';
 import StickyButton from '@/components/Hackathon/sticky-button';
+import EbookSponsorship from '@/components/Hackathon/EbookSponsership';
 const HackathonPage = () => {
     const [isRegistering, setIsRegistering] = useState(false);
     const [isUserRegistered, setIsUserRegistered] = useState(false);
@@ -39,18 +40,20 @@ const HackathonPage = () => {
         try {
             setIsRegistering(true);
             const response = await HandleRegistration();
-
+            setIsRegistering(false);    
             if (response === "You have already participated in the quiz.") {
                 toast({
                     title: 'Already Registered🤷‍♂️',
                     description: 'You have already participated in the quiz',
                 });
+                router.push("/QuizEnter");
             } else if (response) {
                 setIsUserRegistered(true); // User is now registered
                 toast({
                     title: 'success👑',
                     description: 'Registration successful. Check your email for details and your quiz code.',
                 });
+                router.push("/QuizEnter");
             } else {
                 toast({
                     variant: 'destructive',
@@ -59,7 +62,7 @@ const HackathonPage = () => {
                 });
             }
         } catch (error) {
-            console.log("Error_Registration",error);
+            console.log("Error_Registration", error);
             toast({
                 variant: 'destructive',
                 title: 'error',
@@ -77,12 +80,13 @@ const HackathonPage = () => {
                 <motion.h1
                     variants={textVariant(0.5)}
                     className="max-w-3xl text-center flex md:flex-row flex-col justify-center items-center gap-2 bg-gradient-to-r from-yellow-300 to-green-600  bg-clip-text text-transparent mb-2 text-2xl font-extrabold tracking-tight leading-none md:text-4xl xl:text-5xl">
-                    <Image src="/code-2.svg" alt="hero" width={100} height={100} />
+                    <Image src="/code-2.svg" alt="hero" width={100} height={100} className='mt-8 md:mt-0' />
 
                     Codersyug Hackathon
                 </motion.h1>
+                <span className='text-xl text-center font-extrabold tracking-tight leading-none text-rose-500  flex flex-row justify-center items-center'>Hosting 👉 Quiz Wuiz</span>
                 <motion.p className="max-w-2xl mb-6 text-center font-semibold text-gray-800 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-                    Codersyug Hackathon is a 10 days virtual hackathon that brings together
+                    Quiz Wuiz is a 10 days virtual hackathon that brings together
                     the best students from all over the country to compete for
                     prizes by attempting to solve quizzes and coding challenges in a range
                 </motion.p>
@@ -119,6 +123,8 @@ const HackathonPage = () => {
             <Timeline />
             <Prize />
             <Rules />
+            <EbookSponsorship/>
+            <hr/>
             <About />
             <Participation />
             <FrequentlyAskedQuestion />

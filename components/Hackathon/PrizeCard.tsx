@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 import { GetNumberOfParticipants } from '@/server-action/hackathon';
 import { Calendar, MoveRight, UserCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import Fireworks from './Confetti';
 
 const PrizeCard = () => {
     // Define the end date and time of the hackathon
-    const hackathonEndDate = new Date('2023-11-20T00:00:00Z').getTime();
+    const hackathonEndDate = new Date('2023-11-10T00:00:00Z').getTime();
     const [participants, setParticipants] = useState(0);
     // Initialize state for the remaining time
     const [remainingTime, setRemainingTime] = useState(getRemainingTime());
@@ -85,7 +86,7 @@ const PrizeCard = () => {
            
             <span className="text-slate-200 dark:text-slate-800">|</span>
             <div className="flex flex-row gap-2">
-              <span className="font-medium">Ends in</span>
+              <span className="font-medium">Starts in</span>
               <div className="text-emerald-500 font-semibold">
               {`${remainingTime.days}d : ${remainingTime.hours}h : ${remainingTime.minutes}m : ${remainingTime.seconds}s`}
               </div>
@@ -132,12 +133,7 @@ const PrizeCard = () => {
             </div>
           </div>
           <div className="flex flex-row justify-start xl:justify-end">
-            <Link href={"/hackathons"} className="rounded-full flex text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 hover:dark:border-slate-700 hover:bg-slate-50 hover:dark:bg-slate-800 focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 dark:focus:ring-offset-slate-800 disabled:bg-white disabled:border-slate-200 disabled:cursor-not-allowed disabled:text-slate-300 disabled:dark:bg-slate-950 disabled:dark:border-slate-800 disabled:dark:text-slate-800 text-xs py-1.5 px-4 items-center">
-              <span className="pr-1.5">
-                Participate
-              </span>
-              <MoveRight size={24} />
-            </Link>
+            <Fireworks/>
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ export const sampleLeaderboardData = [
         name: "John Doe",
         avatar: "https://pbs.twimg.com/profile_images/1593304942210478080/TUYae5z7_400x400.jpg",
         email: "jhondoe234@gmail.com",
-        score: 100,
+        score: 0,
         rank: 1,
     },
     {
@@ -12,7 +12,7 @@ export const sampleLeaderboardData = [
         name: "Alice Smith",
         avatar: "https://example.com/avatar2.jpg",
         email: "alice.smith@example.com",
-        score: 95,
+        score: 0,
         rank: 2,
     },
     {
@@ -20,7 +20,7 @@ export const sampleLeaderboardData = [
         name: "Bob Johnson",
         avatar: "https://example.com/avatar3.jpg",
         email: "bob.johnson@example.com",
-        score: 90,
+        score: 0,
         rank: 3,
     },
     {
@@ -28,7 +28,7 @@ export const sampleLeaderboardData = [
         name: "Eve Wilson",
         avatar: "https://example.com/avatar4.jpg",
         email: "eve.wilson@example.com",
-        score: 85,
+        score: 0,
         rank: 4,
     },
     {
@@ -36,7 +36,7 @@ export const sampleLeaderboardData = [
         name: "Chris Brown",
         avatar: "https://example.com/avatar5.jpg",
         email: "chris.brown@example.com",
-        score: 80,
+        score: 0,
         rank: 5,
     },
     {
@@ -44,7 +44,7 @@ export const sampleLeaderboardData = [
         name: "Olivia Lee",
         avatar: "https://example.com/avatar6.jpg",
         email: "olivia.lee@example.com",
-        score: 75,
+        score: 0,
         rank: 6,
     },
     {
@@ -52,7 +52,7 @@ export const sampleLeaderboardData = [
         name: "David Davis",
         avatar: "https://example.com/avatar7.jpg",
         email: "david.davis@example.com",
-        score: 70,
+        score: 0,
         rank: 7,
     },
     {
@@ -60,7 +60,7 @@ export const sampleLeaderboardData = [
         name: "Sophia Taylor",
         avatar: "https://example.com/avatar8.jpg",
         email: "sophia.taylor@example.com",
-        score: 65,
+        score: 0,
         rank: 8,
     },
     {
@@ -68,7 +68,7 @@ export const sampleLeaderboardData = [
         name: "Michael Smith",
         avatar: "https://example.com/avatar9.jpg",
         email: "michael.smith@example.com",
-        score: 60,
+        score: 0,
         rank: 9,
     },
     {
@@ -76,7 +76,7 @@ export const sampleLeaderboardData = [
         name: "Emma Johnson",
         avatar: "https://example.com/avatar10.jpg",
         email: "emma.johnson@example.com",
-        score: 55,
+        score: 0,
         rank: 10,
     },
     {
@@ -84,7 +84,7 @@ export const sampleLeaderboardData = [
         name: "Liam Brown",
         avatar: "https://example.com/avatar11.jpg",
         email: "liam.brown@example.com",
-        score: 50,
+        score: 0,
         rank: 11,
     },
     {
@@ -92,7 +92,7 @@ export const sampleLeaderboardData = [
         name: "Ava Wilson",
         avatar: "https://example.com/avatar12.jpg",
         email: "ava.wilson@example.com",
-        score: 45,
+        score: 0,
         rank: 12,
     },
     {
@@ -100,7 +100,7 @@ export const sampleLeaderboardData = [
         name: "Noah Smith",
         avatar: "https://example.com/avatar13.jpg",
         email: "noah.smith@example.com",
-        score: 40,
+        score: 0,
         rank: 13,
     },
     {
@@ -108,7 +108,7 @@ export const sampleLeaderboardData = [
         name: "Isabella Johnson",
         avatar: "https://example.com/avatar14.jpg",
         email: "isabella.johnson@example.com",
-        score: 35,
+        score: 0,
         rank: 14,
     },
     {
@@ -116,7 +116,7 @@ export const sampleLeaderboardData = [
         name: "Mason Wilson",
         avatar: "https://example.com/avatar15.jpg",
         email: "mason.wilson@example.com",
-        score: 30,
+        score: 0,
         rank: 15,
     },
     {
@@ -124,7 +124,7 @@ export const sampleLeaderboardData = [
         name: "Ava Lee",
         avatar: "https://example.com/avatar16.jpg",
         email: "ava.lee@example.com",
-        score: 25,
+        score: 0,
         rank: 16,
     },
     {
@@ -132,7 +132,7 @@ export const sampleLeaderboardData = [
         name: "Logan Davis",
         avatar: "https://example.com/avatar17.jpg",
         email: "logan.davis@example.com",
-        score: 20,
+        score: 0,
         rank: 17,
     },
     {
@@ -140,7 +140,7 @@ export const sampleLeaderboardData = [
         name: "Amelia Taylor",
         avatar: "https://example.com/avatar18.jpg",
         email: "amelia.taylor@example.com",
-        score: 15,
+        score: 0,
         rank: 18,
     },
     {
@@ -148,7 +148,7 @@ export const sampleLeaderboardData = [
         name: "Benjamin Smith",
         avatar: "https://example.com/avatar19.jpg",
         email: "benjamin.smith@example.com",
-        score: 10,
+        score: 0,
         rank: 19,
     },
     {
@@ -156,7 +156,7 @@ export const sampleLeaderboardData = [
         name: "Charlotte Johnson",
         avatar: "https://example.com/avatar20.jpg",
         email: "charlotte.johnson@example.com",
-        score: 5,
+        score: 0,
         rank: 20,
     },
 ];

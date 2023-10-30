@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 const DigitalHackathonTimer = () => {
     // Define the end date and time of the hackathon
-    const hackathonEndDate = new Date('2023-11-20T00:00:00Z').getTime();
+    const hackathonEndDate = new Date('2023-11-10T00:00:00Z').getTime();
     const [isMounted, setIsMounted] = useState(false);
     // Initialize state for the remaining time
     const [remainingTime, setRemainingTime] = useState<any>(getRemainingTime());

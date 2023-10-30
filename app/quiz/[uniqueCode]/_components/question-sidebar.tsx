@@ -36,8 +36,8 @@ const QuestionSidebar = ({
               key={question.id}
               id={question.id}
               uniqueCode={quiz.uniqueCode}
-            title={question.text}
-            isLocked={false}
+              title={question.text}
+              isLocked={false}
 
             />
           ))}

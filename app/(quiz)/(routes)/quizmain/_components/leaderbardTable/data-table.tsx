@@ -45,7 +45,7 @@ export function DataTable<TData, TValue>({
   )
   const [rowSelection, setRowSelection] = useState({})
 
-  const [columnVisibility, setColumnVisibility] =useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const table = useReactTable({
     data,
     columns,
@@ -66,9 +66,11 @@ export function DataTable<TData, TValue>({
 
   })
 
+  console.log("table:", data)
+  console.log("table:", table)
   return (
     <>
-    <div className="flex items-center py-4">
+      <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -77,7 +79,7 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm focus:outline-none "
         />
-           <DropdownMenu>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               Columns
@@ -169,9 +171,9 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
         <div className="flex-1 text-sm text-muted-foreground">
-  {table.getFilteredSelectedRowModel().rows.length} of{" "}
-  {table.getFilteredRowModel().rows.length} row(s) selected.
-</div>
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
       </div>
 
     </>
