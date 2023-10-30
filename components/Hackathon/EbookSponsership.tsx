@@ -39,7 +39,7 @@ const EbookSponsorship = () => {
     ];
 
     const onRedirect = () => {
-        window.open('https://bit.ly/3E40YEV', '_blank');
+        window.open('https://www.bcacodewala.com/shop/master-html-to-react-ebook-fb/', '_blank');
     }
     return (
         <>
@@ -47,7 +47,7 @@ const EbookSponsorship = () => {
             <p className="max-w-2xl mb-6 font-semibold text-gray-500 lg:mb-8 md:text-base lg:text-xl dark:text-gray-400">
                 Click to know more
             </p>
-            <Link id="sponsors" href={"https://bit.ly/3E40YEV"} className="flex w-full flex-col sm:mt-6 sm:flex-row">
+            <Link id="sponsors" href={"https://www.bcacodewala.com/shop/master-html-to-react-ebook-fb/"} className="flex w-full flex-col sm:mt-6 sm:flex-row">
                 <div className="flex flex-col gap-6 rounded-md border border-b-0 border-black-400 bg-black-200 sm:h-[320px] sm:w-1/2 sm:min-w-[404px] sm:justify-center sm:rounded-r-none sm:border-b sm:border-r-0">
                     <p className="text-green-500 ml-2 mt-5 self-center uppercase tracking-[2px] sm:ml-16 sm:mt-2 sm:self-start">Bonus #1 - Ebook (1000+ pages)</p>
                     <h2 className="text-2xl ml-2 max-w-md text-center sm:ml-16 sm:text-left">Master HTML to React</h2>
