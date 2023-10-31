@@ -25,7 +25,10 @@ export const metadata: Metadata = {
     "og:url": "codersyug.vercel.app",
     "og:image": 'https://cloud.appwrite.io/v1/storage/buckets/64e6ef5650a3bc944e6f/files/6519c5866045cbbc241f/view?project=64d3707fc8db92bf44ff&mode=admin',
     "og:type": "website",
-  }
+
+  },
+
+  
 }
 
 
@@ -36,8 +39,9 @@ export default function RootLayout({
 }) {
   return (
     <AppProvider>
-      <ClerkProvider publishableKey=''>
-        <QueryProvider>
+      {/* @ts-ignore */}
+      <ClerkProvider publishableKey='pk_live_Y2xlcmsuY29kZXJzeXVnLmRldiQ' frontendApi={"https://clerk.codersyug.dev"}>
+        <QueryProvider >
           <html lang="en">
     
             <body className={cn(fonts.className,"min-h-screen ")}>
