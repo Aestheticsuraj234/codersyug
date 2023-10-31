@@ -7,7 +7,7 @@ export default authMiddleware({
   publicRoutes: [
     "/api/webhook",
     "api/uploadthing",
-    "/hackathons",
+    "/quiz-wuiz-hackathon",
   
   ],
 
