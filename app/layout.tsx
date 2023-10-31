@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <AppProvider>
       {/* @ts-ignore */}
-      <ClerkProvider publishableKey='pk_live_Y2xlcmsuY29kZXJzeXVnLmRldiQ' frontendApi={"https://clerk.codersyug.dev"}>
+      <ClerkProvider  >
         <QueryProvider >
           <html lang="en">
     

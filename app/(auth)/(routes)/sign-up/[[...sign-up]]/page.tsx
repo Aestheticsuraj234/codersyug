@@ -24,7 +24,9 @@ export default function Page() {
 
       <div className='flex-center   mx-10 px-10'>
 
-        <SignUp />
+        <SignUp 
+        afterSignUpUrl={"/"}
+        />
       </div>
 
     </section>
