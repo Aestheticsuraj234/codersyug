@@ -36,6 +36,18 @@ export const getQuestionById = async (id: string) => {
             id
         }
     });
+
+
+    const nextQuestion = await db.question.findFirst({
+        where: {
+            quizId: question?.quizId,
+            // order: {
+            //     gt: question?.order
+            // }
+        }
+
+    })
+
     console.log(question);
     return question;
 }
@@ -47,9 +59,22 @@ export const getAllParticipants = async () => {
             user: true
         }
     });
+  
     console.log(participants);
     return participants;
 }
 
 
+        export const questionAccessType = async (questionId: string) => {
+            const question = await db.question.findUnique({
+                where: {
+                    id: questionId
+                },
+                select: {
+                    accessLevel: true
+                }
+            });
+            console.log(question);
+            return question?.accessLevel?.toString();
+        }
 

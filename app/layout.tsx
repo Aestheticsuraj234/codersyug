@@ -36,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <AppProvider>
-      <ClerkProvider>
+      <ClerkProvider publishableKey=''>
         <QueryProvider>
           <html lang="en">
     

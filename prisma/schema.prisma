@@ -12,7 +12,7 @@ model Profile {
   id                 Int                  @id @default(autoincrement())
   userId             String               @unique
   name               String
-  email              String               
+  email              String
   imageUrl           String?
   blogs              Blog[] // This creates a one-to-many relationship with Blog
   savedBlogs         Blog[]               @relation("SavedBlogs") // This creates a many-to-many relationship with Blog
@@ -164,7 +164,7 @@ model Quiz {
   dayNumber          String? // The day number of the quiz
   questions          Question[]
   level              Level? // The level of the quiz (e.g., Beginner, Intermediate, Advanced)
-  isReady            Boolean?             @default(false)
+  isReady            Boolean?            @default(false)
   score              Int? // The score of the quiz
   quizParticipations QuizParticipation[]
   createdAt          DateTime            @default(now())
@@ -174,7 +174,6 @@ model Quiz {
   @@index([endDate])
 }
 
-
 enum Level {
   Beginner
   Intermediate
@@ -182,37 +181,45 @@ enum Level {
 }
 
 model Question {
-  id            String      @id @default(uuid())
+  id            String       @id @default(uuid())
   text          String?
-  options       String?   @db.LongText // This is a comma-separated string of options
+  options       String?      @db.LongText // This is a comma-separated string of options
   correctOption String? // Store the correct option
   timer         Int? // Timer for each question in seconds (e.g., 20 seconds)
-  quiz          Quiz?     @relation(fields: [quizId], references: [id] ,onDelete: Cascade)
+  quiz          Quiz?        @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId        Int
-  isAnswered    Boolean?  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  accessLevel   AccessLevel? @default(LOCKED)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   @@index([quizId])
+}
+
+enum AccessLevel {
+  LOCKED
+  UNLOCKED
+  ANSWERED
 }
 
 model QuizParticipation {
   id         Int       @id @default(autoincrement())
-  userId     String   @unique
-  user       Profile   @relation(fields: [userId], references: [userId],onDelete: Cascade)
-  isVerified Boolean? @default(false)
+  userId     String    @unique
+  user       Profile   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  isVerified Boolean?  @default(false)
   quizId     Int?
-  quiz       Quiz?      @relation(fields: [quizId], references: [id],onDelete: Cascade)
-  uniqueCode String?   // The unique code for the quiz
-  submission DateTime? // Timestamp of when the user submitted the quiz
+  quiz       Quiz?     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  uniqueCode String?
+  submission DateTime?
   score      Int?      @default(0)
-  rank      Int?     @default(0)  
+  rank       Int?      @default(0)
   createdAt  DateTime  @default(now())
-    updatedAt  DateTime  @updatedAt
+  updatedAt  DateTime  @updatedAt
 
   @@index([userId])
   @@index([quizId])
 }
+
+
 
 enum ResourceAccessType {
   FREE

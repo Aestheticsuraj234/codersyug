@@ -86,25 +86,25 @@ const QuestionIdPage = ({ params }: { params: { id: any } }) => {
     handleInspector();
   }, []);
 
-  useEffect(() => {
-    let mouseOutCount = 0;
+  // useEffect(() => {
+  //   let mouseOutCount = 0;
   
-    function handleMouseLeave() {
-      mouseOutCount += 1;
-      if (mouseOutCount > 3) {
-       return (
-        setIsDialogOpen(true)
-       )
-        // Implement your form submission logic here.
-      }
-    }
+  //   function handleMouseLeave() {
+  //     mouseOutCount += 1;
+  //     if (mouseOutCount > 3) {
+  //      return (
+  //       setIsDialogOpen(true)
+  //      )
+  //       // Implement your form submission logic here.
+  //     }
+  //   }
   
-    document.addEventListener("mouseleave", handleMouseLeave);
+  //   document.addEventListener("mouseleave", handleMouseLeave);
   
-    return () => {
-      document.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("mouseleave", handleMouseLeave);
+  //   };
+  // }, []);
   
 
   useEffect(() => {
