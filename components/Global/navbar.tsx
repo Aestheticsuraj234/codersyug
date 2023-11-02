@@ -28,7 +28,7 @@ const Navbar = () => {
                     
 
                     <ThemeToggle />
-                    <UserButton afterSignOutUrl="/" />
+                    <UserButton afterSignOutUrl="/sign-in" />
                     <Link href={"https://github.com/Aestheticsuraj234/codersyug"}>
                     <Button variant={"outline"}   size="default" >
                     <Github
