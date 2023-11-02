@@ -36,8 +36,9 @@ export default function RootLayout({
 }) {
   return (
     <AppProvider>
-      <ClerkProvider publishableKey=''>
-        <QueryProvider>
+      {/* @ts-ignore */}
+      <ClerkProvider  >
+        <QueryProvider >
           <html lang="en">
     
             <body className={cn(fonts.className,"min-h-screen ")}>
