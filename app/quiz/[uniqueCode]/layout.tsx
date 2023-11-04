@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs";
-import { redirect } from "next/navigation"; // Change 'next/navigation' to 'next/router' for navigation
-
+import { redirect } from "next/navigation"; // Import 'next/router' for navigation
 import { db } from "@/lib/db";
 import QuestionNavbar from "./_components/question-navbar";
 import QuestionSidebar from "./_components/question-sidebar";
@@ -23,15 +22,17 @@ const QuizLayout = async ({
       uniqueCode: params.uniqueCode,
     },
     include: {
-      questions: true,
+      questions: {
+        orderBy: {
+          order: "asc", 
+        }
+      },
     },
   });
 
   if (!quiz) {
     return redirect("/");
   }
-
-
 
   return (
     <div className="h-full">

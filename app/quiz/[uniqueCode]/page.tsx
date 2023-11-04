@@ -12,7 +12,11 @@ const QuestionUniqueCodePage = async ({
             uniqueCode: params.uniqueCode
         },
         include: {
-          questions: true
+          questions: {
+            orderBy:{
+              order: "asc"
+            },
+          }
         },
        
       });

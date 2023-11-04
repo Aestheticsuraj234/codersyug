@@ -19,13 +19,6 @@ import { Terminal } from "lucide-react";
 
 const Dashboard = async () => {
   const LeaderBoardData = await getAllParticipants()
-
-  //  WANTED TO LOOP THE LEADERBOARDdATA AND RETURN SOME SPECIFIC PROPERTIES
-
-
-
-
-  console.log("LeaderBoard_data:", LeaderBoardData)
   return (
     <div className="h-screen">
       <ImageBanner />

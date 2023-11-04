@@ -17,8 +17,9 @@ const QuestionSidebar = ({
     const { userId } = auth();
 
     if (!userId) {
-      return redirect("/sign-in");
+        return redirect("/sign-in");
     }
+
 
     return (
         <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
@@ -29,7 +30,6 @@ const QuestionSidebar = ({
             </div>
             <div className="flex flex-col w-full">
                 {quiz.questions.map((question, index) => {
-                    const accessType = index === 0 ? AccessLevel.UNLOCKED : AccessLevel.LOCKED;
                    
                     return (
                         <QuestionSidebarItem
@@ -37,8 +37,10 @@ const QuestionSidebar = ({
                             id={question.id}
                             uniqueCode={quiz.uniqueCode}
                             title={question.text}
-                            isLocked={accessType === AccessLevel.LOCKED}
+                            isLocked={question.accessLevel === AccessLevel.LOCKED}
+                            accessLevel={question.accessLevel}
                             
+
                         />
                     );
                 })}

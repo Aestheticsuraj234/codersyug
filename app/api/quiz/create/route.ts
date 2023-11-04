@@ -41,10 +41,11 @@ export const POST = async (req: Request) => {
                 endDate: EndDate,
                 questions: {
                     createMany: {
-                        data: questions.map((question: any) => {
+                        data: questions.map((question: any, index: any) => {
                             return {
                                 text: question.questionTitle, // Corrected this line
                                 options: JSON.stringify(question.options),
+                                order: index + 1,
                                 correctOption: question.correctOption,
                                 timer: Number(question.timer),
                             };

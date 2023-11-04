@@ -27,10 +27,21 @@ import { ResourceType } from '@prisma/client';
  * @property {function} closeModal - Function to close a modal.
  * 
  */
+
+/**
+ * @typedef {Object} QuizSubContextValue
+ * @property {Array} answeredQuestions - Array of answered questions.
+ * @property {function} addAnsweredQuestion - Function to add a question to the answeredQuestions array.
+ * @property {function} setAnsweredQuestions - Function to update answeredQuestions state.
+
+ */
+
+
 /**
  * @typedef {Object} AppContextValue - Main context for the app.
  * @property {BlogSubContextValue} blog - Blog subcontext.
  * @property {ModalSubContextValue} modal - Modal subcontext.
+ * @property {QuizSubContextValue} quiz - Quiz subcontext.
  
  */
 
@@ -96,8 +107,6 @@ export const AppProvider = ({ children }) => {
   };
 
 
-
-
   const modalContext = {
     modals,
     isOpen,
@@ -106,10 +115,43 @@ export const AppProvider = ({ children }) => {
   };
 
 
+  /**
+   * @type  {QuizSubContextValue}
+   * 
+   */
+
+  //? #---------------------Quiz---------------------#
+  const [answeredQuestions, setAnsweredQuestions] = useState([]);
+
+
+  /**
+   * 
+   * @param {*} param0
+   * @param {*} questionId
+   * @param {*} answer 
+   * @returns
+   * 
+   */
+
+  const addAnsweredQuestion = ({ questionId, answer }) => {
+    setAnsweredQuestions([...answeredQuestions, {
+      questionId,
+      answer
+    }]);
+  };
+
+
+  const quizContext = {
+    answeredQuestions,
+    setAnsweredQuestions
+  }
+
+
   // Create the context value object
   const contextValue = {
     blog: blogContext,
     modal: modalContext,
+    quiz: quizContext,
   };
 
   return (

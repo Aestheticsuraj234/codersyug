@@ -36,7 +36,7 @@ const profile = await currentProfile();
       },
     },
   });
-  console.log(Boolean(saved));
+
 return Boolean(saved);
 }
 

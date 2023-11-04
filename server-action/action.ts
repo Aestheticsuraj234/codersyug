@@ -141,7 +141,7 @@ export async function getProjectResources(params: BuildPrismaResourceQueryParams
     skip: offset,
     take: perPage,
   });
-  console.log(projectResources)
+
   return projectResources;
 
 }

@@ -185,6 +185,7 @@ model Question {
   text          String?
   options       String?      @db.LongText // This is a comma-separated string of options
   correctOption String? // Store the correct option
+  order         Int?          // The order of the question in the quiz
   timer         Int? // Timer for each question in seconds (e.g., 20 seconds)
   quiz          Quiz?        @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId        Int
@@ -194,6 +195,9 @@ model Question {
 
   @@index([quizId])
 }
+
+
+
 
 enum AccessLevel {
   LOCKED
