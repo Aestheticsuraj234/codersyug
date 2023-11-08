@@ -23,6 +23,7 @@ const QuestionMobileSidebar = ({
       <Menu />
     </SheetTrigger>
     <SheetContent side="left" className="p-0 bg-white w-72">
+         {/* @ts-ignore */}
       <QuestionSidebar quiz={quiz} />
     </SheetContent>
   </Sheet>

@@ -25,8 +25,19 @@ const QuizLayout = async ({
       questions: {
         orderBy: {
           order: "asc", 
+        },
+        include:{
+          userQuestionAccess: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              accessLevel: true,
+            },
+          },
         }
       },
+      
     },
   });
 
@@ -40,7 +51,8 @@ const QuizLayout = async ({
         <QuestionNavbar quiz={quiz} />
       </div>
       <div className="hidden md:flex h-full w-80 flex-col fixed inset-y-0 z-50">
-        <QuestionSidebar quiz={quiz} />
+        {/* @ts-ignore */}
+        <QuestionSidebar quiz={quiz}  />
       </div>
       <main className="md:pl-80 pt-[80px] h-full">
         {children}

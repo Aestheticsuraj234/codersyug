@@ -24,7 +24,10 @@ model Profile {
   Purchased          purchasedResources[] // This creates a one-to-many relationship with purchasedResources
   resources          Resources[] // This creates a one-to-many relationship with Resources
   quizParticipations QuizParticipation[] // This creates a one-to-many relationship with QuizParticipation
+  questionAccess     UserQuestionAccess[] // This creates a one-to-many relationship with UserQuestionAccess
+ 
 }
+
 
 model Blog {
   id          Int           @id @default(autoincrement())
@@ -189,13 +192,27 @@ model Question {
   timer         Int? // Timer for each question in seconds (e.g., 20 seconds)
   quiz          Quiz?        @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId        Int
-  accessLevel   AccessLevel? @default(LOCKED)
+ userQuestionAccess UserQuestionAccess[] // This creates a one-to-many relationship with UserQuestionAccess
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
   @@index([quizId])
 }
 
+model UserQuestionAccess {
+  id         Int       @id @default(autoincrement())
+  userId     String  
+  user       Profile   @relation(fields: [userId], references: [userId] , onDelete: Cascade)
+  questionId String
+  question   Question  @relation(fields: [questionId], references: [id],onDelete: Cascade)
+  accessLevel AccessLevel?  @default(LOCKED)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([questionId])
+  @@unique([userId, questionId])
+}
 
 
 
@@ -216,6 +233,7 @@ model QuizParticipation {
   submission DateTime?
   score      Int?      @default(0)
   rank       Int?      @default(0)
+  totalTimeTaken Int?  @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 

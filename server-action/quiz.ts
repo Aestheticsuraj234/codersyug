@@ -3,159 +3,185 @@ import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
 import { Quiz, Question, AccessLevel } from "@prisma/client";
 
-
-
-
 export const getQuiz = async () => {
-    const quiz = await db.quiz.findMany({
-        include: {
-            questions: true
-        }
-    });
+  const quiz = await db.quiz.findMany({
+    include: {
+      questions: true,
+    },
+  });
 
-    return quiz;
+  return quiz;
 };
 
-
 export const getQuizByUniqueCode = async (uniqueCode: string) => {
-    const quiz = await db.quiz.findUnique({
-        where: {
-            uniqueCode
-        },
-        include: {
-            questions: true
-        }
-    });
+  const quiz = await db.quiz.findUnique({
+    where: {
+      uniqueCode,
+    },
+    include: {
+      questions: true,
+    },
+  });
 
-    return quiz;
-}
-
-export const getQuestionById = async (questionId: string, uniqueCode: string) => {
-    const question = await db.question.findUnique({
-        where: {
-            id: questionId,
-            quiz: {
-                uniqueCode
-            }
-        }
-    });
-   
-    let nextQuestion: Question | null = null;
-
-    if (question) {
-        // Check if the question's access level is ANSWERED, and if not, update it to UNLOCKED
-        if (question.accessLevel !== AccessLevel.ANSWERED) {
-            await db.question.update({
-                where: {
-                    id: questionId,
-                },
-                data: {
-                    accessLevel: AccessLevel.UNLOCKED,
-                },
-            });
-        }
-        
-        nextQuestion = await db.question.findFirst({
-            where: {
-                quiz: {
-                    uniqueCode
-                },
-                order: {
-                    gt: question.order || 1,
-                }
-            },
-            orderBy: {
-                order: "asc",
-            }
-        });
-    }
-
-    return {
-        question,
-        nextQuestion
-    };
-}
-
-
-
-
+  return quiz;
+};
 
 export const getAllParticipants = async () => {
-    const participants = await db.quizParticipation.findMany({
-        include: {
-            user: true
-        }
-    });
-    return participants;
-}
+  const participants = await db.quizParticipation.findMany({
+    include: {
+      user: true,
+    },
+  });
+  return participants;
+};
 
-export const questionAccessType = async (questionId: string) => {
-    const question = await db.question.findUnique({
-      where: {
-        id: questionId
+export const getQuestionById = async (
+  questionId: string,
+  uniqueCode: string
+) => {
+  const profile = await currentProfile();
+  if (!profile?.userId) {
+    // Handle the case when the user is not logged in or doesn't have a userId
+    return {
+      question: null,
+      nextQuestion: null,
+    };
+  }
+
+  const question = await db.question.findUnique({
+    where: {
+      id: questionId,
+      quiz: {
+        uniqueCode,
       },
-      select: {
-        accessLevel: true
-      }
+    },
+  });
+
+  if (!question) {
+    return {
+      question: null,
+      nextQuestion: null,
+    };
+  }
+
+  const userQuestionAccess = await db.userQuestionAccess.findUnique({
+    where: {
+      userId_questionId: {
+        userId: profile.userId,
+        questionId: questionId,
+      },
+    },
+  });
+
+  // Check if the user doesn't have access to the current question
+  if (!userQuestionAccess) {
+    const accessLevel =
+      question.order === 1 ? AccessLevel.UNLOCKED : AccessLevel.LOCKED;
+    await db.userQuestionAccess.create({
+      data: {
+        userId: profile.userId,
+        questionId: questionId,
+        accessLevel: accessLevel,
+      },
     });
-  
-    return question?.accessLevel || AccessLevel.LOCKED;
-  };
-  
+  }
 
-export const modifyAccessLevel = async (questionId: string, accessLevel: AccessLevel) => {
-    try {
-      // Check if the question exists
-      const question = await db.question.findUnique({
-        where: {
-          id: questionId,
-        },
-        select: {
-          accessLevel: true,
-        },
-      });
-  
-      if (!question) {
-        throw new Error("Question not found");
-      }
-  
-      if (question.accessLevel === AccessLevel.ANSWERED) {
-        return "Question is already answered.";
-      }
-  
-      // Ensure that the provided accessLevel is valid (either "UNLOCKED" or "ANSWERED")
-      if (![AccessLevel.UNLOCKED, AccessLevel.ANSWERED , AccessLevel.LOCKED].includes(accessLevel)) {
-        throw new Error("Invalid access level.");
-      }
-  
-      if (question.accessLevel === AccessLevel.UNLOCKED) {
-        await db.question.update({
-          where: {
-            id: questionId,
-          },
-          data: {
-            accessLevel: AccessLevel.ANSWERED,
-          },
-        });
-  
-        return "Question access level updated successfully.";
-      } else {
-        throw new Error("Invalid access level modification.");
-      }
-    } catch (error) {
-      console.error("Error in modifyAccessLevel:", error);
-      throw new Error("Failed to modify question access level.");
-    }
-  };
-  
+  let nextQuestion: Question | null = null;
 
-  export const GetNumberOfQuestions = async (uniqueCode: string) => {
-    const quiz = await db.question.count({
+  if (
+    !userQuestionAccess ||
+    userQuestionAccess.accessLevel !== AccessLevel.ANSWERED
+  ) {
+    // Find the next question within the same quiz
+    nextQuestion = await db.question.findFirst({
       where: {
         quiz: {
-          uniqueCode
-        }
-      }
-    })
-    return quiz;
+          uniqueCode,
+        },
+        order: {
+          gt: question.order || 1,
+        },
+      },
+      orderBy: {
+        order: "asc",
+      },
+    });
   }
+
+  return {
+    question,
+    nextQuestion,
+  };
+};
+
+export const modifyQuestionAccessTypeByCurrentUser = async(
+  questionId:string,
+
+  accessLevel:AccessLevel
+) => {
+  const profile = await currentProfile();
+  const userQuestionAccess = await db.userQuestionAccess.findUnique({
+    where: {
+      userId_questionId: {
+        // @ts-ignore
+        userId: profile.userId,
+        questionId: questionId,
+      },
+    },
+  });
+  if(!userQuestionAccess) {
+    await db.userQuestionAccess.create({
+       // @ts-ignore
+      data: {
+        userId: profile?.userId,
+        questionId: questionId,
+        accessLevel: accessLevel,
+      },
+    });
+    return;
+  }
+
+
+  await db.userQuestionAccess.update({
+    where: {
+      userId_questionId: {
+        // @ts-ignore
+        userId: profile.userId,
+        questionId: questionId,
+      },
+    },
+    data: {
+      accessLevel: accessLevel,
+    },
+  })
+
+};
+
+export const GetNumberOfQuestions = async (uniqueCode: string) => {
+  const quiz = await db.question.count({
+    where: {
+      quiz: {
+        uniqueCode,
+      },
+    },
+  });
+  return quiz;
+};
+
+export const getCurrentUserQuestionAccessLevel = async (questionId: string) => {
+  const profile = await currentProfile();
+  if (!profile?.userId) {
+    // Handle the case when user is not logged in or doesn't have a userId
+    return null;
+  }
+
+  // Check if the user has access to this question
+  const userQuestionAccess = await db.userQuestionAccess.findFirst({
+    where: {
+      userId: profile.userId, // Ensure profile?.userId is defined
+      questionId: questionId,
+    },
+  });
+
+  return userQuestionAccess?.accessLevel;
+};
