@@ -63,7 +63,7 @@ const Timeline = () => {
                 font-bold
                 dark:text-white
                 text-zinc-800
-                '>Nov 10 - Nov 20</h1>
+                '>Nov 25 - Oct 5</h1>
                 <span>Dates</span>
             </div>
             <div className='flex flex-col justify-center items-center gap-4'>

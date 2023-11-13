@@ -7,7 +7,7 @@ import Fireworks from './Confetti';
 
 const PrizeCard = () => {
     // Define the end date and time of the hackathon
-    const hackathonEndDate = new Date('2023-11-10T00:00:00Z').getTime();
+    const hackathonEndDate = new Date('2023-11-25T00:00:00Z').getTime();
     const [participants, setParticipants] = useState(0);
     // Initialize state for the remaining time
     const [remainingTime, setRemainingTime] = useState(getRemainingTime());
