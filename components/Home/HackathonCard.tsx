@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const HackathonCard = () => {
   // Define the end date and time of the hackathon
-  const hackathonStartDate = new Date('2023-11-10T00:00:00Z').getTime();
+  const hackathonStartDate = new Date('2023-11-25T00:00:00Z').getTime();
   const [participants, setParticipants] = useState(0);
   // Initialize state for the remaining time
   const [remainingTime, setRemainingTime] = useState(getRemainingTime());
