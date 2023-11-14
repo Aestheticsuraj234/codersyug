@@ -86,7 +86,7 @@ const HackathonCard = () => {
               <span className="text-slate-500 dark:text-slate-400">
                 <Calendar size={16} />
               </span>
-              <span className="font-semibold">Nov 10 - Nov 20</span>
+              <span className="font-semibold">Nov 25 - Dec 5</span>
             </div>
             <span className="text-slate-200 dark:text-slate-800">|</span>
             <div className="flex flex-row gap-2">

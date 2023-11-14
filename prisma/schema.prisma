@@ -231,6 +231,7 @@ model QuizParticipation {
   quiz       Quiz?     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   uniqueCode String?
   submission DateTime?
+  isSubmitted Boolean? @default(false)
   score      Int?      @default(0)
   rank       Int?      @default(0)
   totalTimeTaken Int?  @default(0)
