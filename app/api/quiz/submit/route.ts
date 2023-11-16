@@ -44,6 +44,9 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       });
     }
 
+    let totalScore = 0;
+    let totalTimeTaken = 0;
+
     // Iterate through each question in the quiz.
     for (let i = 0; i < quiz.questions.length; i++) {
       const question = quiz.questions[i];
@@ -55,49 +58,31 @@ export const POST = async (req: Request): Promise<NextResponse> => {
 
         if (userAnswerNormalized === correctAnswerNormalized) {
           // Increment the user's score by 10 for each correct answer.
-          await db.quizParticipation.update({
-            where: {
-              quizId: quiz.id,
-              userId: profile.userId,
-            },
-            data: {
-              score: {
-                increment: 10,
-              },
-              totalTimeTaken: {
-                set: answeredQuestions[i].timeTaken,
-              },
-            },
-          });
-        } else {
-          // Update the user's total time taken for each question if the answer is incorrect.
-          await db.quizParticipation.update({
-            where: {
-              quizId: quiz.id,
-              userId: profile.userId,
-            },
-            data: {
-              totalTimeTaken: {
-                set: answeredQuestions[i].timeTaken,
-              },
-            },
-          });
+          totalScore += 10;
         }
-      } else {
-        // Reset the user's score and total time taken for the question.
-        console.error("Invalid structure in answeredQuestions:", answeredQuestions);
-        await db.quizParticipation.update({
-          where: {
-            quizId: quiz.id,
-            userId: profile.userId,
-          },
-          data: {
-            score: null,
-            totalTimeTaken: null,
-          },
-        });
+      }
+
+      // Sum up the total time taken for all questions.
+      if (answeredQuestions[i]?.timeTaken) {
+        totalTimeTaken += answeredQuestions[i].timeTaken;
       }
     }
+
+    // Update the user's score and total time taken.
+    await db.quizParticipation.update({
+      where: {
+        quizId: quiz.id,
+        userId: profile.userId,
+      },
+      data: {
+        score: {
+          increment: totalScore,
+        },
+        totalTimeTaken: {
+          set: totalTimeTaken,
+        },
+      },
+    });
 
     // Return a success response.
     return new NextResponse("Quiz submitted successfully", { status: 201 });
