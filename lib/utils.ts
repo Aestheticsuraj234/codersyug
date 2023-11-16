@@ -94,3 +94,9 @@ export function generateUniqueCodeForQuiz() {
   return `${randomPart}`;
 
 }
+
+
+export function removePunctuationAndNormalize(text:string | null) {
+ const result =  text && text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toLowerCase().trim();
+  return result;
+};

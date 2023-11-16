@@ -2,11 +2,6 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
 
-// Function to remove punctuation and normalize text
-const removePunctuationAndNormalize = (text: any): any => {
-  return text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toLowerCase().trim();
-};
-
 export const POST = async (req: Request): Promise<NextResponse> => {
   try {
     // Retrieve the user's profile.
@@ -47,17 +42,36 @@ export const POST = async (req: Request): Promise<NextResponse> => {
     let totalScore = 0;
     let totalTimeTaken = 0;
 
-    // Iterate through each question in the quiz.
-    for (let i = 0; i < quiz.questions.length; i++) {
+    // Get all correct answers first
+    const correctAnswers = quiz.questions.map((question) => ({
+      questionId: question.id,
+      correctOption: question.correctOption, // Assuming correctOption is an object with a 'text' property
+    }));
+
+    console.log("correctAnswers", correctAnswers);
+
+    // Calculate the total score and total time taken.
+    correctAnswers.forEach((correctAnswer, i) => {
       const question = quiz.questions[i];
+      console.log(question);
 
       // Check if the user's answer is correct for the question.
-      if (Array.isArray(answeredQuestions) && answeredQuestions[i] && answeredQuestions[i].answer) {
-        const userAnswerNormalized = removePunctuationAndNormalize(answeredQuestions[i].answer);
-        const correctAnswerNormalized = removePunctuationAndNormalize(question.correctOption);
+      if (
+        Array.isArray(answeredQuestions) &&
+        answeredQuestions[i] &&
+        answeredQuestions[i].answer
+      ) {
+        const userAnswerNormalized = answeredQuestions[i].answer;
 
-        if (userAnswerNormalized === correctAnswerNormalized) {
-          // Increment the user's score by 10 for each correct answer.
+        // Check if the user's answer is among the correct options.
+
+        // Check if the user's answer is among the correct options.
+        const correctOptionIndex = correctAnswers.findIndex((correctAnswer) => {
+          return correctAnswer.correctOption === userAnswerNormalized;
+        });
+
+        // Increment the score if the answer is correct.
+        if (correctOptionIndex >= 0) {
           totalScore += 10;
         }
       }
@@ -66,7 +80,7 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       if (answeredQuestions[i]?.timeTaken) {
         totalTimeTaken += answeredQuestions[i].timeTaken;
       }
-    }
+    });
 
     // Update the user's score and total time taken.
     await db.quizParticipation.update({
@@ -84,11 +98,9 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       },
     });
 
-    // Return a success response.
-    return new NextResponse("Quiz submitted successfully", { status: 201 });
-  } catch (error: any) {
-    // Handle any errors and return an error response.
-    console.error(error);
-    return new NextResponse(error.message, { status: 500 });
+    return new NextResponse("Quiz submitted successfully", { status: 200 });
+  } catch (error) {
+    console.error("Backend_Error_❌", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 };
