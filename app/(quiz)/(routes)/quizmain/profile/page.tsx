@@ -1,11 +1,38 @@
-import React from 'react'
+import { currentProfile } from "@/lib/current-profile";
+import { db } from "@/lib/db";
+import { redirect } from "next/navigation";
+import UserInfomation from "./_components/UserInfomation";
+import ProfileCards from "./_components/ProfileCards";
+import QuizUserParticipated from "./_components/QuizUserParticipated";
 
-const Profile = () => {
+const Profile = async () => {
+  const profile = await currentProfile();
+
+  if (!profile) {
+    return redirect("/sign-in");
+  }
+
+  // Use optional chaining (?.) to handle the possibility of null
+  const Participation = await db.quizParticipation.findUnique({
+    where: {
+      userId: profile.userId,
+    },
+    include: {
+      user: true,
+      quiz: true,
+    },
+  });
+
+  
+
   return (
-    <div className='flex-center'>
-      <p className='justify-center items-center flex '>This page is in Development🔥</p>
-    </div>
-  )
-}
+    <div className="mx-4">
+      <UserInfomation participation={Participation} />
+       <ProfileCards participation={Participation} />
+       <QuizUserParticipated />
 
-export default Profile
+    </div>
+  );
+};
+
+export default Profile;

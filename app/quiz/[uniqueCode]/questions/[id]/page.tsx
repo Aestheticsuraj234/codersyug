@@ -1,4 +1,5 @@
 "use client";
+// ###################################_______________________IMPORTS_______________________###################################
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
@@ -38,12 +39,18 @@ import { AppContext } from "@/context/GlobalContext";
 import { AccessLevel } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import axios from "axios";
+import { count } from "console";
 
 const FormSchema = z.object({
   Option: z.string(),
 });
 
-const QuestionIdPage = ({ params }: { params: { uniqueCode: any; id: any } }) => {
+const QuestionIdPage = ({
+  params,
+}: {
+  params: { uniqueCode: any; id: any };
+}) => {
+  // ###################################_______________________USE STATES_______________________###################################
   const { quiz } = useContext(AppContext);
   const { toast } = useToast();
 
@@ -58,8 +65,16 @@ const QuestionIdPage = ({ params }: { params: { uniqueCode: any; id: any } }) =>
   const [isAnswering, setIsAnswering] = useState(false);
   const [TotalQuestions, setTotalQuestions] = useState<number>(0);
   const [isLocked, setIsLocked] = useState<boolean>(false);
-  const [userAccessLevel, setUserAccessLevel] = useState<any>(AccessLevel.LOCKED);
+  // const [mouseLeaveCount, setMouseLeaveCount] = useState<number>(0);
+  let count = 0;
+
+  const [userAccessLevel, setUserAccessLevel] = useState<any>(
+    AccessLevel.LOCKED
+  );
+  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(true);
   const router = useRouter();
+
+  // !###################################_______________________FUNCTIONS_______________________###################################
 
   const getQuestion = async () => {
     setIsLoading(true);
@@ -97,7 +112,6 @@ const QuestionIdPage = ({ params }: { params: { uniqueCode: any; id: any } }) =>
     }
   };
 
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -107,88 +121,221 @@ const QuestionIdPage = ({ params }: { params: { uniqueCode: any; id: any } }) =>
       ? question?.timer - questionTimer
       : null;
 
-      async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      setIsAnswering(true);
+
+      // Update answeredQuestions array with the current question's data
+      const updatedAnsweredQuestions = [
+        ...answeredQuestions,
+        { question, answer: data.Option, timeTaken: actualTimeTaken },
+      ];
+
+      // Case 1: Answering a question
+      setAnsweredQuestions(updatedAnsweredQuestions);
+
+      // Update access level for the current question
+      await modifyQuestionAccessTypeByCurrentUser(
+        params.id,
+        AccessLevel.ANSWERED
+      );
+
+      if (nextQuestion) {
+        // Case 2: Moving to the next question
+        router.push(`/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`);
+        await modifyQuestionAccessTypeByCurrentUser(
+          nextQuestion.id,
+          AccessLevel.UNLOCKED
+        );
+      } else if (!nextQuestion) {
+        // Case 3: Submitting the last question
+        setIsLastQuestion(true);
+
+        // Log the updated answeredQuestions array
+        console.log(
+          "Updated Answered-Question:",
+          JSON.stringify(updatedAnsweredQuestions)
+        );
+
+        // Update state to ensure it's synchronous
+        setAnsweredQuestions(updatedAnsweredQuestions);
+        setIsAnswering(true);
+
         try {
-          setIsAnswering(true);
-      
-          // Update answeredQuestions array with the current question's data
-          const updatedAnsweredQuestions = [
-            ...answeredQuestions,
-            { question, answer: data.Option, timeTaken: actualTimeTaken },
-          ];
-      
-          // Case 1: Answering a question
-          setAnsweredQuestions(updatedAnsweredQuestions);
-      
-          // Update access level for the current question
-          await modifyQuestionAccessTypeByCurrentUser(params.id, AccessLevel.ANSWERED);
-      
-          if (nextQuestion) {
-            // Case 2: Moving to the next question
-            router.push(`/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`);
-            await modifyQuestionAccessTypeByCurrentUser(
-              nextQuestion.id,
-              AccessLevel.UNLOCKED
-            );
-          } else if (!nextQuestion) {
-            // Case 3: Submitting the last question
-            setIsLastQuestion(true);
-      
-            // Log the updated answeredQuestions array
-            console.log("Updated Answered-Question:", JSON.stringify(updatedAnsweredQuestions));
-      
-            // Update state to ensure it's synchronous
-            setAnsweredQuestions(updatedAnsweredQuestions);
-            setIsAnswering(true);
-      
-            try {
-              // Make the API call with the updated answeredQuestions array
-              const res = await axios.post("/api/quiz/submit", {
-                uniqueCode: params.uniqueCode,
-                answeredQuestions: updatedAnsweredQuestions,
-              });
-      
-              const { data } = res;
-              console.log(data);
-      
-              if (data.status === "Quiz submitted successfully") {
-                toast({
-                  title: "Quiz Submitted Successfully",
-                  description: "Redirecting to the dashboard home page",
-                });
-                router.push("/quizmain/profile");
-              } else {
-                toast({
-                  title: "Something went wrong",
-                  description: "Please try again later",
-                });
-              }
-            } catch (error) {
-              console.error("Error submitting quiz:", error);
-            } finally {
-              setIsAnswering(false);
-            }
+          // Make the API call with the updated answeredQuestions array
+          const res = await axios.post("/api/quiz/submit", {
+            uniqueCode: params.uniqueCode,
+            answeredQuestions: updatedAnsweredQuestions,
+          });
+          setIsAnswered(true);
+
+          if (res.status === 201) {
+            setIsAnswering(false);
+            toast({
+              title: "Quiz Submitted Successfully",
+              description: "Redirecting.... to your profile.",
+            });
+            router.push("/quizmain/profile");
+          } else {
+            toast({
+              title: "Uh oh! Something went wrong.",
+              description: "There was a problem with your request.",
+            });
+            form.reset();
           }
         } catch (error) {
-          console.error("Error submitting:", error);
+          console.error("Error submitting quiz:", error);
+        } finally {
+          setIsAnswering(false);
         }
       }
-      
+    } catch (error) {
+      console.error("Error submitting:", error);
+    } finally {
+      // Stop the timer when the answer is submitted
+      setIsTimerRunning(false);
+    }
+  }
 
-  const handleTimeout = () => {
-    console.log("Timeout");
-    // Handle timeout logic if needed
+  const handleTimeout = async () => {
+    if (!isAnswered) {
+      try {
+        setIsAnswering(true);
+
+        // Update answeredQuestions array with the current question's data
+        const updatedAnsweredQuestions = [
+          ...answeredQuestions,
+          { question, answer: "", timeTaken: null },
+        ];
+
+        // Case 1: Answering a question
+        setAnsweredQuestions(updatedAnsweredQuestions);
+
+        // Update access level for the current question
+        await modifyQuestionAccessTypeByCurrentUser(
+          params.id,
+          AccessLevel.ANSWERED
+        );
+
+        if (nextQuestion) {
+          // Case 2: Moving to the next question
+          router.push(
+            `/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`
+          );
+          await modifyQuestionAccessTypeByCurrentUser(
+            nextQuestion.id,
+            AccessLevel.UNLOCKED
+          );
+        } else if (!nextQuestion) {
+          // Case 3: Submitting the last question
+          setIsLastQuestion(true);
+
+          // Log the updated answeredQuestions array
+          console.log(
+            "Updated Answered-Question:",
+            JSON.stringify(updatedAnsweredQuestions)
+          );
+
+          // Update state to ensure it's synchronous
+          setAnsweredQuestions(updatedAnsweredQuestions);
+          setIsAnswering(true);
+
+          try {
+            // Make the API call with the updated answeredQuestions array
+            const res = await axios.post("/api/quiz/submit", {
+              uniqueCode: params.uniqueCode,
+              answeredQuestions: updatedAnsweredQuestions,
+            });
+            setIsAnswered(true);
+
+            if (res.status === 201) {
+              setIsAnswering(false);
+              toast({
+                title: "Quiz Submitted Successfully",
+                description: "Redirecting.... to your profile.",
+              });
+              router.push("/quizmain/profile");
+            } else {
+              toast({
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+              });
+              form.reset();
+            }
+          } catch (error) {
+            console.error("Error submitting quiz:", error);
+          } finally {
+            setIsAnswering(false);
+          }
+        }
+      } catch (error) {
+        console.error("Error submitting:", error);
+      } finally {
+        // Stop the timer when the answer is submitted
+        setIsTimerRunning(false);
+      }
+    }
   };
 
+  // ###################################_______________________USE EFFECTS_______________________###################################
+
+  let mouseOutCount = 0;
   useEffect(() => {
-    if (questionTimer === 0) {
+
+    function handleMouseLeave() {
+      mouseOutCount += 1;
+      if (mouseOutCount > 1) {
+        return setIsDialogOpen(true);
+        // Implement your form submission logic here.
+      }
+      else if (mouseOutCount === 3){
+        return handleTimeout();
+      }
+    }
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      document.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Disable right-click
+    const handleContextMenu = (event: Event) => {
+      event.preventDefault();
+    };
+
+    // Disable inspect mode
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "F12" ||
+        (event.ctrlKey && event.shiftKey && event.key === "I")
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    // Attach event listeners
+    window.addEventListener("contextmenu", handleContextMenu);
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Clean up event listeners
+    return () => {
+      window.removeEventListener("contextmenu", handleContextMenu);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (questionTimer === 0 && isTimerRunning) {
       handleTimeout();
     }
   }, [questionTimer]);
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
-      if (questionTimer !== null && questionTimer > 0) {
+      if (questionTimer !== null && questionTimer > 0 && isTimerRunning) {
         setQuestionTimer((prevTimer: any) => prevTimer - 1);
       }
     }, 1000);
@@ -196,7 +343,7 @@ const QuestionIdPage = ({ params }: { params: { uniqueCode: any; id: any } }) =>
     return () => {
       clearInterval(timerInterval);
     };
-  }, [questionTimer]);
+  }, [questionTimer, isTimerRunning]);
 
   useEffect(() => {
     getQuestion();
@@ -222,6 +369,8 @@ const QuestionIdPage = ({ params }: { params: { uniqueCode: any; id: any } }) =>
       setIsLocked(true);
     }
   }, [question, userAccessLevel]);
+
+  // ########################################`_______________________RENDER_______________________#####################################
 
   const ParsedOptions = question ? JSON.parse(question?.options) : null;
 
@@ -331,7 +480,9 @@ const QuestionIdPage = ({ params }: { params: { uniqueCode: any; id: any } }) =>
           </div>
           <AlertDialog
             open={isDialogOpen}
-            onOpenChange={(isOpen) => setIsDialogOpen(isOpen)}
+            onOpenChange={(isOpen) => {
+              setIsDialogOpen(isOpen);
+            }}
           >
             <AlertDialogContent>
               <AlertDialogHeader>

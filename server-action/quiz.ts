@@ -185,3 +185,44 @@ export const getCurrentUserQuestionAccessLevel = async (questionId: string) => {
 
   return userQuestionAccess?.accessLevel;
 };
+
+
+export const CancelTheQuizforCurrentUser = async (uniqueCode: string) => {
+ 
+
+}
+
+
+export const getParticipatedQuizzesForCurrentUser = async () => {
+  const profile = await currentProfile();
+
+  if (!profile?.userId) {
+    // Handle the case when the user is not logged in or doesn't have a userId
+    return [];
+  }
+
+  const participatedQuizzes = await db.quizParticipation.findMany({
+    where: {
+      userId: profile.userId,
+    },
+    include: {
+      quiz: {
+        include: {
+          quizParticipations: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return participatedQuizzes.map((participation) => {
+    const { quiz } = participation;
+    return {
+      ...quiz,
+      participantsCount: quiz?.quizParticipations.length,
+    };
+  });
+};

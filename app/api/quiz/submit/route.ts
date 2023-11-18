@@ -72,7 +72,7 @@ export const POST = async (req: Request): Promise<NextResponse> => {
 
         // Increment the score if the answer is correct.
         if (correctOptionIndex >= 0) {
-          totalScore += 10;
+          totalScore += 100;
         }
       }
 
@@ -83,7 +83,7 @@ export const POST = async (req: Request): Promise<NextResponse> => {
     });
 
     // Update the user's score and total time taken.
-    await db.quizParticipation.update({
+    const updatedParticipation = await db.quizParticipation.update({
       where: {
         quizId: quiz.id,
         userId: profile.userId,
@@ -98,7 +98,9 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       },
     });
 
-    return new NextResponse("Quiz submitted successfully", { status: 200 });
+    return new NextResponse(JSON.stringify(updatedParticipation), {
+      status: 201,
+  });
   } catch (error) {
     console.error("Backend_Error_❌", error);
     return new NextResponse("Internal Server Error", { status: 500 });
