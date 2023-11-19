@@ -37,7 +37,7 @@ const Profile = async () => {
           columns={columns}
           data={Data.map((item, index) => {
             return {
-              text: item.text,
+              question: item.text,
               accesslevel: item.accessLevel,
             };
           })}
