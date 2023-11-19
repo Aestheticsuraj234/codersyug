@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Activity, Award, CheckSquare, Timer, Trophy } from "lucide-react";
+import { Activity, Award, BatteryFull, CheckSquare, Timer, Trophy } from "lucide-react";
 import {
   GetNumberQuizParticipated,
   GetNumberQuestionAttempted,
@@ -56,10 +56,11 @@ const ProfileCards: React.FC<any> = async ({ participation }) => {
       description: "Number Of Question Attempted!",
       value: NumberQuestionAttempted ?? 0,
     },
+    
     {
-      icon: CheckSquare,
-      variant: "default",
-      description: "Number Of Quiz Attempted!",
+      icon: BatteryFull,
+      variant: "copy",
+      description: "Registered Quiz!",
       value: NumberQuizAttempted ?? 0,
     },
   ];

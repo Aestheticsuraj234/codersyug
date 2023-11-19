@@ -197,7 +197,6 @@ export const getParticipatedQuizzesForCurrentUser = async () => {
   const profile = await currentProfile();
 
   if (!profile?.userId) {
-    // Handle the case when the user is not logged in or doesn't have a userId
     return [];
   }
 
@@ -213,16 +212,60 @@ export const getParticipatedQuizzesForCurrentUser = async () => {
               userId: true,
             },
           },
+          questions: true,
         },
       },
     },
   });
 
-  return participatedQuizzes.map((participation) => {
-    const { quiz } = participation;
+  // Filter out quizzes where quizParticipations length is 0
+  const filteredQuizzes = participatedQuizzes
+  // @ts-ignore
+    .filter((participation) => participation?.quiz?.quizParticipations?.length > 0)
+    .map((participation) => {
+      const { quiz } = participation;
+      return {
+        ...quiz,
+        participantsCount: quiz?.quizParticipations.length,
+        questionsCount: quiz?.questions.length,
+      };
+    });
+
+  return filteredQuizzes;
+};
+
+
+// Define the function to get user attempted questions
+export const getUserAttemptedQuestions = async () => {
+  // Get the current user's profile
+  const profile = await currentProfile();
+
+  // Check if the user is not logged in or doesn't have a userId
+  if (!profile?.userId) {
+    return [];
+  }
+
+  // Fetch user attempted questions
+  const attemptedQuestions = await db.userQuestionAccess.findMany({
+    where: {
+      userId: profile.userId,
+      accessLevel: AccessLevel.ANSWERED,
+    },
+    include: {
+      question: true,
+    },
+  });
+
+  // Map the result to include question text and other details
+  const userAttemptedQuestions = attemptedQuestions.map((attemptedQuestion) => {
+    const { question } = attemptedQuestion;
     return {
-      ...quiz,
-      participantsCount: quiz?.quizParticipations.length,
+      questionId: question.id,
+      text: question.text,
+      accessLevel: attemptedQuestion.accessLevel,
+      // Include any other details you need from the question
     };
   });
+
+  return userAttemptedQuestions;
 };
