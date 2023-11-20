@@ -104,13 +104,7 @@ const Dashboard = async () => {
             </h1>
 
 
-            <Alert>
-              <Terminal className="h-4 w-4" />
-              <AlertTitle>Heads up!</AlertTitle>
-              <AlertDescription>
-                Below is sample data, the actual data will be updated once the quiz starts.
-              </AlertDescription>
-            </Alert>
+          
 
 
             <div className="flex justify-center">  
