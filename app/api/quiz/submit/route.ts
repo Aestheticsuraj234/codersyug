@@ -14,7 +14,7 @@ export const POST = async (req: Request): Promise<NextResponse> => {
 
     // Extract the answers and unique code from the request body.
     const { answeredQuestions, uniqueCode } = await req.json();
-    console.log(answeredQuestions, uniqueCode);
+ 
 
     // Find the quiz associated with the unique code.
     const quiz = await db.quiz.findUnique({
@@ -48,12 +48,11 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       correctOption: question.correctOption, // Assuming correctOption is an object with a 'text' property
     }));
 
-    console.log("correctAnswers", correctAnswers);
 
     // Calculate the total score and total time taken.
     correctAnswers.forEach((correctAnswer, i) => {
       const question = quiz.questions[i];
-      console.log(question);
+    
 
       // Check if the user's answer is correct for the question.
       if (

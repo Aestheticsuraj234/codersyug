@@ -25,6 +25,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  CheatingByCurrentUser,
   GetNumberOfQuestions,
   getCurrentUserQuestionAccessLevel,
   getQuestionById,
@@ -54,19 +55,17 @@ const QuestionIdPage = ({
   const { quiz } = useContext(AppContext);
   const { toast } = useToast();
 
-  const { setAnsweredQuestions, answeredQuestions } = quiz;
+  const { setAnsweredQuestions, answeredQuestions ,  questionTimer, setQuestionTimer} = quiz;
   const [question, setQuestion] = useState<any>();
   const [nextQuestion, setNextQuestion] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [questionTimer, setQuestionTimer] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [isAnswering, setIsAnswering] = useState(false);
   const [TotalQuestions, setTotalQuestions] = useState<number>(0);
   const [isLocked, setIsLocked] = useState<boolean>(false);
-  // const [mouseLeaveCount, setMouseLeaveCount] = useState<number>(0);
-  let count = 0;
+
 
   const [userAccessLevel, setUserAccessLevel] = useState<any>(
     AccessLevel.LOCKED
@@ -79,6 +78,7 @@ const QuestionIdPage = ({
   const getQuestion = async () => {
     setIsLoading(true);
     try {
+  
       // @ts-ignore
       const { question, nextQuestion } = await getQuestionById(
         params.id,
@@ -123,6 +123,9 @@ const QuestionIdPage = ({
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
+      // Stop the timer immediately
+      setIsTimerRunning(false);
+
       setIsAnswering(true);
 
       // Update answeredQuestions array with the current question's data
@@ -191,9 +194,6 @@ const QuestionIdPage = ({
       }
     } catch (error) {
       console.error("Error submitting:", error);
-    } finally {
-      // Stop the timer when the answer is submitted
-      setIsTimerRunning(false);
     }
   }
 
@@ -277,55 +277,87 @@ const QuestionIdPage = ({
     }
   };
 
+  const HandleCheating = async () => {
+    try {
+      console.log("UserAccesslevel",userAccessLevel);
+      if (userAccessLevel !== AccessLevel.ANSWERED) {
+        setIsTimerRunning(false);
+        const updatedQuizParticipation = await CheatingByCurrentUser(
+          params.uniqueCode
+        );
+        if (updatedQuizParticipation?.isCheated) {
+          toast({
+            title: "Rule Violation❌",
+            description:
+              "You have been disqualified from the quiz. If you have any queries, please contact us!.",
+          });
+          router.push("/quizmain/quizzes");
+        }
+      }
+    } catch (error) {
+      console.error("Error cheating:", error);
+    } finally {
+      // Stop the timer when the answer is submitted
+      setIsTimerRunning(false);
+    }
+  };
+  
+
   // ###################################_______________________USE EFFECTS_______________________###################################
 
   let mouseOutCount = 0;
-  useEffect(() => {
 
-    function handleMouseLeave() {
-      mouseOutCount += 1;
-      if (mouseOutCount > 1) {
-        return setIsDialogOpen(true);
-        // Implement your form submission logic here.
+
+  useEffect(
+    () => {
+      async function handleMouseLeave() {
+        mouseOutCount += 1;
+        console.log("Mouse out count:", mouseOutCount);
+        console.log("UserAccesslevel",userAccessLevel);
+        if (mouseOutCount >= 1 && userAccessLevel !== AccessLevel.ANSWERED) {
+          setIsDialogOpen(true);
+        }
+        if (mouseOutCount === 4 && userAccessLevel !== AccessLevel.ANSWERED) {
+          console.log("Calling HandleCheating");
+          await HandleCheating();
+        }
       }
-      else if (mouseOutCount === 3){
-        return handleTimeout();
-      }
-    }
+      
+      document.addEventListener("mouseleave", handleMouseLeave);
 
-    document.addEventListener("mouseleave", handleMouseLeave);
+      return () => {
+        document.removeEventListener("mouseleave", handleMouseLeave);
+      };
+    },
+    [userAccessLevel]
+  );
 
-    return () => {
-      document.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
+  // useEffect(() => {
+  //   // Disable right-click
+  //   const handleContextMenu = (event: Event) => {
+  //     event.preventDefault();
+  //   };
 
-  useEffect(() => {
-    // Disable right-click
-    const handleContextMenu = (event: Event) => {
-      event.preventDefault();
-    };
+  //   // Disable inspect mode
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (
+  //       event.key === "F12" ||
+  //       (event.ctrlKey && event.shiftKey && event.key === "I")
+  //     ) {
+  //       event.preventDefault();
+  //     }
+  //   };
 
-    // Disable inspect mode
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === "F12" ||
-        (event.ctrlKey && event.shiftKey && event.key === "I")
-      ) {
-        event.preventDefault();
-      }
-    };
+  //   // Attach event listeners
+  //   window.addEventListener("contextmenu", handleContextMenu);
+  //   window.addEventListener("keydown", handleKeyDown);
 
-    // Attach event listeners
-    window.addEventListener("contextmenu", handleContextMenu);
-    window.addEventListener("keydown", handleKeyDown);
-
-    // Clean up event listeners
-    return () => {
-      window.removeEventListener("contextmenu", handleContextMenu);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  //   // Clean up event listeners
+  //   return () => {
+  //     window.removeEventListener("contextmenu", handleContextMenu);
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (questionTimer === 0 && isTimerRunning) {
@@ -491,7 +523,7 @@ const QuestionIdPage = ({
                   automatically🥇
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to continue?
+                  Are you sure you want to continue? (You Got Only 3 Warnings)
                   <br />
                   "Keep your mouse inside the window to avoid this".
                 </AlertDialogDescription>

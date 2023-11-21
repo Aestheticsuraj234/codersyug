@@ -263,9 +263,48 @@ export const getUserAttemptedQuestions = async () => {
       questionId: question.id,
       text: question.text,
       accessLevel: attemptedQuestion.accessLevel,
+      correctOption: question.correctOption,
       // Include any other details you need from the question
     };
   });
 
   return userAttemptedQuestions;
 };
+
+
+export const CheatingByCurrentUser = async (uniqueCode: string) => {
+  const profile = await currentProfile();
+  if (!profile?.userId) {
+    // Handle the case when user is not logged in or doesn't have a userId
+    return null;
+  }
+ // Find the quiz participation for the current user and the specified quiz
+ const quizParticipation = await db.quizParticipation.findUnique({
+  where: {
+    userId: profile.userId,
+    quiz: {
+      uniqueCode,
+    },
+  },
+});
+
+ // Check if the quiz participation exists
+ if (!quizParticipation) {
+  throw new Error("Quiz participation not found");
+}
+
+ // Update the quiz participation to mark it as cheated and set the score to 0
+ const updatedQuizParticipation = await db.quizParticipation.update({
+  where: {
+    id: quizParticipation.id,
+  },
+  data: {
+    isCheated: true,
+    score: 0,
+  },
+});
+
+// Return the updated quiz participation
+return updatedQuizParticipation;
+};
+  
