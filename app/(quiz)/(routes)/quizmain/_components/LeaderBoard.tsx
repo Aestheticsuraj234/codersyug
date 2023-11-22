@@ -33,7 +33,12 @@ const LeaderBoard = () => {
     const { user } = useUser();
     const [topThreeParticipants, setTopThreeParticipants] = useState<Participant[]>([]);
     const [leaderboardData, setLeaderboardData] = useState<Participant[]>([]);
+    const [userRank, setUserRank] = useState<number | null>(null);
+    const [userScore, setUserScore] = useState<number | null>(null);
+    const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
+  
 
+    // Function to fetch data and update state
     const fetchDataAndSort = async () => {
         try {
             const response = await getAllParticipants();
@@ -42,29 +47,49 @@ const LeaderBoard = () => {
 
             const sortedData = calculateRank(response);
 
-            const rankStrings = ['First', 'Second', 'Third'];
+            const rankStrings = ['first', 'second', 'third'];
             const dataWithRank = sortedData.slice(0, 3).map((participant, index) => ({
                 ...participant,
                 rank: rankStrings[index] || 'Other',
             }));
             // @ts-ignore
             setTopThreeParticipants(dataWithRank);
+
+            const userEntry = sortedData.find((participant) => participant.userId === user?.id);
+            setUserRank(userEntry ? userEntry.rank : null);
+            setUserScore(userEntry ? userEntry.score : null);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    const fetchNumberOfParticipants = async () => {
+        try {
+            const response = await GetNumberOfParticipants();
+            setNumberOfParticipants(response);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     }
 
+
+
     // Effect hook to fetch data initially and set up interval
     useEffect(() => {
         fetchDataAndSort();
+        fetchNumberOfParticipants();
 
-        // Set up an interval to continuously update the top three participants
-        const interval = setInterval(fetchDataAndSort, 3000); // Update every 3 seconds
+      
+    }, []); // Add fetchDataAndSort as a dependency
 
-        // Clean up the interval on component unmount
-        return () => clearInterval(interval);
-    }, []);
+    // Log statements for debugging
+    console.log("top three", topThreeParticipants);
+    console.log({
+        userRank: userRank,
+        userScore: userScore,
+    });
 
+    // Return the JSX for the component
     return (
         <div className='flex flex-col items-center justify-center px-4 py-4 mt-10'>
             {topThreeParticipants.length > 0 && (
@@ -81,13 +106,15 @@ const LeaderBoard = () => {
                             />
                         ))}
                     </div>
-                    <div className='mt-3 py-2 hidden md:flex px-3 text-sm w-full rounded-md items-center text-gray-600 dark:text-gray-100 bg-zinc-100  dark:bg-zinc-800 justify-center  flex-row font-bold'>
-                        You Have Earned ⭐️ 100 Points today and are ranked
-                        <code className='text-gray-100 bg-gray-700 px-4 py-1 mx-2 rounded-md'>1th</code>
-                        out of
-                        <code className='text-gray-100 bg-gray-700 px-4 py-1 mx-2 rounded-md'>1000</code>
-                        participants
-                    </div>
+                    {userRank !== null && (
+                        <div className='mt-3 py-2 hidden md:flex px-3 text-sm w-full rounded-md items-center text-gray-600 dark:text-gray-100 bg-zinc-100 dark:bg-zinc-800 justify-center flex-row font-bold'>
+                            You Have Earned ⭐️ {userScore} Points and are ranked
+                            <code className='text-gray-100 bg-gray-700 px-4 py-1 mx-2 rounded-md'>{userRank}th</code>
+                            out of
+                            <code className='text-gray-100 bg-gray-700 px-4 py-1 mx-2 rounded-md'>{numberOfParticipants}</code>
+                            participants
+                        </div>
+                    )}
                 </>
             )}
         </div>
