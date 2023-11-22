@@ -2,7 +2,7 @@
 import React from 'react';
 import { CheckCircle, Lock, PlayCircle } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 import { AccessLevel } from '@prisma/client';
@@ -38,9 +38,8 @@ export const QuestionSidebarItem = ({
 
 
   return (
-    <>
+     <Link href={`/quiz/${uniqueCode}/questions/${id}`} passHref>
       <button
-        onClick={onClick}
         type="button"
         disabled={isLocked}
         className={cn(
@@ -63,6 +62,6 @@ export const QuestionSidebarItem = ({
       <Separator
         className={cn(isActive && 'bg-slate-700', isLocked && 'bg-slate-200')}
       />
-    </>
+    </Link>
   );
 };

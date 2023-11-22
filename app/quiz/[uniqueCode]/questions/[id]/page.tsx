@@ -51,7 +51,7 @@ const QuestionIdPage = ({
 }: {
   params: { uniqueCode: any; id: any };
 }) => {
-  // ###################################_______________________USE STATES_______________________###################################
+  // !###################################________USE STATES_______###################################
   const { quiz } = useContext(AppContext);
   const { toast } = useToast();
 
@@ -73,12 +73,12 @@ const QuestionIdPage = ({
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(true);
   const router = useRouter();
 
-  // !###################################_______________________FUNCTIONS_______________________###################################
+  // !###################################_____FUNCTIONS_____###################################
 
   const getQuestion = async () => {
     setIsLoading(true);
     try {
-  
+      
       // @ts-ignore
       const { question, nextQuestion } = await getQuestionById(
         params.id,
@@ -121,9 +121,10 @@ const QuestionIdPage = ({
       ? question?.timer - questionTimer
       : null;
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema> , e: any) {
     try {
       // Stop the timer immediately
+      e.preventDefault();
       setIsTimerRunning(false);
 
       setIsAnswering(true);

@@ -5,13 +5,12 @@ import ImageBanner from "./_components/ImageBanner";
 import PrizeBox from "./_components/PrizeBox";
 import { columns } from "./_components/leaderbardTable/columns"
 import { DataTable } from "./_components/leaderbardTable/data-table"
-import Image from "next/image";
+
 import DashboardCalender from "./_components/Calender";
 import LeaderBoard from "./_components/LeaderBoard";
 
 import { getAllParticipants } from "@/server-action/quiz";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Terminal } from "lucide-react";
+
 
 
 
@@ -119,7 +118,8 @@ const Dashboard = async () => {
                     name: item.user.name,
                     email: item.user.email,
                     score: item.score,
-                    imageUrl: item.user.imageUrl
+                    imageUrl: item.user.imageUrl,
+                    totalTimeTaken: item.totalTimeTaken
                   }
                 })
               } />

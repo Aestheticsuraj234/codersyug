@@ -5,7 +5,7 @@ import Image from 'next/image';
 interface ITopThreeParticipants {
   name: string;
   email: string;
-  avatar: string;
+  avatar: string | null;
   score: number;
     rank: number;
 }
@@ -28,6 +28,7 @@ const TopThreeParticipants = ({
     <div className="w-80 h-28 bg-zinc-100 dark:bg-zinc-800 rounded-md flex flex-col justify-start items-start px-2 relative overflow-hidden">
       <div className="flex flex-row items-center justify-center gap-2">
         <Avatar>
+          {/* @ts-ignore */}
           <AvatarImage src={avatar} />
           <AvatarFallback>CY</AvatarFallback>
         </Avatar>

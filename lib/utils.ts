@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge"
 import qs from 'query-string';
 
 import * as crypto from "crypto";
+import { QuizParticipation } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -99,4 +100,32 @@ export function generateUniqueCodeForQuiz() {
 export function removePunctuationAndNormalize(text:string | null) {
  const result =  text && text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toLowerCase().trim();
   return result;
+};
+
+
+
+export const calculateRank = (quizParticipations: QuizParticipation[]): QuizParticipation[] => {
+  const sortedParticipationRank: QuizParticipation[] = [];
+
+  while (quizParticipations.length > 0) {
+    let max: number | null = 0;
+    let maxIndex = 0;
+
+    for (let i = 0; i < quizParticipations.length; i++) {
+      if (quizParticipations[i].score! > max!) {
+        maxIndex = i;
+        max = quizParticipations[i].score;
+      } else if (quizParticipations[i].score === max) {
+        // If scores are equal, prioritize the user with less time taken
+        if (quizParticipations[i].totalTimeTaken! < quizParticipations[maxIndex].totalTimeTaken!) {
+          maxIndex = i;
+        }
+      }
+    }
+
+    sortedParticipationRank.push(quizParticipations[maxIndex]);
+    quizParticipations.splice(maxIndex, 1);
+  }
+
+  return sortedParticipationRank;
 };

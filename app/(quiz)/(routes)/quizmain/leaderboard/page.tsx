@@ -26,10 +26,6 @@ const Leaderboard = async() => {
          Leaderboard
        </h1>
 
-
-       
-
-
        <div className="flex justify-center">  
        <LeaderBoard />
        </div>
@@ -42,7 +38,8 @@ const Leaderboard = async() => {
                name: item.user.name,
                email: item.user.email,
                score: item.score,
-               imageUrl: item.user.imageUrl
+               imageUrl: item.user.imageUrl,
+              totalTimeTaken: item.totalTimeTaken
              }
            })
          } />

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
+import { QuizParticipation } from "@prisma/client";
+import { calculateRank } from "@/lib/utils";
 
 export const POST = async (req: Request): Promise<NextResponse> => {
   try {
@@ -14,7 +16,6 @@ export const POST = async (req: Request): Promise<NextResponse> => {
 
     // Extract the answers and unique code from the request body.
     const { answeredQuestions, uniqueCode } = await req.json();
- 
 
     // Find the quiz associated with the unique code.
     const quiz = await db.quiz.findUnique({
@@ -45,14 +46,12 @@ export const POST = async (req: Request): Promise<NextResponse> => {
     // Get all correct answers first
     const correctAnswers = quiz.questions.map((question) => ({
       questionId: question.id,
-      correctOption: question.correctOption, // Assuming correctOption is an object with a 'text' property
+      correctOption: question.correctOption,
     }));
-
 
     // Calculate the total score and total time taken.
     correctAnswers.forEach((correctAnswer, i) => {
       const question = quiz.questions[i];
-    
 
       // Check if the user's answer is correct for the question.
       if (
@@ -61,8 +60,6 @@ export const POST = async (req: Request): Promise<NextResponse> => {
         answeredQuestions[i].answer
       ) {
         const userAnswerNormalized = answeredQuestions[i].answer;
-
-        // Check if the user's answer is among the correct options.
 
         // Check if the user's answer is among the correct options.
         const correctOptionIndex = correctAnswers.findIndex((correctAnswer) => {
@@ -82,7 +79,7 @@ export const POST = async (req: Request): Promise<NextResponse> => {
     });
 
     // Update the user's score and total time taken.
-    const updatedParticipation = await db.quizParticipation.update({
+    await db.quizParticipation.update({
       where: {
         quizId: quiz.id,
         userId: profile.userId,
@@ -97,11 +94,53 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       },
     });
 
-    return new NextResponse(JSON.stringify(updatedParticipation), {
-      status: 201,
-  });
+    // Fetch all the updated participations and calculate the rank.
+    const updatedQuizParticipations = await db.quizParticipation.findMany({
+      where: {
+        quizId: quiz.id,
+      },
+    });
+
+    const sortedParticipationRank = calculateRank(updatedQuizParticipations);
+    console.log(sortedParticipationRank);
+
+    // Update the rank of each participation.
+    await Promise.all(
+      sortedParticipationRank.map((participation, index) => {
+        return db.quizParticipation.update({
+          where: {
+            quizId: quiz.id,
+            userId: participation.userId,
+          },
+          data: {
+            rank: index + 1,
+          },
+        });
+      })
+    );
+
+    // Update the user's rank separately.
+    const userRank = sortedParticipationRank.findIndex((p) => p.userId === profile.userId) + 1;
+    await db.quizParticipation.update({
+      where: {
+        quizId: quiz.id,
+        userId: profile.userId,
+      },
+      data: {
+        rank: userRank,
+      },
+    });
+
+    return new NextResponse(
+      JSON.stringify({ rank: userRank }),
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     console.error("Backend_Error_❌", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 };
+
+// Function to calculate the rank of the user by using their score and total time taken.
