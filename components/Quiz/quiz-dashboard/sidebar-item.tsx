@@ -24,6 +24,7 @@ export const SidebarItem = ({
   const onClick = () => {
     router.push(href);
   }
+  console.log(pathname, href, isActive);
 
   return (
     <button

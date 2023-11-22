@@ -28,7 +28,7 @@ const QuestionSidebar = async ({
   }
 
   return (
-    <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
+    <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm bg-white dark:bg-zinc-800">
       <div className="p-[12.5px] flex flex-col border-b">
         <h1 className="font-semibold">
           {quiz.title}

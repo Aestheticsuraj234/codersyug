@@ -103,8 +103,8 @@ export function removePunctuationAndNormalize(text:string | null) {
 };
 
 
-
-export const calculateRank = (quizParticipations: QuizParticipation[]): QuizParticipation[] => {
+// Function to calculate the rank of the user by using their score and total time taken.
+export  const calculateRank = (quizParticipations: QuizParticipation[]): QuizParticipation[] => {
   const sortedParticipationRank: QuizParticipation[] = [];
 
   while (quizParticipations.length > 0) {

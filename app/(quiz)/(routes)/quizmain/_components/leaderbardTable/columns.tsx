@@ -40,17 +40,13 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }: any) => {
       const totalTimeTaken = row.original.totalTimeTaken;
 
-      if (typeof totalTimeTaken === "undefined") {
-        return <div className="text-xl font-bold">N/A</div>; // or any other default value
-      }
-
       // Convert seconds to minutes if totalTimeTaken is greater than or equal to 60.
       const displayTime =
         totalTimeTaken >= 60
           ? `${Math.floor(totalTimeTaken / 60)}m`
           : `${totalTimeTaken}s`;
 
-      return <div className="text-base font-bold text-green-500">{displayTime}</div>;
+      return <div className="text-base text-emerald-500 font-bold">{displayTime}</div>;
     },
   },
   {

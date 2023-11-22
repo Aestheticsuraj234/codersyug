@@ -43,7 +43,7 @@ export const QuestionSidebarItem = ({
         type="button"
         disabled={isLocked}
         className={cn(
-          'flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20',
+          'flex items-center gap-x-2 text-slate-500 dark:text-slate-100 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20',
           isActive && 'text-slate-700 bg-slate-200/20 hover:bg-slate-200/20 hover:text-slate-700',
           isLocked && 'cursor-not-allowed bg-indigo-100',
         )}
@@ -51,16 +51,16 @@ export const QuestionSidebarItem = ({
         <div className="flex items-start justify-start gap-x-2 py-4">
           <Icon
             size={22}
-            className={cn('text-slate-500', isActive && 'text-slate-700', isLocked && 'text-indigo-500')}
+            className={cn('text-slate-500 dark:text-green-50' , isActive && 'text-slate-700', isLocked && 'text-indigo-500')}
           />
           {title ? (title.length > 30 ? title.slice(0, 40) + '...' : title) : ''}
         </div>
         <div
-          className={cn('ml-auto opacity-0 border-2 border-slate-700 h-full transition-all', isActive && 'opacity-100')}
+          className={cn('ml-auto opacity-0 border-2 border-slate-700 dark:border-emerald-300 h-full transition-all', isActive && 'opacity-100')}
         />
       </button>
       <Separator
-        className={cn(isActive && 'bg-slate-700', isLocked && 'bg-slate-200')}
+        className={cn(isActive && 'bg-slate-700 dark:bg-slate-50', isLocked && 'bg-slate-200')}
       />
     </Link>
   );

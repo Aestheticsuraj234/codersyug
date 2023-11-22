@@ -1,17 +1,5 @@
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
-<<<<<<< HEAD
-import { NextResponse } from "next/server";
-
-export const POST = async (req: Request) => {
-  try {
-    
-  
-  } catch (error: any) {
-   
-=======
-import { QuizParticipation } from "@prisma/client";
-import { calculateRank } from "@/lib/utils";
 
 export const POST = async (req: Request): Promise<NextResponse> => {
   try {
@@ -103,54 +91,12 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       },
     });
 
-    // Fetch all the updated participations and calculate the rank.
-    const updatedQuizParticipations = await db.quizParticipation.findMany({
-      where: {
-        quizId: quiz.id,
-      },
-    });
-
-    const sortedParticipationRank = calculateRank(updatedQuizParticipations);
-    console.log(sortedParticipationRank);
-
-    // Update the rank of each participation.
-    await Promise.all(
-      sortedParticipationRank.map((participation, index) => {
-        return db.quizParticipation.update({
-          where: {
-            quizId: quiz.id,
-            userId: participation.userId,
-          },
-          data: {
-            rank: index + 1,
-          },
-        });
-      })
-    );
-
-    // Update the user's rank separately.
-    const userRank = sortedParticipationRank.findIndex((p) => p.userId === profile.userId) + 1;
-    await db.quizParticipation.update({
-      where: {
-        quizId: quiz.id,
-        userId: profile.userId,
-      },
-      data: {
-        rank: userRank,
-      },
-    });
-
-    return new NextResponse(
-      JSON.stringify({ rank: userRank }),
-      {
-        status: 201,
-      }
-    );
+    return new NextResponse(JSON.stringify(updatedParticipation), {
+      status: 201,
+  });
   } catch (error) {
     console.error("Backend_Error_❌", error);
     return new NextResponse("Internal Server Error", { status: 500 });
 >>>>>>> development
   }
 };
-
-// Function to calculate the rank of the user by using their score and total time taken.

@@ -9,8 +9,7 @@ import Image from "next/image";
 import LeaderBoard from "../_components/LeaderBoard";
 
 import { getAllParticipants } from "@/server-action/quiz";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Terminal } from "lucide-react";
+
 
 
 const Leaderboard = async() => {
@@ -39,7 +38,7 @@ const Leaderboard = async() => {
                email: item.user.email,
                score: item.score,
                imageUrl: item.user.imageUrl,
-              totalTimeTaken: item.totalTimeTaken
+                totalTimeTaken: item.totalTimeTaken
              }
            })
          } />

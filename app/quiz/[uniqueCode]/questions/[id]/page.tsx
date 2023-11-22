@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Loader2, Timer } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+
 import {
   Form,
   FormControl,
@@ -40,9 +40,7 @@ import { AppContext } from "@/context/GlobalContext";
 import { AccessLevel } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import axios from "axios";
-import { set } from "date-fns";
 
-// Define the form schema using Zod
 const FormSchema = z.object({
   Option: z.string(),
 });
@@ -52,43 +50,49 @@ const QuestionIdPage = ({
 }: {
   params: { uniqueCode: any; id: any };
 }) => {
+  // ###################################_______________________USE STATES_______________________###################################
   const { quiz } = useContext(AppContext);
-  const { setAnsweredQuestions, answeredQuestions } = quiz;
   const { toast } = useToast();
 
-  const { setAnsweredQuestions, answeredQuestions } = quiz;
+  const { setAnsweredQuestions, answeredQuestions ,  questionTimer, setQuestionTimer} = quiz;
   const [question, setQuestion] = useState<any>();
   const [nextQuestion, setNextQuestion] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [questionTimer, setQuestionTimer] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const [isAnswering, setIsAnswering] = useState(false);
   const [TotalQuestions, setTotalQuestions] = useState<number>(0);
   const [isLocked, setIsLocked] = useState<boolean>(false);
+
+
   const [userAccessLevel, setUserAccessLevel] = useState<any>(
     AccessLevel.LOCKED
   );
+  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(true);
   const router = useRouter();
 
-  // !###################################_____FUNCTIONS_____###################################
+  // !###################################_______________________FUNCTIONS_______________________###################################
 
-  // Function to fetch a question
   const getQuestion = async () => {
     setIsLoading(true);
-    // @ts-ignore
-    const { question, nextQuestion } = await getQuestionById(
-      params.id,
-      params.uniqueCode
-    );
-    setQuestion(question);
-    setNextQuestion(nextQuestion);
-    setQuestionTimer(question?.timer || null);
-    setIsLoading(false);
+    try {
+  
+      // @ts-ignore
+      const { question, nextQuestion } = await getQuestionById(
+        params.id,
+        params.uniqueCode
+      );
+      setQuestion(question);
+      setNextQuestion(nextQuestion);
+      setQuestionTimer(question?.timer || null);
+    } catch (error) {
+      console.error("Error fetching question:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Function to fetch the user's access level for the current question
   const getUserAccessLevel = async () => {
     try {
       const accessLevel = await getCurrentUserQuestionAccessLevel(params.id);
@@ -97,10 +101,6 @@ const QuestionIdPage = ({
       console.error("Error fetching user access level:", error);
     }
   };
-
-  useEffect(() => {
-    getUserAccessLevel();
-  }, [params.id]);
 
   const getNumberOfQuestions = async () => {
     try {
@@ -120,10 +120,9 @@ const QuestionIdPage = ({
       ? question?.timer - questionTimer
       : null;
 
-  async function onSubmit(data: z.infer<typeof FormSchema> , e: any) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       // Stop the timer immediately
-      e.preventDefault();
       setIsTimerRunning(false);
 
       setIsAnswering(true);
@@ -365,23 +364,30 @@ const QuestionIdPage = ({
     }
   }, [questionTimer]);
 
-  // Effect hooks to fetch data on component mount
   useEffect(() => {
-    getNumberOfQuestions();
-  }, [params.uniqueCode]);
+    const timerInterval = setInterval(() => {
+      if (questionTimer !== null && questionTimer > 0 && isTimerRunning) {
+        setQuestionTimer((prevTimer: any) => prevTimer - 1);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [questionTimer, isTimerRunning]);
 
   useEffect(() => {
     getQuestion();
-  }, [params.id]);
+    getUserAccessLevel();
+    getNumberOfQuestions();
+  }, [params.id, params.uniqueCode]);
 
-  // check if the question is last question or not
   useEffect(() => {
     if (nextQuestion === null) {
       setIsLastQuestion(true);
     }
   }, [nextQuestion]);
 
-  // Effect hook to check if the user has already answered the question
   useEffect(() => {
     if (userAccessLevel === AccessLevel.ANSWERED) {
       setIsAnswered(true);
@@ -389,7 +395,6 @@ const QuestionIdPage = ({
     }
   }, [question, userAccessLevel]);
 
-  // Effect hook to check if the question is locked
   useEffect(() => {
     if (userAccessLevel === AccessLevel.LOCKED) {
       setIsLocked(true);
@@ -398,145 +403,16 @@ const QuestionIdPage = ({
 
   // ########################################`_______________________RENDER_______________________#####################################
 
-  // Parse question options
   const ParsedOptions = question ? JSON.parse(question?.options) : null;
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  });
-
-  async function onSubmit(
-    data: z.infer<typeof FormSchema>,
-    e: React.FormEvent
-  ) {
-    e.preventDefault();
-    setIsAnswering(true);
-    const actualTimeTaken =
-    question?.timer != null && questionTimer != null
-      ? question?.timer - questionTimer
-      : null;
-    setAnsweredQuestions([
-      ...answeredQuestions,
-      { question, answer: data.Option, timeTaken: actualTimeTaken },
-    ]);
-    // @ts-ignore
-    await modifyQuestionAccessTypeByCurrentUser(
-      params.id,
-
-      AccessLevel.ANSWERED
-    );
-    if (nextQuestion) {
-      router.push(`/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`);
-      // @ts-ignore
-      await modifyQuestionAccessTypeByCurrentUser(
-        nextQuestion.id,
-        AccessLevel.UNLOCKED
-      );
-      setIsAnswering(false);
-    } else if (!nextQuestion) {
-      setIsLastQuestion(true);
-      setIsSubmitting(true);
-      const res = await axios.post("/api/quiz/submit", {
-        uniqueCode: params.uniqueCode,
-        answers: answeredQuestions,
-      });
-      const { data } = res;
-      console.log(data);
-      if (data.status === 201) {
-        toast({
-          title: "Quiz Submitted Successfully",
-          description: "Redirecting to the dashboard home page",
-        });
-        router.push("/quizmain/profile");
-        setIsSubmitting(false);
-      } else {
-        toast({
-          title: "Something went wrong",
-          description: "Please try again later",
-        });
-        router.refresh();
-        setIsSubmitting(false);
-      }
-    }
-  }
-
-  console.log("Answered-Question:", answeredQuestions);
-
-  const handleTimeout = async () => {
-    if (!isAnswered) {
-      // If the question has not been answered when the timer reaches 0
-      setAnsweredQuestions([
-        ...answeredQuestions,
-        { question, answer: "", timeTaken: null },
-      ]);
-
-      await modifyQuestionAccessTypeByCurrentUser(
-        params.id,
-
-        AccessLevel.ANSWERED
-      );
-
-      if (nextQuestion) {
-        router.push(`/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`);
-        // @ts-ignore
-        await modifyQuestionAccessTypeByCurrentUser(
-          nextQuestion.id,
-          AccessLevel.UNLOCKED
-        );
-        setIsAnswering(false);
-      } else if (!nextQuestion) {
-        setIsLastQuestion(true);
-        setIsSubmitting(true);
-        const res = await axios.post("/api/quiz/submit", {
-          uniqueCode: params.uniqueCode,
-          answers: answeredQuestions,
-        });
-        const { data } = res;
-        console.log(data);
-        if (data.status === 201) {
-          toast({
-            title: "Quiz Submitted Successfully",
-            description: "Redirecting to the dashboard home page",
-          });
-          router.push("/quizmain/profile");
-          setIsSubmitting(false);
-        } else {
-          toast({
-            title: "Something went wrong",
-            description: "Please try again later",
-          });
-          router.refresh();
-          setIsSubmitting(false);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (questionTimer === 0) {
-      handleTimeout();
-    }
-  }, [questionTimer]);
-
-  useEffect(() => {
-    const timerInterval = setInterval(() => {
-      if (questionTimer !== null && questionTimer > 0) {
-        setQuestionTimer((prevTimer: any) => prevTimer - 1);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(timerInterval);
-    };
-  }, [questionTimer]);
-
-  // Determine the text for the badge based on user access level
   const BadgeText =
     userAccessLevel === AccessLevel.ANSWERED
       ? "Answered👑"
       : userAccessLevel === AccessLevel.UNLOCKED
       ? "Ready to Attempt👻"
       : "Locked❌";
+
+  console.log("Answered-Question:", JSON.stringify(answeredQuestions));
 
   return (
     <>
@@ -546,13 +422,33 @@ const QuestionIdPage = ({
         </div>
       ) : (
         <>
-          {/* Your existing UI code here */}
+          <div className="flex justify-between items-center m-4">
+            <div className="flex flex-row space-x-4 justify-center items-center">
+              <h1 className="text-2xl font-semibold text-emerald-600-500">
+                Question {question?.order} of {TotalQuestions}🤔
+              </h1>
+              <Badge
+                className={cn(
+                  userAccessLevel === AccessLevel.ANSWERED && "bg-emerald-500",
+                  userAccessLevel === AccessLevel.UNLOCKED && "bg-yellow-500",
+                  userAccessLevel === AccessLevel.LOCKED && "bg-red-500"
+                )}
+              >
+                {BadgeText}
+              </Badge>
+            </div>
 
+            <div className="flex flex-row items-center space-x-7" />
+            <div className="flex flex-row space-x-4 justify-center items-center">
+              <IconBadge icon={Timer} variant={"timer"} />
+              <h1 className="text-2xl font-semibold text-emerald-600-500">
+                {questionTimer ? `00:00:${questionTimer}` : "00:00:00"}
+              </h1>
+            </div>
+          </div>
           <div className="paddings flex flex-col justify-start items-start space-y-5 rounded-md m-4">
             <Form {...form}>
-              {/* @ts-ignore */}
               <form
-              // @ts-ignore
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="w-2/3 space-y-6"
               >
@@ -592,50 +488,32 @@ const QuestionIdPage = ({
                   )}
                 />
                 <div className="flex flex-row items-start justify-start space-x-7 mt-7">
-                  {isLastQuestion ? (
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="bg-emerald-600 hover-bg-emerald-600"
-                      disabled={
-                        isAnswered ||
-                        (isLocked && userAccessLevel !== AccessLevel.UNLOCKED)
-                      }
-                    >
-                       {isSubmitting ? (
-                        <div className="flex flex-row space-x-2 items-center">
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                        </div>
-                      ) : (
-                        <h1>Submit</h1>
-                      )}
-                    </Button>
-                  ) : (
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="bg-emerald-600 hover-bg-emerald-600"
-                      disabled={
-                        isAnswered ||
-                        (isLocked && userAccessLevel !== AccessLevel.UNLOCKED)
-                      }
-                    >
-                      {isAnswering ? (
-                        <div className="flex flex-row space-x-2 items-center">
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                        </div>
-                      ) : (
-                        <h1>Next</h1>
-                      )}
-                    </Button>
-                  )}
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="bg-emerald-600 hover-bg-emerald-600"
+                    disabled={
+                      isAnswered ||
+                      (isLocked && userAccessLevel !== AccessLevel.UNLOCKED)
+                    }
+                  >
+                    {isAnswering ? (
+                      <div className="flex flex-row space-x-2 items-center">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      </div>
+                    ) : (
+                      <h1>{isLastQuestion ? "Submit" : "Next"}</h1>
+                    )}
+                  </Button>
                 </div>
               </form>
             </Form>
           </div>
           <AlertDialog
             open={isDialogOpen}
-            onOpenChange={(isOpen) => setIsDialogOpen(isOpen)}
+            onOpenChange={(isOpen) => {
+              setIsDialogOpen(isOpen);
+            }}
           >
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -644,7 +522,7 @@ const QuestionIdPage = ({
                   automatically🥇
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to continue?
+                  Are you sure you want to continue? (You Got Only 3 Warnings)
                   <br />
                   "Keep your mouse inside the window to avoid this".
                 </AlertDialogDescription>
