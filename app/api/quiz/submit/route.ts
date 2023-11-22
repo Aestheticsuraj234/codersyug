@@ -126,7 +126,10 @@ export const POST = async (req: Request): Promise<NextResponse> => {
         userId: profile.userId,
       },
       data: {
-        rank: userRank,
+        rank: {
+          set: userRank,
+
+        },
       },
     });
 
