@@ -106,7 +106,7 @@ const LeaderBoard = () => {
                             />
                         ))}
                     </div>
-                    
+                    {userRank !== null && (
                         <div className='mt-3 py-2 hidden md:flex px-3 text-sm w-full rounded-md items-center text-gray-600 dark:text-gray-100 bg-zinc-100 dark:bg-zinc-800 justify-center flex-row font-bold'>
                             You Have Earned ⭐️ {userScore} Points and are ranked
                             <code className='text-gray-100 bg-gray-700 px-4 py-1 mx-2 rounded-md'>{userRank}th</code>
@@ -114,7 +114,7 @@ const LeaderBoard = () => {
                             <code className='text-gray-100 bg-gray-700 px-4 py-1 mx-2 rounded-md'>{numberOfParticipants}</code>
                             participants
                         </div>
-                 
+                    )}
                 </>
             )}
         </div>
