@@ -37,6 +37,7 @@ const LeaderBoard = () => {
     const fetchDataAndSort = async () => {
         try {
             const response = await getAllParticipants();
+            // @ts-ignore
             setLeaderboardData(response);
 
             const sortedData = calculateRank(response);
@@ -46,6 +47,7 @@ const LeaderBoard = () => {
                 ...participant,
                 rank: rankStrings[index] || 'Other',
             }));
+            // @ts-ignore
             setTopThreeParticipants(dataWithRank);
         } catch (error) {
             console.error("Error fetching data:", error);
