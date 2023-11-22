@@ -479,7 +479,7 @@ const CreateQuiz = () => {
                                     <h2 className="text-xl font-semibold">Add Questions</h2>
                                 </div>
                             </div>
-                            <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+                            <div className="relative mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-md p-4">
                                 <div className="font-medium flex items-center justify-between">
                                     Add Questions
                                     <Button onClick={toggleCreating} variant="ghost" type="button">
@@ -498,7 +498,7 @@ const CreateQuiz = () => {
                                     <Form {...form}>
                                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
                                             {fields.map((question, index) => (
-                                                <div key={question.id} className="   space-y-4 border rounded-md p-4 bg-slate-200">
+                                                <div key={question.id} className="   space-y-4 border rounded-md p-4 bg-slate-200 dark:bg-zinc-700">
                                                     <FormField
                                                         control={form.control}
                                                         name={`questions.${index}.questionTitle`}

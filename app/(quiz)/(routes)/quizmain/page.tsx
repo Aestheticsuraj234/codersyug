@@ -119,7 +119,8 @@ const Dashboard = async () => {
                     name: item.user.name,
                     email: item.user.email,
                     score: item.score,
-                    imageUrl: item.user.imageUrl
+                    imageUrl: item.user.imageUrl,
+                    totalTimeTaken: item.totalTimeTaken
                   }
                 })
               } />
