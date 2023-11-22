@@ -5,12 +5,15 @@ import DarkKeyFeatureCard from "@/components/Home/DarkKeyFeature";
 import FeatureComponent from "@/components/Home/FeatureComponent";
 import HomeComponent from "@/components/Home/HomeComponent";
 import MoreFeature from "@/components/Home/MoreFeature";
+import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
 
     const initiateProfile = await initialProfile();
+   
+   
 
     if (initiateProfile) {
         return (
