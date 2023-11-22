@@ -185,3 +185,126 @@ export const getCurrentUserQuestionAccessLevel = async (questionId: string) => {
 
   return userQuestionAccess?.accessLevel;
 };
+
+
+export const CancelTheQuizforCurrentUser = async (uniqueCode: string) => {
+ 
+
+}
+
+
+export const getParticipatedQuizzesForCurrentUser = async () => {
+  const profile = await currentProfile();
+
+  if (!profile?.userId) {
+    return [];
+  }
+
+  const participatedQuizzes = await db.quizParticipation.findMany({
+    where: {
+      userId: profile.userId,
+    },
+    include: {
+      quiz: {
+        include: {
+          quizParticipations: {
+            select: {
+              userId: true,
+            },
+          },
+          questions: true,
+        },
+      },
+    },
+  });
+
+  // Filter out quizzes where quizParticipations length is 0
+  const filteredQuizzes = participatedQuizzes
+  // @ts-ignore
+    .filter((participation) => participation?.quiz?.quizParticipations?.length > 0)
+    .map((participation) => {
+      const { quiz } = participation;
+      return {
+        ...quiz,
+        participantsCount: quiz?.quizParticipations.length,
+        questionsCount: quiz?.questions.length,
+      };
+    });
+
+  return filteredQuizzes;
+};
+
+
+// Define the function to get user attempted questions
+export const getUserAttemptedQuestions = async () => {
+  // Get the current user's profile
+  const profile = await currentProfile();
+
+  // Check if the user is not logged in or doesn't have a userId
+  if (!profile?.userId) {
+    return [];
+  }
+
+  // Fetch user attempted questions
+  const attemptedQuestions = await db.userQuestionAccess.findMany({
+    where: {
+      userId: profile.userId,
+      accessLevel: AccessLevel.ANSWERED,
+    },
+    include: {
+      question: true,
+    },
+  });
+
+  // Map the result to include question text and other details
+  const userAttemptedQuestions = attemptedQuestions.map((attemptedQuestion) => {
+    const { question } = attemptedQuestion;
+    return {
+      questionId: question.id,
+      text: question.text,
+      accessLevel: attemptedQuestion.accessLevel,
+      correctOption: question.correctOption,
+      // Include any other details you need from the question
+    };
+  });
+
+  return userAttemptedQuestions;
+};
+
+
+export const CheatingByCurrentUser = async (uniqueCode: string) => {
+  const profile = await currentProfile();
+  if (!profile?.userId) {
+    // Handle the case when user is not logged in or doesn't have a userId
+    return null;
+  }
+ // Find the quiz participation for the current user and the specified quiz
+ const quizParticipation = await db.quizParticipation.findUnique({
+  where: {
+    userId: profile.userId,
+    quiz: {
+      uniqueCode,
+    },
+  },
+});
+
+ // Check if the quiz participation exists
+ if (!quizParticipation) {
+  throw new Error("Quiz participation not found");
+}
+
+ // Update the quiz participation to mark it as cheated and set the score to 0
+ const updatedQuizParticipation = await db.quizParticipation.update({
+  where: {
+    id: quizParticipation.id,
+  },
+  data: {
+    isCheated: true,
+    score: 0,
+  },
+});
+
+// Return the updated quiz participation
+return updatedQuizParticipation;
+};
+  

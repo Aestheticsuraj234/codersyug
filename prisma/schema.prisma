@@ -234,6 +234,7 @@ model QuizParticipation {
   isSubmitted Boolean? @default(false)
   score      Int?      @default(0)
   rank       Int?      @default(0)
+  isCheated  Boolean?  @default(false)
   totalTimeTaken Int?  @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt

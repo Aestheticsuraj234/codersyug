@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs";
 
 const QuestionUniqueCodePage = async ({
-  params
+  params,
 }: {
   params: { uniqueCode: string };
 }) => {
@@ -12,15 +12,15 @@ const QuestionUniqueCodePage = async ({
   // Fetch the quiz by its unique code
   const quiz = await db.quiz.findUnique({
     where: {
-      uniqueCode: params.uniqueCode
+      uniqueCode: params.uniqueCode,
     },
     include: {
       questions: {
         orderBy: {
-          order: "asc"
-        }
-      }
-    }
+          order: "asc",
+        },
+      },
+    },
   });
 
   if (!quiz) {
@@ -35,16 +35,26 @@ const QuestionUniqueCodePage = async ({
   // Update the quiz to connect the user as a quiz participant
   const updatedQuiz = await db.quiz.update({
     where: {
-      uniqueCode: params.uniqueCode
+      uniqueCode: params.uniqueCode,
     },
     data: {
       quizParticipations: {
         connect: {
-          userId: userId
-        }
-      }
-    }
+          userId: userId,
+        },
+      },
+    },
   });
+
+  const quizParticipations = await db.quizParticipation.findUnique({
+    where: {
+      userId: userId,
+    },
+  });
+
+  if (quizParticipations?.isCheated) {
+    return redirect("/quizmain/quizzes");
+  }
 
   if (!updatedQuiz) {
     // Handle any error that might occur during the update
@@ -52,7 +62,9 @@ const QuestionUniqueCodePage = async ({
   }
 
   // Redirect to the first question of the quiz
-  return redirect(`/quiz/${params.uniqueCode}/questions/${quiz.questions[0].id}`);
+  return redirect(
+    `/quiz/${params.uniqueCode}/questions/${quiz.questions[0].id}`
+  );
 };
 
 export default QuestionUniqueCodePage;

@@ -33,6 +33,9 @@ import { ResourceType } from '@prisma/client';
  * @property {Array} answeredQuestions - Array of answered questions.
  * @property {function} addAnsweredQuestion - Function to add a question to the answeredQuestions array.
  * @property {function} setAnsweredQuestions - Function to update answeredQuestions state.
+ * @property {number | null} questionTimer - Time left to answer a question.
+ * @property {function} setQuestionTimer - Function to update questionTimer state.
+ * 
 
  */
 
@@ -115,13 +118,14 @@ export const AppProvider = ({ children }) => {
   };
 
 
-  /**
+  /** @Aestheticsuraj234
    * @type  {QuizSubContextValue}
    * 
    */
 
   //? #---------------------Quiz---------------------#
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
+  const [questionTimer, setQuestionTimer] = useState(null);
 
 
   /**
@@ -143,7 +147,9 @@ export const AppProvider = ({ children }) => {
 
   const quizContext = {
     answeredQuestions,
-    setAnsweredQuestions
+    setAnsweredQuestions,
+    questionTimer,
+    setQuestionTimer,
   }
 
 

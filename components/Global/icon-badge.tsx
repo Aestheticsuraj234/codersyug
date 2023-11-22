@@ -13,6 +13,7 @@ const backgroundVariants = cva(
         warning: "bg-orange-100",
         timer: "bg-rose-100",
         level: "bg-indigo-100",
+        copy: "bg-gray-100",
       },
       size: {
         default: "p-2",
@@ -36,6 +37,7 @@ const iconVariants = cva(
         warning: "text-orange-700",
         timer: "text-rose-700",
         level: "text-indigo-700",
+        copy: "text-gray-700",
       },
       size: {
         default: "h-8 w-8",
