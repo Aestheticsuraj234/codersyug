@@ -72,7 +72,7 @@ const QuestionIdPage = ({
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(true);
   const router = useRouter();
 
-  // !###################################_______________________FUNCTIONS_______________________###################################
+  // !###################################___________FUNCTIONS____________###################################
 
   const getQuestion = async () => {
     setIsLoading(true);
@@ -331,6 +331,43 @@ const QuestionIdPage = ({
     [userAccessLevel]
   );
 
+  
+  useEffect(() => {
+    // Disable copy-paste and context menu
+    const handleCopyPaste = (event: ClipboardEvent) => {
+      event.preventDefault();
+    };
+
+    const handleContextMenu = (event: Event) => {
+      event.preventDefault();
+    };
+
+    document.addEventListener('copy', handleCopyPaste);
+    document.addEventListener('cut', handleCopyPaste);
+    document.addEventListener('paste', handleCopyPaste);
+    window.addEventListener('contextmenu', handleContextMenu);
+
+    return () => {
+      document.removeEventListener('copy', handleCopyPaste);
+      document.removeEventListener('cut', handleCopyPaste);
+      document.removeEventListener('paste', handleCopyPaste);
+      window.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
+
+    useEffect(() => {
+    // Disable text selection
+    const handleSelectStart = (event: Event) => {
+      event.preventDefault();
+    };
+
+    document.addEventListener('selectstart', handleSelectStart);
+
+    return () => {
+      document.removeEventListener('selectstart', handleSelectStart);
+    };
+  }, []);
+
   useEffect(() => {
     // Disable right-click
     const handleContextMenu = (event: Event) => {
@@ -366,15 +403,20 @@ const QuestionIdPage = ({
 
   useEffect(() => {
     const timerInterval = setInterval(() => {
-      if (questionTimer !== null && questionTimer > 0 && isTimerRunning) {
-        setQuestionTimer((prevTimer: any) => prevTimer - 1);
+      // Check if the userAccessLevel is locked
+      if (userAccessLevel !== AccessLevel.LOCKED) {
+        // Update the timer only if it's not locked
+        if (questionTimer !== null && questionTimer > 0 && isTimerRunning) {
+          setQuestionTimer((prevTimer: any) => prevTimer - 1);
+        }
       }
     }, 1000);
 
     return () => {
       clearInterval(timerInterval);
     };
-  }, [questionTimer, isTimerRunning]);
+  }, [questionTimer, isTimerRunning, userAccessLevel]);
+
 
   useEffect(() => {
     getQuestion();
