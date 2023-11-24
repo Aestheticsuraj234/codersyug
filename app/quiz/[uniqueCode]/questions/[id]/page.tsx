@@ -66,9 +66,7 @@ const QuestionIdPage = ({
   const [isLocked, setIsLocked] = useState<boolean>(false);
 
 
-  const [userAccessLevel, setUserAccessLevel] = useState<any>(
-    AccessLevel.LOCKED
-  );
+  const [userAccessLevel, setUserAccessLevel] = useState<any>(AccessLevel.LOCKED);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(true);
   const router = useRouter();
 

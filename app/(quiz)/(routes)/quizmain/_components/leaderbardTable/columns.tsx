@@ -61,7 +61,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "score",
-    header: "Header",
+    header: "Score",
     cell: ({ row }: any) => {
       const value = row.original.score;
       return (
