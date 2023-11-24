@@ -51,12 +51,14 @@ export const columns: ColumnDef<any>[] = [
       const totalTimeTaken = row.original.totalTimeTaken;
 
       // Convert seconds to minutes if totalTimeTaken is greater than or equal to 60.
-      const displayTime =
-        totalTimeTaken >= 60
-          ? `${Math.floor(totalTimeTaken / 60)}m`
-          : `${totalTimeTaken}s`;
+      const displayTime =   (totalTimeTaken: any) => {
+        const minutes = Math.floor(totalTimeTaken / 60);
+        const seconds = totalTimeTaken % 60;
+        return `${minutes}m:${seconds}s`;
+      };
+    
 
-      return <div className="text-base text-emerald-500 font-bold">{displayTime}</div>;
+      return <div className="text-base text-emerald-500 font-bold">{displayTime(totalTimeTaken)}</div>;
     },
   },
   {
