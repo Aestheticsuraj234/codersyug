@@ -47,7 +47,6 @@ export const HandleRegistration = async () => {
     return Boolean(quizParticipation);
 };
 
-
 export const isUserAlreadyRegistered = async () => {
     const profile = await currentProfile();
 
@@ -55,15 +54,14 @@ export const isUserAlreadyRegistered = async () => {
         return false;
     }
 
-    const RegisteredUser = await db.quizParticipation.findUnique({
+    const registeredUser = await db.quizParticipation.findUnique({
         where: {
-            userId: profile?.userId // Use 'userId' instead of 'id'
+            userId: profile.userId,
         },
     });
 
-    return Boolean(RegisteredUser);
+    return Boolean(registeredUser);
 };
-
 
 export const GetNumberOfParticipants = async () => {
     const participants = await db.quizParticipation.count();

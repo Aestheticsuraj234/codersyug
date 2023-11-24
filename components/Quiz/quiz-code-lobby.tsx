@@ -34,9 +34,6 @@ const QuizLobbyEnter = () => {
         new Typewriter('#typewriter', typewriterOptions);
     }, [user]);
 
-   
-
-  
 
     return (
         <>
@@ -51,7 +48,7 @@ const QuizLobbyEnter = () => {
                             <br />Enter Your code and let's start our quiz.
                         </h1>
                         <p className="max-w-2xl mb-6 font-semibold text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400 ">
-                            Enter your code and start your quiz. If you don't have a code, then click <Link href={"/hackathons"} className="underline font-bold text-green-500">Here</Link>
+                            Enter your code and start your quiz. If you don't have a code, then click <Link href={"/quiz-wuiz-hackathon"} className="underline font-bold text-green-500">Here</Link>
                         </p>
                         <div className="w-full">
                             <QuizCodeForm />

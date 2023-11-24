@@ -21,26 +21,27 @@ const HackathonPage = () => {
     const [isUserRegistered, setIsUserRegistered] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
-    useEffect(() => {
-        // Check if the user is already registered when the component mounts
-        checkUserRegistration();
-    }, []);
 
     const checkUserRegistration = async () => {
         try {
             const response = await isUserAlreadyRegistered();
+            console.log(response); // Log the response
             setIsUserRegistered(response);
-            console.log(response);
         } catch (error) {
-            console.log(error);
+            console.error("Error checking user registration:", error);
         }
     };
+
+    useEffect(() => {
+        checkUserRegistration();
+    }, [isUserRegistered]);
 
     const onRegister = async () => {
         try {
             setIsRegistering(true);
             const response = await HandleRegistration();
-            setIsRegistering(false);    
+            setIsRegistering(false);
+
             if (response === "You have already participated in the quiz.") {
                 toast({
                     title: 'Already Registered🤷‍♂️',
@@ -48,9 +49,9 @@ const HackathonPage = () => {
                 });
                 router.push("/QuizEnter");
             } else if (response) {
-                setIsUserRegistered(true); // User is now registered
+                setIsUserRegistered(true);
                 toast({
-                    title: 'success👑',
+                    title: 'Success👑',
                     description: 'Registration successful. Check your email for details and your quiz code.',
                 });
                 router.push("/QuizEnter");
@@ -62,10 +63,10 @@ const HackathonPage = () => {
                 });
             }
         } catch (error) {
-            console.log("Error_Registration", error);
+            console.error("Error registering:", error);
             toast({
                 variant: 'destructive',
-                title: 'error',
+                title: 'Error',
                 description: 'An error occurred while registering. Please try again later🧠.',
             });
         } finally {
@@ -106,7 +107,7 @@ const HackathonPage = () => {
                     ) : (
                         <Button
                             onClick={onRegister}
-                            className={`rounded-full flex dark:bg-white dark:text-black bg-black text-white border-transparent  text-base py-3 px-6 ${isRegistering ? 'hidden' : ''}`}
+                            className={`rounded-full flex dark:bg-white dark:text-black bg-black text-white border-transparent  text-base py-3 px-6 `}
                         >
                             {isRegistering ? <Loader2 className="animate-spin dark:text-black text-white" size={30} /> : 'Register Now'}
                         </Button>
