@@ -15,7 +15,6 @@ import { getAllParticipants } from "@/server-action/quiz";
 
 
 
-
 const Dashboard = async () => {
   const LeaderBoardData = await getAllParticipants()
   return (

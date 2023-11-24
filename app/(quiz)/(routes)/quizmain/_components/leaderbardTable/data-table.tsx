@@ -66,8 +66,6 @@ export function DataTable<TData, TValue>({
 
   })
 
-  console.log("table:", data)
-  console.log("table:", table)
   return (
     <>
       <div className="flex items-center py-4">
