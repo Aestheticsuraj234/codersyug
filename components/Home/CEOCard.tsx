@@ -14,6 +14,7 @@ const CEOCard = () => {
             description:'CodersYug is an all-in-one platform designed to empower computer science students throughout their academic journey and beyond. It offers a wide range of services and resources to enhance their learning experience and career prospects.',
             instagram:'https://www.instagram.com/sigma_developer_/',
             linkedin:'https://www.linkedin.com/in/suraj-jha-875744250/',
+            twitter:'https://twitter.com/',
             github:'https://github.com/Aestheticsuraj234'
 
         },
