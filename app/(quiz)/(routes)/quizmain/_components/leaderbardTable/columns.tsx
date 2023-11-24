@@ -1,12 +1,22 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button";
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "rank",
-    header: "Rank",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Rank
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "imageUrl",
@@ -51,18 +61,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "score",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="flex flex-row items-center justify-center"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Score
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Header",
     cell: ({ row }: any) => {
       const value = row.original.score;
       return (
