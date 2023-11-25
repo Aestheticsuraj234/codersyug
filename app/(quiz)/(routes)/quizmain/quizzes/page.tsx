@@ -3,6 +3,7 @@ import { isUserVerified } from '@/server-action/hackathon';
 import { redirect } from 'next/navigation';
 import { CourseCard } from './_components/quiz-card';
 import { getQuiz } from '@/server-action/quiz';
+import { AlertDialogDemo } from './_components/Rule-Alert';
 
 const Quizzes = async () => {
   const isVerified = await isUserVerified();
@@ -11,6 +12,8 @@ const Quizzes = async () => {
   }
 
   const quiz = await getQuiz();
+
+
 
   return (
     <section className='p-6 space-y-4'>
@@ -36,6 +39,7 @@ const Quizzes = async () => {
           ))}
         </div>
       )}
+      <AlertDialogDemo />
     </section>
   );
 }
