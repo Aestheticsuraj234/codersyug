@@ -8,7 +8,7 @@ import { AppProvider } from '@/context/GlobalContext'
 import QueryProvider from '@/components/providers/query-provider'
 import { ModalProvider } from '@/components/providers/modal-provider'
 import { Analytics } from '@vercel/analytics/react';
-
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { cn } from '@/lib/utils'
 
 
@@ -45,7 +45,10 @@ export default function RootLayout({
           <html lang="en">
     
             <body className={cn(fonts.className,"min-h-screen ")}>
-
+            {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+            <GoogleAnalytics ga_id= 
+            {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+          ) : null}
               <ThemeProvider
                 attribute="class"
                 defaultTheme="system"
