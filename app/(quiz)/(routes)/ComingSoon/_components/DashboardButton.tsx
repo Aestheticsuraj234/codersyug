@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 const DashboardButton = () => {
     const router = useRouter();
   return (
-    <Button onClick={()=>router.push("/quizmain")} className=" font-extrabold text-center ">
+    <Button onClick={()=>router.push("/quizmain")} className=" md:font-extrabold  font-semibold text-center ">
     Let's go  to Dashboard
   </Button>
   )

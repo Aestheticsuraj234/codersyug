@@ -6,7 +6,7 @@ import { isUserVerified } from '@/server-action/hackathon'
 import { redirect } from 'next/navigation'
 import DashboardButton from './_components/DashboardButton'
 import WhatsAppButton from './_components/WhatsAppButton'
-import EbookSponsorship from '@/components/Hackathon/EbookSponsership'
+
 
 
 const ComingSoonHackathon = async() => {
@@ -18,7 +18,7 @@ if(!isUserVerify) {
 }
 
   return (
-    <div className='flex flex-col h-screen justify-center gap-10  bg-[url("/ComingSoon2.svg")] bg-cover bg-center nav-padding paddings items-center   ' >
+    <div className='flex flex-col  justify-center gap-10  bg-[url("/ComingSoon2.svg")] bg-cover bg-center nav-padding paddings items-center   ' >
       <h1 className='text-4xl font-bold text-center text-zinc-900 dark:text-zinc-100'>Quiz Wuiz Hackathon Live Soon🥇</h1>
       <DigitalHackathonTimer />
     

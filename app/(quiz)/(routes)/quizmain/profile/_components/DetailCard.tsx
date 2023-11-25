@@ -27,7 +27,7 @@ const DetailCard = ({
               <div className="text-emerald-500 font-semibold">{questions}</div>
             </div>
           </div>
-          <h2 className="mb-1 text-2xl font-bold text-slate-800 font-heading dark:text-slate-200">
+          <h2 className="mb-1 md:text-2xl  text-base font-bold text-slate-800 font-heading dark:text-slate-200">
             {title}
           </h2>
           <p className="text-slate-600 dark:text-slate-300 font-normal">

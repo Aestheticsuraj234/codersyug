@@ -3,7 +3,8 @@ import { isUserVerified } from '@/server-action/hackathon';
 import { redirect } from 'next/navigation';
 import { CourseCard } from './_components/quiz-card';
 import { getQuiz } from '@/server-action/quiz';
-import { AlertDialogDemo } from './_components/Rule-Alert';
+import ViewRuleBtn from './_components/view-rule-btn';
+
 
 const Quizzes = async () => {
   const isVerified = await isUserVerified();
@@ -16,6 +17,10 @@ const Quizzes = async () => {
 
 
   return (
+    <>
+    <div className='flex-center flex-col gap-2'>
+      <ViewRuleBtn/>
+    </div>
     <section className='p-6 space-y-4'>
       {quiz.length === 0 ? (
         <div className='flex-center'>
@@ -39,8 +44,8 @@ const Quizzes = async () => {
           ))}
         </div>
       )}
-      <AlertDialogDemo />
     </section>
+    </>
   );
 }
 

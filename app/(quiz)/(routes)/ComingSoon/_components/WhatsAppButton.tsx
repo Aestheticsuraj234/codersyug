@@ -6,8 +6,8 @@ const WhatsAppButton = () => {
   return (
     <>
     <Link href={"https://chat.whatsapp.com/FSRSe9N8jte5TqZ8aR0QeF"} target='_blank'>
-    <Button className='flex justify-center items-center gap-1 font-extrabold text-center '>
-    <BiLogoWhatsapp className="text-2xl mr-2" />
+    <Button className='flex justify-center items-center gap-1 md:font-extrabold  font-semibold text-center '>
+    <BiLogoWhatsapp className="text-2xl mr-2 " />
     Quiz-Wuiz By Codersyug🚀
     </Button>
     </Link>

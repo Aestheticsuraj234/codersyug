@@ -343,13 +343,13 @@ const QuestionIdPage = ({
     document.addEventListener('copy', handleCopyPaste);
     document.addEventListener('cut', handleCopyPaste);
     document.addEventListener('paste', handleCopyPaste);
-    window.addEventListener('contextmenu', handleContextMenu);
+    // window.addEventListener('contextmenu', handleContextMenu);
 
     return () => {
       document.removeEventListener('copy', handleCopyPaste);
       document.removeEventListener('cut', handleCopyPaste);
       document.removeEventListener('paste', handleCopyPaste);
-      window.removeEventListener('contextmenu', handleContextMenu);
+      // window.removeEventListener('contextmenu', handleContextMenu);
     };
   }, []);
 
@@ -366,32 +366,32 @@ const QuestionIdPage = ({
     };
   }, []);
 
-  useEffect(() => {
-    // Disable right-click
-    const handleContextMenu = (event: Event) => {
-      event.preventDefault();
-    };
+  // useEffect(() => {
+  //   // Disable right-click
+  //   const handleContextMenu = (event: Event) => {
+  //     event.preventDefault();
+  //   };
 
-    // Disable inspect mode
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === "F12" ||
-        (event.ctrlKey && event.shiftKey && event.key === "I")
-      ) {
-        event.preventDefault();
-      }
-    };
+  //   // Disable inspect mode
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (
+  //       event.key === "F12" ||
+  //       (event.ctrlKey && event.shiftKey && event.key === "I")
+  //     ) {
+  //       event.preventDefault();
+  //     }
+  //   };
 
-    // Attach event listeners
-    window.addEventListener("contextmenu", handleContextMenu);
-    window.addEventListener("keydown", handleKeyDown);
+  //   // Attach event listeners
+  //   window.addEventListener("contextmenu", handleContextMenu);
+  //   window.addEventListener("keydown", handleKeyDown);
 
-    // Clean up event listeners
-    return () => {
-      window.removeEventListener("contextmenu", handleContextMenu);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  //   // Clean up event listeners
+  //   return () => {
+  //     window.removeEventListener("contextmenu", handleContextMenu);
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (questionTimer === 0 && isTimerRunning) {
@@ -447,10 +447,10 @@ const QuestionIdPage = ({
 
   const BadgeText =
     userAccessLevel === AccessLevel.ANSWERED
-      ? "Answered👑"
+      ? "Answered"
       : userAccessLevel === AccessLevel.UNLOCKED
-      ? "Ready to Attempt👻"
-      : "Locked❌";
+      ? "Ready to Attempt"
+      : "Locked";
 
   console.log("Answered-Question:", JSON.stringify(answeredQuestions));
 
@@ -463,8 +463,8 @@ const QuestionIdPage = ({
       ) : (
         <>
           <div className="flex justify-between items-center m-4">
-            <div className="flex flex-row space-x-4 justify-center items-center">
-              <h1 className="text-2xl font-semibold text-emerald-600-500">
+            <div className="flex md:flex-row flex-col md:space-x-4 space-y-4 justify-center items-center">
+              <h1 className="md:text-2xl text-xl font-semibold text-zinc-800 dark:text-zinc-200 box-border">
                 Question {question?.order} of {TotalQuestions}🤔
               </h1>
               <Badge
@@ -478,10 +478,10 @@ const QuestionIdPage = ({
               </Badge>
             </div>
 
-            <div className="flex flex-row items-center space-x-7" />
-            <div className="flex flex-row space-x-4 justify-center items-center">
-              <IconBadge icon={Timer} variant={"timer"} />
-              <h1 className="text-2xl font-semibold text-emerald-600-500">
+            <div className="flex md:flex-row flex-col items-center space-x-7" />
+            <div className="flex md:flex-row flex-col  md:space-x-4 space-y-4 justify-center items-center m-3">
+              <IconBadge icon={Timer} variant={"timer"} size={"default"}  />
+              <h1 className="md:text-2xl text-xl font-semibold text-emerald-600-500">
                 {questionTimer ? `00:00:${questionTimer}` : "00:00:00"}
               </h1>
             </div>
@@ -490,7 +490,7 @@ const QuestionIdPage = ({
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="w-2/3 space-y-6"
+                className="md:w-2/3 w-full space-y-6"
               >
                 <FormField
                   control={form.control}
@@ -498,7 +498,7 @@ const QuestionIdPage = ({
                   render={({ field }) => (
                     <FormItem className="space-y-3">
                       <FormLabel>
-                        <h1 className="text-2xl font-semibold">
+                        <h1 className="md:text-2xl text-base font-semibold">
                           {question?.text}
                         </h1>
                       </FormLabel>
@@ -517,7 +517,7 @@ const QuestionIdPage = ({
                                 <FormControl>
                                   <RadioGroupItem value={option} />
                                 </FormControl>
-                                <FormLabel className="font-normal text-lg">
+                                <FormLabel className="font-normal md:text-lg text-sm">
                                   {option}
                                 </FormLabel>
                               </FormItem>
