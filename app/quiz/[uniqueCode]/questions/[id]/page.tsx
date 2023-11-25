@@ -366,32 +366,32 @@ const QuestionIdPage = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   // Disable right-click
-  //   const handleContextMenu = (event: Event) => {
-  //     event.preventDefault();
-  //   };
+  useEffect(() => {
+    // Disable right-click
+    const handleContextMenu = (event: Event) => {
+      event.preventDefault();
+    };
 
-  //   // Disable inspect mode
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (
-  //       event.key === "F12" ||
-  //       (event.ctrlKey && event.shiftKey && event.key === "I")
-  //     ) {
-  //       event.preventDefault();
-  //     }
-  //   };
+    // Disable inspect mode
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === "F12" ||
+        (event.ctrlKey && event.shiftKey && event.key === "I")
+      ) {
+        event.preventDefault();
+      }
+    };
 
-  //   // Attach event listeners
-  //   window.addEventListener("contextmenu", handleContextMenu);
-  //   window.addEventListener("keydown", handleKeyDown);
+    // Attach event listeners
+    window.addEventListener("contextmenu", handleContextMenu);
+    window.addEventListener("keydown", handleKeyDown);
 
-  //   // Clean up event listeners
-  //   return () => {
-  //     window.removeEventListener("contextmenu", handleContextMenu);
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, []);
+    // Clean up event listeners
+    return () => {
+      window.removeEventListener("contextmenu", handleContextMenu);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     if (questionTimer === 0 && isTimerRunning) {
