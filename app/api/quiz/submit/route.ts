@@ -78,18 +78,6 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       }
     });
 
-    // Fetch the user's existing participation for this quiz.
-    const userParticipation = await db.quizParticipation.findUnique({
-      where: {
-        quizId: quiz.id,
-        userId: profile.userId,
-      },
-    });
-
-    // Calculate the total time taken including the previous total time.
-    const totalPreviousTimeTaken = userParticipation?.totalTimeTaken || 0;
-    const newTotalTimeTaken = totalPreviousTimeTaken + totalTimeTaken;
-
     // Update the user's score and total time taken.
     await db.quizParticipation.update({
       where: {
@@ -101,7 +89,7 @@ export const POST = async (req: Request): Promise<NextResponse> => {
           increment: totalScore,
         },
         totalTimeTaken: {
-          set: newTotalTimeTaken,
+          increment: totalTimeTaken,
         },
       },
     });
@@ -140,6 +128,7 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       data: {
         rank: {
           set: userRank,
+
         },
       },
     });
@@ -155,3 +144,4 @@ export const POST = async (req: Request): Promise<NextResponse> => {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 };
+

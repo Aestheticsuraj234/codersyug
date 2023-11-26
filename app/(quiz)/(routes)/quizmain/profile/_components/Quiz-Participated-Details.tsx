@@ -12,6 +12,7 @@ const QuizParticipatedDetails = async () => {
   }
 
   const quizzes = await getParticipatedQuizzesForCurrentUser();
+  console.log(quizzes.length);
 
   // Check if there are no quizzes or all quizzes have no participations
   if (!quizzes || quizzes.every((quiz) => quiz.participantsCount === 0)) {
