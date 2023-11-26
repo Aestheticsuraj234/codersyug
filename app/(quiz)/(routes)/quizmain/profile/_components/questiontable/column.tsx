@@ -1,8 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<any>[] = [
@@ -18,6 +17,13 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "correctAnswer",
     header: "correctAnswer",
+    cell: ({ row }: any) => {
+      return (
+        <div className={"blur-md"}>
+          {row.original.correctAnswer}
+        </div>
+      );
+    },
   },
   
   {

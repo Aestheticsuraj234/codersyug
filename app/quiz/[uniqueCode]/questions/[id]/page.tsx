@@ -197,28 +197,27 @@ const QuestionIdPage = ({
   const handleTimeout = async () => {
     if (!isAnswered) {
       try {
+      
         setIsAnswering(true);
-
+  
         // Update answeredQuestions array with the current question's data
         const updatedAnsweredQuestions = [
           ...answeredQuestions,
-          { question, answer: "", timeTaken: null },
+          { question, answer: "not answered", timeTaken: actualTimeTaken },
         ];
-
+  
         // Case 1: Answering a question
         setAnsweredQuestions(updatedAnsweredQuestions);
-
+  
         // Update access level for the current question
         await modifyQuestionAccessTypeByCurrentUser(
           params.id,
           AccessLevel.ANSWERED
         );
-
+  
         if (nextQuestion) {
           // Case 2: Moving to the next question
-          router.push(
-            `/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`
-          );
+          router.push(`/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`);
           await modifyQuestionAccessTypeByCurrentUser(
             nextQuestion.id,
             AccessLevel.UNLOCKED
@@ -226,17 +225,17 @@ const QuestionIdPage = ({
         } else if (!nextQuestion) {
           // Case 3: Submitting the last question
           setIsLastQuestion(true);
-
+  
           // Log the updated answeredQuestions array
           console.log(
             "Updated Answered-Question:",
             JSON.stringify(updatedAnsweredQuestions)
           );
-
+  
           // Update state to ensure it's synchronous
           setAnsweredQuestions(updatedAnsweredQuestions);
           setIsAnswering(true);
-
+  
           try {
             // Make the API call with the updated answeredQuestions array
             const res = await axios.post("/api/quiz/submit", {
@@ -244,7 +243,7 @@ const QuestionIdPage = ({
               answeredQuestions: updatedAnsweredQuestions,
             });
             setIsAnswered(true);
-
+  
             if (res.status === 201) {
               setIsAnswering(false);
               toast({
@@ -267,9 +266,6 @@ const QuestionIdPage = ({
         }
       } catch (error) {
         console.error("Error submitting:", error);
-      } finally {
-        // Stop the timer when the answer is submitted
-        setIsTimerRunning(false);
       }
     }
   };
