@@ -31,7 +31,7 @@ const Profile = async () => {
     id: item?.questionId || "No ID",
     question: item?.text || "No Question",
     status: item?.accessLevel || "No Status",
-    correctAnswer: item?.correctOption || "No Answer",
+
   }));
 
   return (

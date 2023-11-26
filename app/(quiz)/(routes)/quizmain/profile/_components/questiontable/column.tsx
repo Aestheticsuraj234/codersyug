@@ -13,18 +13,6 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "question",
     header: "question",
   },
-
-  {
-    accessorKey: "correctAnswer",
-    header: "correctAnswer",
-    cell: ({ row }: any) => {
-      return (
-        <div className={"blur-md"}>
-          {row.original.correctAnswer}
-        </div>
-      );
-    },
-  },
   
   {
     accessorKey: "status",
