@@ -104,28 +104,35 @@ export function removePunctuationAndNormalize(text:string | null) {
 
 
 // Function to calculate the rank of the user by using their score and total time taken.
-export  const calculateRank = (quizParticipations: QuizParticipation[]): QuizParticipation[] => {
+export const calculateRank = (quizParticipations: QuizParticipation[]): QuizParticipation[] => {
+  // Clone the array to avoid modifying the original
+  const quizParticipationsCopy = [...quizParticipations];
+
   const sortedParticipationRank: QuizParticipation[] = [];
 
-  while (quizParticipations.length > 0) {
+  while (quizParticipationsCopy.length > 0) {
     let max: number | null = 0;
     let maxIndex = 0;
 
-    for (let i = 0; i < quizParticipations.length; i++) {
-      if (quizParticipations[i].score! > max!) {
+    for (let i = 0; i < quizParticipationsCopy.length; i++) {
+      if (quizParticipationsCopy[i].score! > max!) {
         maxIndex = i;
-        max = quizParticipations[i].score;
-      } else if (quizParticipations[i].score === max) {
+        max = quizParticipationsCopy[i].score;
+      } else if (quizParticipationsCopy[i].score === max) {
         // If scores are equal, prioritize the user with less time taken
-        if (quizParticipations[i].totalTimeTaken! < quizParticipations[maxIndex].totalTimeTaken!) {
+        if (
+          quizParticipationsCopy[i].totalTimeTaken! < quizParticipationsCopy[maxIndex].totalTimeTaken!
+        ) {
           maxIndex = i;
         }
       }
     }
 
-    sortedParticipationRank.push(quizParticipations[maxIndex]);
-    quizParticipations.splice(maxIndex, 1);
+    // Assign rank to the participant based on the index
+    sortedParticipationRank.push({ ...quizParticipationsCopy[maxIndex], rank: sortedParticipationRank.length + 1 });
+    quizParticipationsCopy.splice(maxIndex, 1);
   }
 
   return sortedParticipationRank;
 };
+

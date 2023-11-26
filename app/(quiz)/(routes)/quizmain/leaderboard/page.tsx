@@ -14,6 +14,7 @@ import { getAllParticipants } from "@/server-action/quiz";
 
 const Leaderboard = async() => {
   const LeaderBoardData = await getAllParticipants()
+  console.log(LeaderBoardData)
   return (
     
        <div className="mt-10 w-full mb-10">
@@ -36,9 +37,9 @@ const Leaderboard = async() => {
                rank: item.rank,
                name: item.user.name,
                email: item.user.email,
-               score: item.score,
-               imageUrl: item.user.imageUrl,
-                totalTimeTaken: item.totalTimeTaken
+              score: item.score,
+              imageUrl: item.user.imageUrl,
+              totalTimeTaken: item.totalTimeTaken
              }
            })
          } />
