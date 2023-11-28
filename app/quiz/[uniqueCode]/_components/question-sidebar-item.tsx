@@ -38,10 +38,11 @@ export const QuestionSidebarItem = ({
 
 
   return (
-     <Link href={`/quiz/${uniqueCode}/questions/${id}`} passHref>
+     <>
       <button
         type="button"
         disabled={isLocked}
+        onClick={onClick} 
         className={cn(
           'flex items-center gap-x-2 text-slate-500 dark:text-slate-100 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20',
           isActive && 'text-slate-700 bg-slate-200/20 hover:bg-slate-200/20 hover:text-slate-700',
@@ -62,6 +63,6 @@ export const QuestionSidebarItem = ({
       <Separator
         className={cn(isActive && 'bg-slate-700 dark:bg-slate-50', isLocked && 'bg-slate-200')}
       />
-    </Link>
+ </>
   );
 };

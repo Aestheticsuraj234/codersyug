@@ -197,78 +197,66 @@ const QuestionIdPage = ({
   const handleTimeout = async () => {
     if (!isAnswered) {
       try {
-      
         setIsAnswering(true);
   
         // Update answeredQuestions array with the current question's data
         const updatedAnsweredQuestions = [
           ...answeredQuestions,
-          { question, answer: "not answered", timeTaken: actualTimeTaken },
+          { question, answer: "", timeTaken: null }, // Update answer to "" and timeTaken to null
         ];
   
-        // Case 1: Answering a question
-        setAnsweredQuestions(updatedAnsweredQuestions);
-  
         // Update access level for the current question
-        await modifyQuestionAccessTypeByCurrentUser(
-          params.id,
-          AccessLevel.ANSWERED
-        );
+        await modifyQuestionAccessTypeByCurrentUser(params.id, AccessLevel.ANSWERED);
   
+        // Case 1: Time out on a question with a next question
         if (nextQuestion) {
-          // Case 2: Moving to the next question
-          router.push(`/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`);
-          await modifyQuestionAccessTypeByCurrentUser(
-            nextQuestion.id,
-            AccessLevel.UNLOCKED
-          );
-        } else if (!nextQuestion) {
-          // Case 3: Submitting the last question
-          setIsLastQuestion(true);
-  
-          // Log the updated answeredQuestions array
-          console.log(
-            "Updated Answered-Question:",
-            JSON.stringify(updatedAnsweredQuestions)
-          );
-  
-          // Update state to ensure it's synchronous
+          // Update answeredQuestions array to reflect the submitted answer
           setAnsweredQuestions(updatedAnsweredQuestions);
-          setIsAnswering(true);
   
-          try {
-            // Make the API call with the updated answeredQuestions array
-            const res = await axios.post("/api/quiz/submit", {
-              uniqueCode: params.uniqueCode,
-              answeredQuestions: updatedAnsweredQuestions,
-            });
+          // Move to the next question with a fresh timer
+          router.push(`/quiz/${params.uniqueCode}/questions/${nextQuestion.id}`);
+          await modifyQuestionAccessTypeByCurrentUser(nextQuestion.id, AccessLevel.UNLOCKED);
+  
+          // Reset the timer and start it for the next question
+          setIsTimerRunning(true);
+          setQuestionTimer(question.timer);
+        } else if(!nextQuestion) { // Case 2: Time out on the last question
+          // Update answeredQuestions array to reflect the submitted answer
+          setAnsweredQuestions(updatedAnsweredQuestions);
+  
+          // Submit the quiz
+          const res = await axios.post("/api/quiz/submit", {
+            uniqueCode: params.uniqueCode,
+            answeredQuestions: updatedAnsweredQuestions,
+          });
+  
+          if (res.status === 201) {
+            // Submission successful
             setIsAnswered(true);
-  
-            if (res.status === 201) {
-              setIsAnswering(false);
-              toast({
-                title: "Quiz Submitted Successfully",
-                description: "Redirecting.... to your profile.",
-              });
-              router.push("/quizmain/profile");
-            } else {
-              toast({
-                title: "Uh oh! Something went wrong.",
-                description: "There was a problem with your request.",
-              });
-              form.reset();
-            }
-          } catch (error) {
-            console.error("Error submitting quiz:", error);
-          } finally {
             setIsAnswering(false);
+            toast({
+              title: "Quiz Submitted Successfully",
+              description: "Redirecting.... to your profile.",
+            
+            })
+            router.push("/quizmain/profile");
+          } else {
+            // Submission failed
+            toast({
+              title: "Uh oh! Something went wrong.",
+              description: "There was a problem with your request.",
+            })
+            form.reset();
           }
         }
       } catch (error) {
         console.error("Error submitting:", error);
+      } finally {
+        setIsAnswering(false);
       }
     }
   };
+  
 
   const HandleCheating = async () => {
     try {

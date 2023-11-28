@@ -16,17 +16,6 @@ const CEOCard = () => {
             linkedin:'https://www.linkedin.com/in/suraj-jha-875744250/',
             twitter:'https://twitter.com/',
             github:'https://github.com/Aestheticsuraj234'
-
-        },
-        {
-            id:2,
-            name:'Code With Random',
-            designation:'Co-Founder & CTO',
-            image:'https://cloud.appwrite.io/v1/storage/buckets/64e6ef5650a3bc944e6f/files/6526f6e6546a7cd7e1b3/view?project=64d3707fc8db92bf44ff&mode=admin',
-            description:'CodersYug offers a comprehensive collection of high-quality learning resources for computer science students. Access tutorials, articles, and materials that are carefully curated to enhance your learning experience  grow your knowledge.',
-            instagram:'https://www.instagram.com/codewith_random/',
-            linkedin:'https://www.linkedin.com/company/codewithrandom/',
-            twitter:'https://twitter.com/',
         }
     ]
 
