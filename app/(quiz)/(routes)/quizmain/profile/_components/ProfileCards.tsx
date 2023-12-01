@@ -21,9 +21,7 @@ const ProfileCards: React.FC<any> = async ({ participation }) => {
     // Handle the case when participation is not available
     return null; // or render a loading state or an error message
   }
-  console.log("Participation:", participation);
-  console.log("Quiz Participations:", participation?.user?.quizParticipations);
-  console.log("Question Access:", participation?.user?.questionAccess);
+
 
   const TimeNormalize = (time: number) => {
     const minutes = Math.floor(time / 60);

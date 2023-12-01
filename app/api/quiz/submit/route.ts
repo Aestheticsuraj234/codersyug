@@ -17,6 +17,9 @@ export const POST = async (req: Request): Promise<NextResponse> => {
     // Extract the answers and unique code from the request body.
     const { answeredQuestions, uniqueCode } = await req.json();
 
+    console.log("answeredQuestions:👉", answeredQuestions);
+
+
     // Find the quiz associated with the unique code.
     const quiz = await db.quiz.findUnique({
       where: {
@@ -49,6 +52,8 @@ export const POST = async (req: Request): Promise<NextResponse> => {
       correctOption: question.correctOption,
     }));
 
+    console.log("correctAnswers:👉", correctAnswers);
+
     // Calculate the total score and total time taken.
     correctAnswers.forEach((correctAnswer, i) => {
       const question = quiz.questions[i];
@@ -77,6 +82,10 @@ export const POST = async (req: Request): Promise<NextResponse> => {
         totalTimeTaken += answeredQuestions[i].timeTaken;
       }
     });
+  
+
+    console.log("totalScore:👉", totalScore);
+    console.log("totalTimeTaken:👉", totalTimeTaken);
 
     // Update the user's score and total time taken.
     await db.quizParticipation.update({
@@ -100,6 +109,8 @@ export const POST = async (req: Request): Promise<NextResponse> => {
         quizId: quiz.id,
       },
     });
+
+    console.log("updatedQuizParticipations:👉", updatedQuizParticipations); 
 
     const sortedParticipationRank = calculateRank(updatedQuizParticipations);
 
