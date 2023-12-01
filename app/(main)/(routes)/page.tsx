@@ -1,4 +1,3 @@
-
 import CEOCard from "@/components/Home/CEOCard";
 import CodeSnippetQuotes from "@/components/Home/CodeSnippetQuotes";
 import DarkKeyFeatureCard from "@/components/Home/DarkKeyFeature";
@@ -7,33 +6,24 @@ import HomeComponent from "@/components/Home/HomeComponent";
 import MoreFeature from "@/components/Home/MoreFeature";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
+
 import { redirect } from "next/navigation";
 
 export default async function Home() {
+  const initiateProfile = await initialProfile();
 
-    const initiateProfile = await initialProfile();
-   
-   
+  if (initiateProfile) {
+    return (
+      <div className="mx-4 my-4 ">
+        <HomeComponent />
+        <CodeSnippetQuotes />
+        <MoreFeature />
+        <CEOCard />
+        <FeatureComponent />
+        <DarkKeyFeatureCard />
+      </div>
+    );
+  }
 
-    if (initiateProfile) {
-        return (
-            <div className="mx-4 my-4 ">
-                <HomeComponent />
-          
-                <CodeSnippetQuotes />
-                <MoreFeature />
-                <CEOCard />
-                <FeatureComponent />
-                <DarkKeyFeatureCard />
-            </div>
-        )
-    }
-
-
-    return redirect("/sign-in")
-
-
+  return redirect("/sign-in");
 }
-   
-
-

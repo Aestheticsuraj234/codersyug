@@ -171,12 +171,16 @@ const QuestionIdPage = ({
 
           if (res.status === 201) {
             setIsAnswering(false);
+            setAnsweredQuestions([]);
+            
             toast({
               title: "Quiz Submitted Successfully",
               description: "Redirecting.... to your profile.",
             });
             router.push("/quizmain/profile");
           } else {
+            setIsAnswering(false);
+            setAnsweredQuestions([]);
             toast({
               title: "Uh oh! Something went wrong.",
               description: "There was a problem with your request.",
@@ -187,6 +191,7 @@ const QuestionIdPage = ({
           console.error("Error submitting quiz:", error);
         } finally {
           setIsAnswering(false);
+          setAnsweredQuestions([]);
         }
       }
     } catch (error) {
@@ -234,6 +239,7 @@ const QuestionIdPage = ({
             // Submission successful
             setIsAnswered(true);
             setIsAnswering(false);
+            setAnsweredQuestions([]);
             toast({
               title: "Quiz Submitted Successfully",
               description: "Redirecting.... to your profile.",
@@ -242,6 +248,8 @@ const QuestionIdPage = ({
             router.push("/quizmain/profile");
           } else {
             // Submission failed
+          
+            setAnsweredQuestions([]);
             toast({
               title: "Uh oh! Something went wrong.",
               description: "There was a problem with your request.",
@@ -253,6 +261,7 @@ const QuestionIdPage = ({
         console.error("Error submitting:", error);
       } finally {
         setIsAnswering(false);
+        setAnsweredQuestions([]);
       }
     }
   };
@@ -289,29 +298,29 @@ const QuestionIdPage = ({
   let mouseOutCount = 0;
 
 
-  useEffect(
-    () => {
-      async function handleMouseLeave() {
-        mouseOutCount += 1;
-        console.log("Mouse out count:", mouseOutCount);
-        console.log("UserAccesslevel",userAccessLevel);
-        if (mouseOutCount >= 1 && userAccessLevel !== AccessLevel.ANSWERED) {
-          setIsDialogOpen(true);
-        }
-        if (mouseOutCount === 4 && userAccessLevel !== AccessLevel.ANSWERED) {
-          console.log("Calling HandleCheating");
-          await HandleCheating();
-        }
-      }
+  // useEffect(
+  //   () => {
+  //     async function handleMouseLeave() {
+  //       mouseOutCount += 1;
+  //       console.log("Mouse out count:", mouseOutCount);
+  //       console.log("UserAccesslevel",userAccessLevel);
+  //       if (mouseOutCount >= 1 && userAccessLevel !== AccessLevel.ANSWERED) {
+  //         setIsDialogOpen(true);
+  //       }
+  //       if (mouseOutCount === 4 && userAccessLevel !== AccessLevel.ANSWERED) {
+  //         console.log("Calling HandleCheating");
+  //         await HandleCheating();
+  //       }
+  //     }
       
-      document.addEventListener("mouseleave", handleMouseLeave);
+  //     document.addEventListener("mouseleave", handleMouseLeave);
 
-      return () => {
-        document.removeEventListener("mouseleave", handleMouseLeave);
-      };
-    },
-    [userAccessLevel]
-  );
+  //     return () => {
+  //       document.removeEventListener("mouseleave", handleMouseLeave);
+  //     };
+  //   },
+  //   [userAccessLevel]
+  // );
 
   
   useEffect(() => {
@@ -350,32 +359,32 @@ const QuestionIdPage = ({
     };
   }, []);
 
-  useEffect(() => {
-    // Disable right-click
-    const handleContextMenu = (event: Event) => {
-      event.preventDefault();
-    };
+  // useEffect(() => {
+  //   // Disable right-click
+  //   const handleContextMenu = (event: Event) => {
+  //     event.preventDefault();
+  //   };
 
-    // Disable inspect mode
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === "F12" ||
-        (event.ctrlKey && event.shiftKey && event.key === "I")
-      ) {
-        event.preventDefault();
-      }
-    };
+  //   // Disable inspect mode
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (
+  //       event.key === "F12" ||
+  //       (event.ctrlKey && event.shiftKey && event.key === "I")
+  //     ) {
+  //       event.preventDefault();
+  //     }
+  //   };
 
-    // Attach event listeners
-    window.addEventListener("contextmenu", handleContextMenu);
-    window.addEventListener("keydown", handleKeyDown);
+  //   // Attach event listeners
+  //   window.addEventListener("contextmenu", handleContextMenu);
+  //   window.addEventListener("keydown", handleKeyDown);
 
-    // Clean up event listeners
-    return () => {
-      window.removeEventListener("contextmenu", handleContextMenu);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  //   // Clean up event listeners
+  //   return () => {
+  //     window.removeEventListener("contextmenu", handleContextMenu);
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (questionTimer === 0 && isTimerRunning) {
